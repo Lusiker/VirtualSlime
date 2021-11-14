@@ -1,7 +1,6 @@
+drop table if exists item_tag;
 create table item_tag(
-    iid int,
-    tid int,
-
-    foreign key(iid) references item(iid),
-    foreign key(tid) references tag(tid)
-);
+    tid smallint unsigned auto_increment primary key,
+    name varchar(20),
+    state tinyint unsigned default 0
+)

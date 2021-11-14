@@ -1,9 +1,6 @@
+drop table if exists admin;
 create table admin(
-     aid int auto_increment primary key,
-     adminName text,
-     adminEmail text,
-     createdAt timestamp,
-     lastLogin timestamp null,
-     totalLogin int default 0,
-     adminState smallint default 0,
+     aid int unsigned auto_increment primary key,
+     name varchar(20),
+     state tinyint unsigned default 0
 );
