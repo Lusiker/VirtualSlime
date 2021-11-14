@@ -2,7 +2,7 @@ drop table if exists user_report;
 create table user_report(
     rid int unsigned auto_increment primary key,
     uid int unsigned,
-    type tinyint,
+    type tinyint unsigned,
     target int unsigned,
     content varchar(50),
     handled_by int unsigned null,

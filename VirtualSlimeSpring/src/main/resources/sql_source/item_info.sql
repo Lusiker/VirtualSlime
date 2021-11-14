@@ -7,7 +7,7 @@ create table item_info(
     price decimal(12,2),
     is_discounting boolean default false,
     price_discounted decimal(12,2),
-    gid smallint unsigned,
-    visited_count int unsigned default 0,
+    cid smallint unsigned,
+    visit_count int unsigned default 0,
     state tinyint unsigned default 0
 );
