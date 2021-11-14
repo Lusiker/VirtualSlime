@@ -8,3 +8,4 @@
 |:-:|:-:|
 |jdk|17|
 |springboot|2.5.6|
+|mybatis plus|3.4.3.4|
