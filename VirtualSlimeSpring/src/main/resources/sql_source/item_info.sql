@@ -9,6 +9,5 @@ create table item_info(
     price_discounted decimal(12,2),
     gid smallint unsigned,
     visited_count int unsigned default 0,
-    approximate_sold_count int unsigned default 0,
     state tinyint unsigned default 0
 );
