@@ -5,6 +5,5 @@
 + love u
 ## 版本记录
 |w|a|
-|:-:|:-:|
 |jdk|17|
 |springboot|2.5.6|
