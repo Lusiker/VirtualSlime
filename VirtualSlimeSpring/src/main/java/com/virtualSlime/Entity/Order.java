@@ -1,29 +1,31 @@
 package com.virtualSlime.Entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.virtualSlime.Enum.OrderState;
 
-import java.util.Date;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 
+@TableName(schema = "virtual_slime", value = "user_order")
 public class Order {
-    private Integer oid;//user_order.oid unsigned int
-    private Integer uid;//user_order.uid unsigned int
-    private Integer iid;//user_order.iid unsigned int
-    private Long createdAt;//user_order_created_at timestamp
-    private Long paidAt;//user_order.paid_time timestamp
-    private Double paidPrice;//decimal(12,2):parse needed!
-    private OrderState orderState;//user_order.state unsigned tinyint
+    @TableId(type = IdType.AUTO)
+    private final Integer oid;
+    private Integer uid;
+    private Timestamp createdAt;
+    private Timestamp paidAt;
+    private BigDecimal paidPrice;
+    private OrderState orderState;
 
-    public Order(Integer uid, Integer iid, Long createAt) {
+    public Order(Integer uid){
+        this.oid = null;
         this.uid = uid;
-        this.iid = iid;
-        this.createdAt = createAt;
     }
 
-    public Order(Integer oid, Integer uid, Integer iid, Long createdAt,
-                 Long paidAt, Double paidPrice, OrderState orderState) {
+    public Order(Integer oid, Integer uid, Timestamp createdAt, Timestamp paidAt, BigDecimal paidPrice, OrderState orderState) {
         this.oid = oid;
         this.uid = uid;
-        this.iid = iid;
         this.createdAt = createdAt;
         this.paidAt = paidAt;
         this.paidPrice = paidPrice;
@@ -34,10 +36,6 @@ public class Order {
         return oid;
     }
 
-    public void setOid(Integer oid) {
-        this.oid = oid;
-    }
-
     public Integer getUid() {
         return uid;
     }
@@ -46,35 +44,27 @@ public class Order {
         this.uid = uid;
     }
 
-    public Integer getIid() {
-        return iid;
-    }
-
-    public void setIid(Integer iid) {
-        this.iid = iid;
-    }
-
-    public Long getCreatedAt() {
+    public Timestamp getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Long createdAt) {
+    public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Long getPaidAt() {
+    public Timestamp getPaidAt() {
         return paidAt;
     }
 
-    public void setPaidAt(Long paidAt) {
+    public void setPaidAt(Timestamp paidAt) {
         this.paidAt = paidAt;
     }
 
-    public Double getPaidPrice() {
+    public BigDecimal getPaidPrice() {
         return paidPrice;
     }
 
-    public void setPaidPrice(Double paidPrice) {
+    public void setPaidPrice(BigDecimal paidPrice) {
         this.paidPrice = paidPrice;
     }
 
@@ -91,8 +81,7 @@ public class Order {
         return "Order{" +
                 "oid=" + oid +
                 ", uid=" + uid +
-                ", iid=" + iid +
-                ", createAt=" + createdAt +
+                ", createdAt=" + createdAt +
                 ", paidAt=" + paidAt +
                 ", paidPrice=" + paidPrice +
                 ", orderState=" + orderState +

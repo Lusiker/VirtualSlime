@@ -1,10 +1,15 @@
 package com.virtualSlime.Entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.virtualSlime.Enum.ReportState;
 import com.virtualSlime.Enum.ReportType;
 
+@TableName(schema = "virtual_slime", value = "user_report")
 public class Report {
-    private Integer rid;
+    @TableId(type = IdType.AUTO)
+    private final Integer rid;
     private Integer uid;
     private ReportType reportType;
     private Integer idTarget;
@@ -14,6 +19,7 @@ public class Report {
     private ReportState reportState;
 
     public Report(Integer uid, ReportType reportType, Integer idTarget, String reportContent) {
+        this.rid = null;
         this.uid = uid;
         this.reportType = reportType;
         this.idTarget = idTarget;
@@ -35,10 +41,6 @@ public class Report {
 
     public Integer getRid() {
         return rid;
-    }
-
-    public void setRid(Integer rid) {
-        this.rid = rid;
     }
 
     public Integer getUid() {

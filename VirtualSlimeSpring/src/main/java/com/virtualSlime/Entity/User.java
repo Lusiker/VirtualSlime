@@ -26,6 +26,13 @@ public class User {
     private Boolean userIsMerchant;
     private UserState userState;
 
+    public User(String userName, String userEmail, String userPassword) {
+        this.uid = null;
+        this.userName = userName;
+        this.userEmail = userEmail;
+        this.userPassword = userPassword;
+    }
+
     public User(Integer uid, String userName, String userEmail, String userPassword,
                 Timestamp createdAt, Timestamp lastLogin, Integer totalLogin,
                 Date userBirthday, UserSex userSex, Boolean userShowBirthday,
@@ -43,13 +50,6 @@ public class User {
         this.userShowDynamic = userShowDynamic;
         this.userIsMerchant = userIsMerchant;
         this.userState = userState;
-    }
-
-    public User(String userName, String userEmail, String userPassword) {
-        this.uid = null;
-        this.userName = userName;
-        this.userEmail = userEmail;
-        this.userPassword = userPassword;
     }
 
     public Integer getUid() {
