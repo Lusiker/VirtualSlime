@@ -1,8 +1,7 @@
 package com.virtualSlime.Test;
 
-import com.virtualSlime.Entity.Admin;
-import com.virtualSlime.Enum.AdminState;
-import com.virtualSlime.Mapper.AdminMapper;
+import com.virtualSlime.Entity.User;
+import com.virtualSlime.Mapper.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,10 +9,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class TempTest {
     @Autowired
-    private AdminMapper adminMapper;
+    private UserMapper userMapper;
 
     @Test
     public void printOut(){
-        System.out.println(adminMapper.selectById(1));
+        userMapper.insert(new User(null, "yuuNa","@gmail","123456"));
     }
 }
