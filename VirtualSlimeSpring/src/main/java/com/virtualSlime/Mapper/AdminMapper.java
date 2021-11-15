@@ -1,7 +1,7 @@
-package com.virtualslime.Mapper;
+package com.virtualSlime.Mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.virtualslime.Entity.Admin;
+import com.virtualSlime.Entity.Admin;
 
 public interface AdminMapper extends BaseMapper<Admin> {
 }

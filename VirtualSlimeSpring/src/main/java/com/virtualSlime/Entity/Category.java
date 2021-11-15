@@ -1,4 +1,4 @@
-package com.virtualslime.Entity;
+package com.virtualSlime.Entity;
 
 public class Category {
     private short cid;//item_category.cid unsigned smallint

@@ -1,4 +1,4 @@
-package com.virtualslime.Entity;
+package com.virtualSlime.Entity;
 
 public class Conversation {
     private int cid;//user_conversation.cid unsigned int

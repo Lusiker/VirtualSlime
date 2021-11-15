@@ -1,4 +1,4 @@
-package com.virtualslime.Entity;
+package com.virtualSlime.Entity;
 
 enum MessageType{
     UNDEFINED, TEXT, PICTURE

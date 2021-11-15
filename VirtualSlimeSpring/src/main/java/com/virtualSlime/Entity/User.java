@@ -1,7 +1,7 @@
-package com.virtualslime.Entity;
+package com.virtualSlime.Entity;
 
 import java.util.Date;
-import com.virtualslime.Utils.DateProcessing;
+import com.virtualSlime.Utils.DateProcessing;
 
 enum UserState{
     NORMAL, RESTRICTED, BANNED, LOGOFF

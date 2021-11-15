@@ -1,2 +1,10 @@
 server:
   port: 8081
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+    url: jdbc:mysql://localhost:3306/mysql?serverTimezone=UTC&characterEncoding=utf-8
+mybatis-plus:
+  type-enums-package: com.virtualSlime.Enum

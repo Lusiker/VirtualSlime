@@ -1,7 +1,7 @@
-package com.virtualslime.test;
+package com.virtualSlime.Test;
 
-import com.virtualslime.Entity.Admin;
-import com.virtualslime.Mapper.AdminMapper;
+import com.virtualSlime.Entity.Admin;
+import com.virtualSlime.Mapper.AdminMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +13,6 @@ public class TempTest {
 
     @Test
     public void printOut(){
-        adminMapper.insert(new Admin("chenRui", (byte) 1));
+        adminMapper.insert(new Admin("xuYi", (byte) 1));
     }
 }

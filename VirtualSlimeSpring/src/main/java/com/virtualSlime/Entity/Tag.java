@@ -1,4 +1,4 @@
-package com.virtualslime.Entity;
+package com.virtualSlime.Entity;
 
 enum TagState{
     NORMAL, PROMOTED, UNAVAILABLE, HIDDEN

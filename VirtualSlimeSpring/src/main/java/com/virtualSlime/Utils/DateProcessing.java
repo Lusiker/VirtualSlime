@@ -1,4 +1,4 @@
-package com.virtualslime.Utils;
+package com.virtualSlime.Utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

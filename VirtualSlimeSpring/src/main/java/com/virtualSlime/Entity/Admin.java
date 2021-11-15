@@ -1,12 +1,8 @@
-package com.virtualslime.Entity;
+package com.virtualSlime.Entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-
-enum AdminState{
-    NORMAL, RESTRICTED, BANNED, LOGOFF, SUPREME
-}
 
 @TableName(schema = "virtual_slime", value = "admin")
 public class Admin {
