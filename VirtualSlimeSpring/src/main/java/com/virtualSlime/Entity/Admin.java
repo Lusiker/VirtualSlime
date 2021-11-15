@@ -12,8 +12,8 @@ public class Admin {
     private String adminName;
     private AdminState adminState;
 
-    public Admin(String adminName, AdminState adminState) {
-        this.aid = null;
+    public Admin(Integer aid, String adminName, AdminState adminState) {
+        this.aid = aid;
         this.adminName = adminName;
         this.adminState = adminState;
     }
@@ -36,5 +36,14 @@ public class Admin {
 
     public void setAdminState(AdminState adminState) {
         this.adminState = adminState;
+    }
+
+    @Override
+    public String toString() {
+        return "Admin{" +
+                "aid=" + aid +
+                ", adminName='" + adminName + '\'' +
+                ", adminState=" + adminState +
+                '}';
     }
 }

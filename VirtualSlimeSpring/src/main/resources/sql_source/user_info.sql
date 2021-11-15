@@ -1,17 +1,16 @@
 drop table if exists user_info;
 create table user_info(
     uid int unsigned auto_increment primary key,
-    name varchar(20),
-    email varchar(20),
-    password tinytext,
+    user_name varchar(20),
+    user_email varchar(20),
+    user_password tinytext,
     created_at timestamp,
     last_login timestamp null,
     total_login smallint unsigned,
-    birthday date,
-    sex tinyint unsigned default 0,
+    user_birthday date,
+    user_sex tinyint unsigned default 0,
     show_birthday boolean default true,
-    show_like boolean default true,
-    show_comment boolean default true,
+    show_dynamic boolean default true,
     is_merchant boolean default false,
-    state tinyint unsigned default 0
+    user_state tinyint unsigned default 0
 );

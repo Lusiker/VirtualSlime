@@ -14,6 +14,6 @@ public class TempTest {
 
     @Test
     public void printOut(){
-        adminMapper.insert(new Admin("ruHua", AdminState.BANNED));
+        System.out.println(adminMapper.selectById(1));
     }
 }
