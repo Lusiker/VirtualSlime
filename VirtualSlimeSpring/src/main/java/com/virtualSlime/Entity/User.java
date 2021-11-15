@@ -168,4 +168,25 @@ public class User {
     public void setUserCurrency(Integer userCurrency) {
         this.userCurrency = userCurrency;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "uid=" + uid +
+                ", userName='" + userName + '\'' +
+                ", userEmail='" + userEmail + '\'' +
+                ", userPassword='" + userPassword + '\'' +
+                ", createdAt=" + createdAt +
+                ", lastLogin=" + lastLogin +
+                ", totalLogin=" + totalLogin +
+                ", userBirthday=" + userBirthday +
+                ", userSex=" + userSex +
+                ", userShowBirthday=" + userShowBirthday +
+                ", userShowDynamic=" + userShowDynamic +
+                ", userIsMerchant=" + userIsMerchant +
+                ", userState=" + userState +
+                ", userPoint=" + userPoint +
+                ", userCurrency=" + userCurrency +
+                '}';
+    }
 }

@@ -7,12 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class TempTest {
+public class CrudTest {
     @Autowired
     private UserMapper userMapper;
 
     @Test
-    public void printOut(){
-        userMapper.insert(new User("yuuNa","@gmail","123456"));
+    public void userTest(){
+        User u = new User("1","2","3");
+        userMapper.insert(u);
+        System.out.println(userMapper.selectById(u.getUid()));
+        u.setUserName("222");
+        userMapper.updateById(u);
+        System.out.println(userMapper.selectById(u.getUid()));
     }
+
+
 }
