@@ -1,8 +1,8 @@
 package com.virtualSlime.Entity;
 
 public class Category {
-    private Byte cid;//
-    private Byte cidUpper;//
+    private Byte cid;
+    private Byte cidUpper;
     private String catName;//<= 20
     private String catBrief;//<= 50
 
