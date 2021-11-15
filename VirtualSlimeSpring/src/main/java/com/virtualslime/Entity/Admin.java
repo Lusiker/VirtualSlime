@@ -1,37 +1,28 @@
 package com.virtualslime.Entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+
 enum AdminState{
     NORMAL, RESTRICTED, BANNED, LOGOFF, SUPREME
 }
 
+@TableName(schema = "virtual_slime", value = "admin")
 public class Admin {
-    private int aid;//admin.aid unsigned int
-    private String adminName;//admin.name  varchar(20)
-    private AdminState adminState;//admin.state unsigned tinyint
+    @TableId(type = IdType.AUTO)
+    private final Integer aid;
+    private String adminName;
+    private Byte adminState;
 
-    public Admin() {
-        this.aid = 0;
-        this.adminName = "null";
-        this.adminState = AdminState.NORMAL;
-    }
-
-    public Admin(String adminName) {
-        this.adminName = adminName;
-        this.adminState = AdminState.NORMAL;
-    }
-
-    public Admin(int aid, String adminName, AdminState adminState) {
-        this.aid = aid;
+    public Admin(String adminName, Byte adminState) {
+        this.aid = null;
         this.adminName = adminName;
         this.adminState = adminState;
     }
 
-    public int getAid() {
+    public Integer getAid() {
         return aid;
-    }
-
-    public void setAid(int aid) {
-        this.aid = aid;
     }
 
     public String getAdminName() {
@@ -42,11 +33,11 @@ public class Admin {
         this.adminName = adminName;
     }
 
-    public AdminState getAdminState() {
+    public Byte getAdminState() {
         return adminState;
     }
 
-    public void setAdminState(AdminState adminState) {
+    public void setAdminState(Byte adminState) {
         this.adminState = adminState;
     }
 }
