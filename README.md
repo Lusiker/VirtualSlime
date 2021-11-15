@@ -1,5 +1,5 @@
 # VirtualSlime
-这是一个专卖漫画、游戏、音乐的虚拟商品购物网站，名为Virtual Slime！
+这是一个主要经营数字发行同人作品、电脑游戏、电子书籍等业务的虚拟商品购物网站，名为Virtual Slime！
 
 ## 留言板 o(￣ヘ￣o＃)
 + 如果一次更改了多个文件的代码，不要一次都push，分成多个commit来push，每个commit写好更改内容
