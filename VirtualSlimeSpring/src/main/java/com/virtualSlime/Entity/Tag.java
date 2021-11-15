@@ -1,37 +1,27 @@
 package com.virtualSlime.Entity;
 
-enum TagState{
-    NORMAL, PROMOTED, UNAVAILABLE, HIDDEN
-}
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 
+@TableName(schema = "virtual_slime", value = "item_tag")
 public class Tag {
-    private short tid;//item_tag.tid unsigned smallint
-    private String tagName;//item_tag.name varchar(20)
-    private TagState tagState;//item_tag.state unsigned tinyint
+    @TableId(type = IdType.AUTO)
+    private final Integer tid;
+    private String tagName;
 
-    public Tag() {
-        this.tid = 0;
-        this.tagName = "null";
-        this.tagState = TagState.NORMAL;
-    }
-
-    public Tag(String tagName) {
-        this.tagName = tagName;
-        this.tagState = TagState.NORMAL;
-    }
-
-    public Tag(short tid, String tagName, TagState tagState) {
+    public Tag(Integer tid, String tagName) {
         this.tid = tid;
         this.tagName = tagName;
-        this.tagState = tagState;
     }
 
-    public short getTid() {
+    public Tag(String tagName){
+        this.tid = null;
+        this.tagName = tagName;
+    }
+
+    public Integer getTid() {
         return tid;
-    }
-
-    public void setTid(short tid) {
-        this.tid = tid;
     }
 
     public String getTagName() {
@@ -40,13 +30,5 @@ public class Tag {
 
     public void setTagName(String tagName) {
         this.tagName = tagName;
-    }
-
-    public TagState getTagState() {
-        return tagState;
-    }
-
-    public void setTagState(TagState tagState) {
-        this.tagState = tagState;
     }
 }
