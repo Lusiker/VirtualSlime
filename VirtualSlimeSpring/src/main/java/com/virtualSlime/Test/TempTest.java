@@ -13,6 +13,6 @@ public class TempTest {
 
     @Test
     public void printOut(){
-        userMapper.insert(new User(null, "yuuNa","@gmail","123456"));
+        userMapper.insert(new User("yuuNa","@gmail","123456"));
     }
 }
