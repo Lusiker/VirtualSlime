@@ -1,82 +1,32 @@
 package com.virtualSlime.Entity;
 
-import java.util.Date;
-import com.virtualSlime.Utils.DateProcessing;
+import java.sql.Date;
+import java.sql.Timestamp;
 
-enum UserState{
-    NORMAL, RESTRICTED, BANNED, LOGOFF
-}
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.virtualSlime.Enum.UserSex;
+import com.virtualSlime.Enum.UserState;
 
-enum UserSex{
-    UNDEFINED(0), MALE(1), FEMALE(2), SECRET(3);
-
-    private int sexCode;
-
-    UserSex(int newSexCode){
-        sexCode = newSexCode;
-    }
-
-    public int getSexCode() {
-        return sexCode;
-    }
-
-    public void setSexCode(int sexCode) {
-        this.sexCode = sexCode;
-    }
-}
-
+@TableName(schema = "virtual_slime", value = "user_info")
 public class User {
-    private int uid;//user_info.uid unsigned int
-    private String userName;//user_info.name varchar(20)
-    private String userEmail;//user_info.email varchar(20)
-    private String userPassword;//user_info.password  tinytext (<= 255)
-    private long createdAt;//user_info.created_at timestamp
-    private long lastLogin;//user_info.last_login timestamp
-    private short totalLogin;//user_info.total_login unsigned smallint
-    private Date userBirthday;//user_info.birthday date
-    private UserSex userSex;//user_info.sex unsigned tinyint
-    private boolean userShowBirthday;//user_info.show_birthday boolean
-    private boolean userShowLike;//user_info.show_like boolean
-    private boolean userShowComment;//user_info.show_comment boolean
-    private boolean userIsMerchant;//user_info.is_merchant boolean
-    private UserState userState;//user_info.state unsigned tinyint
+    @TableId(type = IdType.AUTO)
+    private final Integer uid;
+    private String userName;
+    private String userEmail;
+    private String userPassword;
+    private Timestamp createdAt;
+    private Timestamp lastLogin;
+    private Integer totalLogin;
+    private Date userBirthday;
+    private UserSex userSex;
+    private Boolean userShowBirthday;
+    private Boolean userShowDynamic;
+    private Boolean isMerchant;
+    private UserState userState;
 
-    public User() {
-        this.uid = 0;
-        this.userName = "null";
-        this.userEmail = "null";
-        this.userPassword = "null";
-        this.createdAt = new Date().getTime();
-        this.lastLogin = -1;
-        this.totalLogin = 0;
-        this.userBirthday = DateProcessing.getInitialTime();
-        this.userSex = UserSex.UNDEFINED;
-        this.userShowBirthday = false;
-        this.userShowLike = false;
-        this.userShowComment = false;
-        this.userIsMerchant = false;
-        this.userState = UserState.NORMAL;
-    }
-
-    public User(String userName, String userEmail, String userPassword, long createdAt, Date userBirthday,
-                UserSex userSex, boolean userShowBirthday, boolean userShowLike, boolean userShowComment,
-                boolean userIsMerchant) {
-        this.userName = userName;
-        this.userEmail = userEmail;
-        this.userPassword = userPassword;
-        this.createdAt = createdAt;
-        this.userBirthday = userBirthday;
-        this.userSex = userSex;
-        this.userShowBirthday = userShowBirthday;
-        this.userShowLike = userShowLike;
-        this.userShowComment = userShowComment;
-        this.userIsMerchant = userIsMerchant;
-        this.userState = UserState.NORMAL;
-    }
-
-    public User(int uid, String userName, String userEmail, String userPassword, long createdAt, long lastLogin,
-                short totalLogin, Date userBirthday, UserSex userSex, boolean userShowBirthday, boolean userShowLike,
-                boolean userShowComment, boolean userIsMerchant, UserState userState) {
+    public User(Integer uid, String userName, String userEmail, String userPassword, Timestamp createdAt, Timestamp lastLogin, Integer totalLogin, Date userBirthday, UserSex userSex, Boolean userShowBirthday, Boolean userShowDynamic, Boolean isMerchant, UserState userState) {
         this.uid = uid;
         this.userName = userName;
         this.userEmail = userEmail;
@@ -87,18 +37,20 @@ public class User {
         this.userBirthday = userBirthday;
         this.userSex = userSex;
         this.userShowBirthday = userShowBirthday;
-        this.userShowLike = userShowLike;
-        this.userShowComment = userShowComment;
-        this.userIsMerchant = userIsMerchant;
+        this.userShowDynamic = userShowDynamic;
+        this.isMerchant = isMerchant;
         this.userState = userState;
     }
 
-    public int getUid() {
-        return uid;
+    public User(Integer uid, String userName, String userEmail, String userPassword) {
+        this.uid = uid;
+        this.userName = userName;
+        this.userEmail = userEmail;
+        this.userPassword = userPassword;
     }
 
-    public void setUid(int uid) {
-        this.uid = uid;
+    public Integer getUid() {
+        return uid;
     }
 
     public String getUserName() {
@@ -125,27 +77,27 @@ public class User {
         this.userPassword = userPassword;
     }
 
-    public long getCreatedAt() {
+    public Timestamp getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(long createdAt) {
+    public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
 
-    public long getLastLogin() {
+    public Timestamp getLastLogin() {
         return lastLogin;
     }
 
-    public void setLastLogin(long lastLogin) {
+    public void setLastLogin(Timestamp lastLogin) {
         this.lastLogin = lastLogin;
     }
 
-    public short getTotalLogin() {
+    public Integer getTotalLogin() {
         return totalLogin;
     }
 
-    public void setTotalLogin(short totalLogin) {
+    public void setTotalLogin(Integer totalLogin) {
         this.totalLogin = totalLogin;
     }
 
@@ -165,36 +117,28 @@ public class User {
         this.userSex = userSex;
     }
 
-    public boolean isUserShowBirthday() {
+    public Boolean getUserShowBirthday() {
         return userShowBirthday;
     }
 
-    public void setUserShowBirthday(boolean userShowBirthday) {
+    public void setUserShowBirthday(Boolean userShowBirthday) {
         this.userShowBirthday = userShowBirthday;
     }
 
-    public boolean isUserShowLike() {
-        return userShowLike;
+    public Boolean getUserShowDynamic() {
+        return userShowDynamic;
     }
 
-    public void setUserShowLike(boolean userShowLike) {
-        this.userShowLike = userShowLike;
+    public void setUserShowDynamic(Boolean userShowDynamic) {
+        this.userShowDynamic = userShowDynamic;
     }
 
-    public boolean isUserShowComment() {
-        return userShowComment;
+    public Boolean getMerchant() {
+        return isMerchant;
     }
 
-    public void setUserShowComment(boolean userShowComment) {
-        this.userShowComment = userShowComment;
-    }
-
-    public boolean isUserIsMerchant() {
-        return userIsMerchant;
-    }
-
-    public void setUserIsMerchant(boolean userIsMerchant) {
-        this.userIsMerchant = userIsMerchant;
+    public void setMerchant(Boolean merchant) {
+        isMerchant = merchant;
     }
 
     public UserState getUserState() {
@@ -205,4 +149,22 @@ public class User {
         this.userState = userState;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "uid=" + uid +
+                ", userName='" + userName + '\'' +
+                ", userEmail='" + userEmail + '\'' +
+                ", userPassword='" + userPassword + '\'' +
+                ", createdAt=" + createdAt +
+                ", lastLogin=" + lastLogin +
+                ", totalLogin=" + totalLogin +
+                ", userBirthday=" + userBirthday +
+                ", userSex=" + userSex +
+                ", userShowBirthday=" + userShowBirthday +
+                ", userShowDynamic=" + userShowDynamic +
+                ", isMerchant=" + isMerchant +
+                ", userState=" + userState +
+                '}';
+    }
 }
