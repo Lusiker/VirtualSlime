@@ -1,44 +1,37 @@
 package com.virtualSlime.Entity;
 
 public class Category {
-    private short cid;//item_category.cid unsigned smallint
-    private short cidUpper;//item_category.belongs_to unsigned smallint
-    private String catName;//item_category.name varchar(20)
-    private String catBrief;//item_category.brief varchar(50)
+    private Byte cid;//
+    private Byte cidUpper;//
+    private String catName;//<= 20
+    private String catBrief;//<= 50
 
-    public Category() {
-        this.cid = 0;
-        this.cidUpper = 0;
-        this.catName = "null";
-        this.catBrief = "null";
-    }
-
-    public Category(short cidUpper, String catName, String catBrief) {
+    public Category(Byte cidUpper, String catName, String catBrief) {
         this.cidUpper = cidUpper;
         this.catName = catName;
         this.catBrief = catBrief;
     }
 
-    public Category(short cid, short cidUpper, String catName, String catBrief) {
+    public Category(Byte cid, Byte cidUpper, String catName, String catBrief) {
         this.cid = cid;
         this.cidUpper = cidUpper;
         this.catName = catName;
         this.catBrief = catBrief;
     }
 
-    public short getCid() {
+    public Byte getCid() {
         return cid;
     }
 
-    public void setCid(short cid) {
+    public void setCid(Byte cid) {
         this.cid = cid;
     }
 
-    public short getCidUpper() {
+    public Byte getCidUpper() {
         return cidUpper;
     }
 
-    public void setCidUpper(short cidUpper) {
+    public void setCidUpper(Byte cidUpper) {
         this.cidUpper = cidUpper;
     }
 
@@ -56,5 +49,15 @@ public class Category {
 
     public void setCatBrief(String catBrief) {
         this.catBrief = catBrief;
+    }
+
+    @Override
+    public String toString() {
+        return "Category{" +
+                "cid=" + cid +
+                ", cidUpper=" + cidUpper +
+                ", catName='" + catName + '\'' +
+                ", catBrief='" + catBrief + '\'' +
+                '}';
     }
 }

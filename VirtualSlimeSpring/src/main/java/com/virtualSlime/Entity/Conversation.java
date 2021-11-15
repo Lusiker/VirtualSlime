@@ -1,50 +1,54 @@
 package com.virtualSlime.Entity;
 
 public class Conversation {
-    private int cid;//user_conversation.cid unsigned int
-    private int uid1;//user_conversation.uid1 unsigned int
-    private int uid2;//user_conversation.uid2 unsigned int
-    private long lastUpdated;//user_conversation.last_updated timestamp
+    private Integer cid;
+    private Integer uid1;
+    private Integer uid2;
+    private Long lastUpdated;
 
-    public Conversation(int uid1, int uid2) {
+    public Conversation(Integer uid1, Integer uid2) {
         this.uid1 = uid1;
         this.uid2 = uid2;
-        this.lastUpdated = 0;
+        this.lastUpdated = 0L;
     }
 
-    public Conversation(int cid, int uid1, int uid2,
-                        long lastUpdated) {
+    public Conversation(Integer cid, Integer uid1, Integer uid2,
+                        Long lastUpdated) {
         this.cid = cid;
         this.uid1 = uid1;
         this.uid2 = uid2;
         this.lastUpdated = lastUpdated;
     }
 
-    public int getCid() {
+    public Integer getCid() {
         return cid;
     }
 
-    public int getUid1() {
+    public void setCid(Integer cid) {
+        this.cid = cid;
+    }
+
+    public Integer getUid1() {
         return uid1;
     }
 
-    public void setUid1(int uid1) {
+    public void setUid1(Integer uid1) {
         this.uid1 = uid1;
     }
 
-    public int getUid2() {
+    public Integer getUid2() {
         return uid2;
     }
 
-    public void setUid2(int uid2) {
+    public void setUid2(Integer uid2) {
         this.uid2 = uid2;
     }
 
-    public long getLastUpdated() {
+    public Long getLastUpdated() {
         return lastUpdated;
     }
 
-    public void setLastUpdated(long lastUpdated) {
+    public void setLastUpdated(Long lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
 
