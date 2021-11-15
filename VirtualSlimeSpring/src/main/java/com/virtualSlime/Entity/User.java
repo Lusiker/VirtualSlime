@@ -23,10 +23,13 @@ public class User {
     private UserSex userSex;
     private Boolean userShowBirthday;
     private Boolean userShowDynamic;
-    private Boolean isMerchant;
+    private Boolean userIsMerchant;
     private UserState userState;
 
-    public User(Integer uid, String userName, String userEmail, String userPassword, Timestamp createdAt, Timestamp lastLogin, Integer totalLogin, Date userBirthday, UserSex userSex, Boolean userShowBirthday, Boolean userShowDynamic, Boolean isMerchant, UserState userState) {
+    public User(Integer uid, String userName, String userEmail, String userPassword,
+                Timestamp createdAt, Timestamp lastLogin, Integer totalLogin,
+                Date userBirthday, UserSex userSex, Boolean userShowBirthday,
+                Boolean userShowDynamic, Boolean userIsMerchant, UserState userState) {
         this.uid = uid;
         this.userName = userName;
         this.userEmail = userEmail;
@@ -38,7 +41,7 @@ public class User {
         this.userSex = userSex;
         this.userShowBirthday = userShowBirthday;
         this.userShowDynamic = userShowDynamic;
-        this.isMerchant = isMerchant;
+        this.userIsMerchant = userIsMerchant;
         this.userState = userState;
     }
 
@@ -134,11 +137,11 @@ public class User {
     }
 
     public Boolean getMerchant() {
-        return isMerchant;
+        return userIsMerchant;
     }
 
     public void setMerchant(Boolean merchant) {
-        isMerchant = merchant;
+        userIsMerchant = merchant;
     }
 
     public UserState getUserState() {
@@ -163,7 +166,7 @@ public class User {
                 ", userSex=" + userSex +
                 ", userShowBirthday=" + userShowBirthday +
                 ", userShowDynamic=" + userShowDynamic +
-                ", isMerchant=" + isMerchant +
+                ", isMerchant=" + userIsMerchant +
                 ", userState=" + userState +
                 '}';
     }

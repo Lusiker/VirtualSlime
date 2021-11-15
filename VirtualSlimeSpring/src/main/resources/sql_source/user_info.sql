@@ -9,8 +9,8 @@ create table user_info(
     total_login int unsigned default null,
     user_birthday date default null,
     user_sex tinyint unsigned default 0,
-    show_birthday boolean default true,
-    show_dynamic boolean default true,
-    is_merchant boolean default false,
+    user_show_birthday boolean default true,
+    user_show_dynamic boolean default true,
+    user_is_merchant boolean default false,
     user_state tinyint unsigned default 0
 );
