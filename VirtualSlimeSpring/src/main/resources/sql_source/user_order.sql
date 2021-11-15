@@ -5,6 +5,6 @@ create table user_order(
     iid int unsigned,
     created_at timestamp,
     paid_time timestamp,
-    pay_exact_price decimal(12,2),
-    state tinyint unsigned default 0
+    paid_price decimal(12,2),
+    order_state tinyint unsigned default 0
 );

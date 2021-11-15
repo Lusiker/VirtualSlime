@@ -1,95 +1,80 @@
 package com.virtualSlime.Entity;
 
+import com.virtualSlime.Enum.OrderState;
+
 import java.util.Date;
 
-enum OrderState{
-    UNDEFINED, CREATED, FINISHED, CLOSED
-}
-
 public class Order {
-    private int oid;//user_order.oid unsigned int
-    private int uid;//user_order.uid unsigned int
-    private int iid;//user_order.iid unsigned int
-    private long createAt;//user_order_created_at timestamp
-    private long paidAt;//user_order.paid_time timestamp
-    private double paidPrice;//user_order.pay_exact_time decimal(12,2):parse needed!
+    private Integer oid;//user_order.oid unsigned int
+    private Integer uid;//user_order.uid unsigned int
+    private Integer iid;//user_order.iid unsigned int
+    private Long createdAt;//user_order_created_at timestamp
+    private Long paidAt;//user_order.paid_time timestamp
+    private Double paidPrice;//decimal(12,2):parse needed!
     private OrderState orderState;//user_order.state unsigned tinyint
 
-    public Order() {
-        this.oid = 0;
-        this.uid = 0;
-        this.iid = 0;
-        this.createAt = new Date().getTime();
-        this.paidAt = 0;
-        this.paidPrice = 0.0;
-        this.orderState = OrderState.UNDEFINED;
-    }
-
-    public Order(int uid, int iid, long createAt) {
+    public Order(Integer uid, Integer iid, Long createAt) {
         this.uid = uid;
         this.iid = iid;
-        this.createAt = createAt;
-        this.paidAt = 0;
-        this.paidPrice = 0.0;
-        this.orderState = OrderState.CREATED;
+        this.createdAt = createAt;
     }
 
-    public Order(int oid, int uid, int iid, long createAt, long paidAt,
-                 double paidPrice, OrderState orderState) {
+    public Order(Integer oid, Integer uid, Integer iid, Long createdAt,
+                 Long paidAt, Double paidPrice, OrderState orderState) {
         this.oid = oid;
         this.uid = uid;
         this.iid = iid;
-        this.createAt = createAt;
+        this.createdAt = createdAt;
         this.paidAt = paidAt;
         this.paidPrice = paidPrice;
         this.orderState = orderState;
     }
 
-    public int getOid() {
+    public Integer getOid() {
         return oid;
     }
 
-    public void setOid(int oid) {
+    public void setOid(Integer oid) {
         this.oid = oid;
     }
 
-    public int getUid() {
+    public Integer getUid() {
         return uid;
     }
 
-    public void setUid(int uid) {
+    public void setUid(Integer uid) {
         this.uid = uid;
     }
 
-    public int getIid() {
+    public Integer getIid() {
         return iid;
     }
 
-    public void setIid(int iid) {
+    public void setIid(Integer iid) {
         this.iid = iid;
     }
 
-    public long getCreateAt() {
-        return createAt;
+    public Long getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreateAt(long createAt) {
-        this.createAt = createAt;
+    public void setCreatedAt(Long createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public long getPaidAt() {
+    public Long getPaidAt() {
         return paidAt;
     }
 
-    public void setPaidAt(long paidAt) {
+    public void setPaidAt(Long paidAt) {
         this.paidAt = paidAt;
     }
 
-    public double getPaidPrice() {
+    public Double getPaidPrice() {
         return paidPrice;
     }
 
-    public void setPaidPrice(double paidPrice) {
+    public void setPaidPrice(Double paidPrice) {
         this.paidPrice = paidPrice;
     }
 
@@ -99,5 +84,18 @@ public class Order {
 
     public void setOrderState(OrderState orderState) {
         this.orderState = orderState;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "oid=" + oid +
+                ", uid=" + uid +
+                ", iid=" + iid +
+                ", createAt=" + createdAt +
+                ", paidAt=" + paidAt +
+                ", paidPrice=" + paidPrice +
+                ", orderState=" + orderState +
+                '}';
     }
 }
