@@ -1,49 +1,30 @@
 package com.virtualSlime.Entity;
 
-enum ItemState{
-    NORMAL, PROMOTED, HIDDEN
-}
+import com.virtualSlime.Enum.ItemState;
 
 public class Item {
-    private int iid;//item_info.iid unsigned int
-    private int uid;//item_info.uid unsigned int
-    private String itemName;//item_info.name varchar(50)
-    private String itemBrief;//item_info.brief text
-    private double itemPrice;//item_info.price decimal(12,2):parse needed
-    private boolean isDiscounting;//item_info.is_discounting boolean
-    private double itemPriceDiscounted;//item_info.price_discounted decimal(12,2):parse needed
-    private short cid;//item_info.cid unsigned smallint
-    private int visitCount;//item_info.visit_count unsigned int
-    private ItemState itemState;//item_info.state unsigned tinyint
+    private Integer iid;
+    private Integer uid;
+    private String itemName;//<= 50
+    private String itemBrief;
+    private Double itemPrice;//decimal(12,2):parse needed
+    private Boolean isDiscounting;
+    private Double itemPriceDiscounted;//decimal(12,2):parse needed
+    private Short cid;
+    private Integer visitCount;
+    private ItemState itemState;
 
-    public Item() {
-        this.iid = 0;
-        this.uid = 0;
-        this.itemName = "null";
-        this.itemBrief = "null";
-        this.itemPrice = 0;
-        this.isDiscounting = false;
-        this.itemPriceDiscounted = 0;
-        this.cid = 0;
-        this.visitCount = 0;
-        this.itemState = ItemState.NORMAL;
-    }
-
-    public Item(int uid, String itemName, String itemBrief, double itemPrice, short cid) {
+    public Item(Integer uid, String itemName, String itemBrief, Double itemPrice, Short cid) {
         this.uid = uid;
         this.itemName = itemName;
         this.itemBrief = itemBrief;
         this.itemPrice = itemPrice;
-        this.isDiscounting = false;
-        this.itemPriceDiscounted = 0;
         this.cid = cid;
-        this.visitCount = 0;
-        this.itemState = ItemState.NORMAL;
     }
 
-    public Item(int iid, int uid, String itemName, String itemBrief, double itemPrice,
-                boolean isDiscounting, double itemPriceDiscounted, short cid,
-                int visitCount, ItemState itemState) {
+    public Item(Integer iid, Integer uid, String itemName, String itemBrief,
+                Double itemPrice, Boolean isDiscounting, Double itemPriceDiscounted,
+                Short cid, Integer visitCount, ItemState itemState) {
         this.iid = iid;
         this.uid = uid;
         this.itemName = itemName;
@@ -56,19 +37,15 @@ public class Item {
         this.itemState = itemState;
     }
 
-    public int getIid() {
+    public Integer getIid() {
         return iid;
     }
 
-    public void setIid(int iid) {
-        this.iid = iid;
-    }
-
-    public int getUid() {
+    public Integer getUid() {
         return uid;
     }
 
-    public void setUid(int uid) {
+    public void setUid(Integer uid) {
         this.uid = uid;
     }
 
@@ -88,43 +65,43 @@ public class Item {
         this.itemBrief = itemBrief;
     }
 
-    public double getItemPrice() {
+    public Double getItemPrice() {
         return itemPrice;
     }
 
-    public void setItemPrice(double itemPrice) {
+    public void setItemPrice(Double itemPrice) {
         this.itemPrice = itemPrice;
     }
 
-    public boolean isDiscounting() {
+    public Boolean getDiscounting() {
         return isDiscounting;
     }
 
-    public void setDiscounting(boolean discounting) {
+    public void setDiscounting(Boolean discounting) {
         isDiscounting = discounting;
     }
 
-    public double getItemPriceDiscounted() {
+    public Double getItemPriceDiscounted() {
         return itemPriceDiscounted;
     }
 
-    public void setItemPriceDiscounted(double itemPriceDiscounted) {
+    public void setItemPriceDiscounted(Double itemPriceDiscounted) {
         this.itemPriceDiscounted = itemPriceDiscounted;
     }
 
-    public short getCid() {
+    public Short getCid() {
         return cid;
     }
 
-    public void setCid(short cid) {
+    public void setCid(Short cid) {
         this.cid = cid;
     }
 
-    public int getVisitCount() {
+    public Integer getVisitCount() {
         return visitCount;
     }
 
-    public void setVisitCount(int visitCount) {
+    public void setVisitCount(Integer visitCount) {
         this.visitCount = visitCount;
     }
 
