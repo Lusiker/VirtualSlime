@@ -42,8 +42,8 @@ public class User {
         this.userState = userState;
     }
 
-    public User(Integer uid, String userName, String userEmail, String userPassword) {
-        this.uid = uid;
+    public User(String userName, String userEmail, String userPassword) {
+        this.uid = null;
         this.userName = userName;
         this.userEmail = userEmail;
         this.userPassword = userPassword;
