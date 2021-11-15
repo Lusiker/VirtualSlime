@@ -25,6 +25,8 @@ public class User {
     private Boolean userShowDynamic;
     private Boolean userIsMerchant;
     private UserState userState;
+    private Integer userPoint;
+    private Integer userCurrency;
 
     public User(String userName, String userEmail, String userPassword) {
         this.uid = null;
@@ -33,10 +35,7 @@ public class User {
         this.userPassword = userPassword;
     }
 
-    public User(Integer uid, String userName, String userEmail, String userPassword,
-                Timestamp createdAt, Timestamp lastLogin, Integer totalLogin,
-                Date userBirthday, UserSex userSex, Boolean userShowBirthday,
-                Boolean userShowDynamic, Boolean userIsMerchant, UserState userState) {
+    public User(Integer uid, String userName, String userEmail, String userPassword, Timestamp createdAt, Timestamp lastLogin, Integer totalLogin, Date userBirthday, UserSex userSex, Boolean userShowBirthday, Boolean userShowDynamic, Boolean userIsMerchant, UserState userState, Integer userPoint, Integer userCurrency) {
         this.uid = uid;
         this.userName = userName;
         this.userEmail = userEmail;
@@ -50,6 +49,8 @@ public class User {
         this.userShowDynamic = userShowDynamic;
         this.userIsMerchant = userIsMerchant;
         this.userState = userState;
+        this.userPoint = userPoint;
+        this.userCurrency = userCurrency;
     }
 
     public Integer getUid() {
@@ -136,12 +137,12 @@ public class User {
         this.userShowDynamic = userShowDynamic;
     }
 
-    public Boolean getMerchant() {
+    public Boolean getUserIsMerchant() {
         return userIsMerchant;
     }
 
-    public void setMerchant(Boolean merchant) {
-        userIsMerchant = merchant;
+    public void setUserIsMerchant(Boolean userIsMerchant) {
+        this.userIsMerchant = userIsMerchant;
     }
 
     public UserState getUserState() {
@@ -152,22 +153,19 @@ public class User {
         this.userState = userState;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "uid=" + uid +
-                ", userName='" + userName + '\'' +
-                ", userEmail='" + userEmail + '\'' +
-                ", userPassword='" + userPassword + '\'' +
-                ", createdAt=" + createdAt +
-                ", lastLogin=" + lastLogin +
-                ", totalLogin=" + totalLogin +
-                ", userBirthday=" + userBirthday +
-                ", userSex=" + userSex +
-                ", userShowBirthday=" + userShowBirthday +
-                ", userShowDynamic=" + userShowDynamic +
-                ", isMerchant=" + userIsMerchant +
-                ", userState=" + userState +
-                '}';
+    public Integer getUserPoint() {
+        return userPoint;
+    }
+
+    public void setUserPoint(Integer userPoint) {
+        this.userPoint = userPoint;
+    }
+
+    public Integer getUserCurrency() {
+        return userCurrency;
+    }
+
+    public void setUserCurrency(Integer userCurrency) {
+        this.userCurrency = userCurrency;
     }
 }
