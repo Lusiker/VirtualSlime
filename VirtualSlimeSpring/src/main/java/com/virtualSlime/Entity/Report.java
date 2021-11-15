@@ -1,48 +1,28 @@
 package com.virtualSlime.Entity;
 
-enum ReportType{
-    UNDEFINED,ITEM, USER, COMMENT
-}
-
-enum ReportState{
-    CREATED, PROCESSING, FINISHED
-}
+import com.virtualSlime.Enum.ReportState;
+import com.virtualSlime.Enum.ReportType;
 
 public class Report {
-    private int rid;//user_report.rid unsigned int
-    private int uid;//user_report.uid unsigned int
-    private ReportType reportType;//user_report.type tinyint unsigned
-    private int idTarget;//user_report.target unsigned int
-    private String reportContent;//user_report.content varchar(50)
-    private int handledBy;//user_report.handled_by unsigned int
-    private String handleResult;//user_report.handle_result varchar(50)
-    private ReportState reportState;//user_report.state unsigned tinyint
+    private Integer rid;
+    private Integer uid;
+    private ReportType reportType;
+    private Integer idTarget;
+    private String reportContent;//<= 50
+    private Integer handledBy;
+    private String handleResult;//<= 50
+    private ReportState reportState;
 
-    public Report() {
-        this.rid = 0;
-        this.rid = 0;
-        this.uid = 0;
-        this.reportType = ReportType.UNDEFINED;
-        this.idTarget = 0;
-        this.reportContent = "null";
-        this.handledBy = 0;
-        this.handleResult = "null";
-        this.reportState = ReportState.CREATED;
-
-    }
-
-    public Report(int uid, ReportType reportType, int idTarget, String reportContent) {
+    public Report(Integer uid, ReportType reportType, Integer idTarget, String reportContent) {
         this.uid = uid;
         this.reportType = reportType;
         this.idTarget = idTarget;
         this.reportContent = reportContent;
-        this.handledBy = 0;
-        this.handleResult = "null";
-        this.reportState = ReportState.CREATED;
     }
 
-    public Report(int rid, int uid, ReportType reportType, int idTarget, String reportContent,
-                  int handledBy, String handleResult, ReportState reportState) {
+    public Report(Integer rid, Integer uid, ReportType reportType, Integer idTarget,
+                  String reportContent, Integer handledBy, String handleResult,
+                  ReportState reportState) {
         this.rid = rid;
         this.uid = uid;
         this.reportType = reportType;
@@ -53,19 +33,19 @@ public class Report {
         this.reportState = reportState;
     }
 
-    public int getRid() {
+    public Integer getRid() {
         return rid;
     }
 
-    public void setRid(int rid) {
+    public void setRid(Integer rid) {
         this.rid = rid;
     }
 
-    public int getUid() {
+    public Integer getUid() {
         return uid;
     }
 
-    public void setUid(int uid) {
+    public void setUid(Integer uid) {
         this.uid = uid;
     }
 
@@ -77,11 +57,11 @@ public class Report {
         this.reportType = reportType;
     }
 
-    public int getIdTarget() {
+    public Integer getIdTarget() {
         return idTarget;
     }
 
-    public void setIdTarget(int idTarget) {
+    public void setIdTarget(Integer idTarget) {
         this.idTarget = idTarget;
     }
 
@@ -93,11 +73,11 @@ public class Report {
         this.reportContent = reportContent;
     }
 
-    public int getHandledBy() {
+    public Integer getHandledBy() {
         return handledBy;
     }
 
-    public void setHandledBy(int handledBy) {
+    public void setHandledBy(Integer handledBy) {
         this.handledBy = handledBy;
     }
 
@@ -115,5 +95,19 @@ public class Report {
 
     public void setReportState(ReportState reportState) {
         this.reportState = reportState;
+    }
+
+    @Override
+    public String toString() {
+        return "Report{" +
+                "rid=" + rid +
+                ", uid=" + uid +
+                ", reportType=" + reportType +
+                ", idTarget=" + idTarget +
+                ", reportContent='" + reportContent + '\'' +
+                ", handledBy=" + handledBy +
+                ", handleResult='" + handleResult + '\'' +
+                ", reportState=" + reportState +
+                '}';
     }
 }
