@@ -3,15 +3,16 @@ package com.virtualSlime.Entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.virtualSlime.Enum.AdminState;
 
 @TableName(schema = "virtual_slime", value = "admin")
 public class Admin {
     @TableId(type = IdType.AUTO)
     private final Integer aid;
     private String adminName;
-    private Byte adminState;
+    private AdminState adminState;
 
-    public Admin(String adminName, Byte adminState) {
+    public Admin(String adminName, AdminState adminState) {
         this.aid = null;
         this.adminName = adminName;
         this.adminState = adminState;
@@ -29,11 +30,11 @@ public class Admin {
         this.adminName = adminName;
     }
 
-    public Byte getAdminState() {
+    public AdminState getAdminState() {
         return adminState;
     }
 
-    public void setAdminState(Byte adminState) {
+    public void setAdminState(AdminState adminState) {
         this.adminState = adminState;
     }
 }

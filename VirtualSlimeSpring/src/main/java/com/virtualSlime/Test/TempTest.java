@@ -1,6 +1,7 @@
 package com.virtualSlime.Test;
 
 import com.virtualSlime.Entity.Admin;
+import com.virtualSlime.Enum.AdminState;
 import com.virtualSlime.Mapper.AdminMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,6 @@ public class TempTest {
 
     @Test
     public void printOut(){
-        adminMapper.insert(new Admin("xuYi", (byte) 1));
+        adminMapper.insert(new Admin("ruHua", AdminState.BANNED));
     }
 }
