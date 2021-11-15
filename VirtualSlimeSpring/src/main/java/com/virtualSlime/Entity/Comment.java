@@ -1,51 +1,33 @@
 package com.virtualSlime.Entity;
 
-import java.util.Date;
-
-enum CommentType{
-    UNDEFINED, RATING, REPLY
-}
-
-enum CommentState{
-    NORMAL, RESTRICTED, HIDDEN
-}
+import com.virtualSlime.Enum.CommentState;
+import com.virtualSlime.Enum.CommentType;
 
 public class Comment {
-    private int cid;//user_comment.cid unsigned int
-    private int uid;//user_comment.uid unsigned int
-    private int iid;//user_comment.iid unsigned int
-    private long createdAt;//user_comment.created_at timestamp
-    private int uidReply;//user_comment.reply_uid unsigned int
-    private CommentType commentType;//user_comment.type unsigned tinyint
-    private String commentContent;//user_comment.content varchar(200)
-    private short commentRating;//user_comment.rate unsigned tinyint
-    private CommentState commentState;//user_comment.state unsigned tinyint
+    private Integer cid;
+    private Integer uid;
+    private Integer iid;
+    private Long createdAt;
+    private Integer uidReply;
+    private CommentType commentType;
+    private String commentContent;
+    private Byte commentRating;
+    private CommentState commentState;
 
-    public Comment() {
-        this.cid = 0;
-        this.uid = 0;
-        this.iid = 0;
-        this.createdAt = new Date().getTime();
-        this.uidReply = 0;
-        this.commentType = CommentType.UNDEFINED;
-        this.commentContent = "null";
-        this.commentRating = 0;
-        this.commentState = CommentState.NORMAL;
-    }
-
-    public Comment(int uid, int iid, long createdAt, int uidReply, CommentType commentType,
-                   String commentContent, short commentRating) {
+    public Comment(Integer uid, Integer iid, Integer uidReply, CommentType commentType,
+                   String commentContent, Byte commentRating) {
         this.uid = uid;
         this.iid = iid;
-        this.createdAt = createdAt;
         this.uidReply = uidReply;
         this.commentType = commentType;
         this.commentContent = commentContent;
         this.commentRating = commentRating;
+        this.commentState = CommentState.NORMAL;
     }
 
-    public Comment(int cid, int uid, int iid, long createdAt, int uidReply, CommentType commentType,
-                   String commentContent, short commentRating, CommentState commentState) {
+    public Comment(Integer cid, Integer uid, Integer iid, Long createdAt,
+                   Integer uidReply, CommentType commentType, String commentContent,
+                   Byte commentRating, CommentState commentState) {
         this.cid = cid;
         this.uid = uid;
         this.iid = iid;
@@ -57,43 +39,39 @@ public class Comment {
         this.commentState = commentState;
     }
 
-    public int getCid() {
+    public Integer getCid() {
         return cid;
     }
 
-    public void setCid(int cid) {
-        this.cid = cid;
-    }
-
-    public int getUid() {
+    public Integer getUid() {
         return uid;
     }
 
-    public void setUid(int uid) {
+    public void setUid(Integer uid) {
         this.uid = uid;
     }
 
-    public int getIid() {
+    public Integer getIid() {
         return iid;
     }
 
-    public void setIid(int iid) {
+    public void setIid(Integer iid) {
         this.iid = iid;
     }
 
-    public long getCreatedAt() {
+    public Long getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(long createdAt) {
+    public void setCreatedAt(Long createdAt) {
         this.createdAt = createdAt;
     }
 
-    public int getUidReply() {
+    public Integer getUidReply() {
         return uidReply;
     }
 
-    public void setUidReply(int uidReply) {
+    public void setUidReply(Integer uidReply) {
         this.uidReply = uidReply;
     }
 
@@ -113,11 +91,11 @@ public class Comment {
         this.commentContent = commentContent;
     }
 
-    public short getCommentRating() {
+    public Byte getCommentRating() {
         return commentRating;
     }
 
-    public void setCommentRating(short commentRating) {
+    public void setCommentRating(Byte commentRating) {
         this.commentRating = commentRating;
     }
 
@@ -127,5 +105,20 @@ public class Comment {
 
     public void setCommentState(CommentState commentState) {
         this.commentState = commentState;
+    }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "cid=" + cid +
+                ", uid=" + uid +
+                ", iid=" + iid +
+                ", createdAt=" + createdAt +
+                ", uidReply=" + uidReply +
+                ", commentType=" + commentType +
+                ", commentContent='" + commentContent + '\'' +
+                ", commentRating=" + commentRating +
+                ", commentState=" + commentState +
+                '}';
     }
 }
