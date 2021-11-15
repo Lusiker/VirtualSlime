@@ -12,5 +12,7 @@ create table user_info(
     user_show_birthday boolean default true,
     user_show_dynamic boolean default true,
     user_is_merchant boolean default false,
-    user_state tinyint unsigned default 0
+    user_state tinyint unsigned default 0,
+    user_point int unsigned default 0,
+    user_currency int unsigned default 0
 );
