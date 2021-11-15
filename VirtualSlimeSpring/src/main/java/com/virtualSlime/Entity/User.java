@@ -13,8 +13,8 @@ import com.virtualSlime.Enum.UserState;
 public class User {
     @TableId(type = IdType.AUTO)
     private final Integer uid;
-    private String userName;
-    private String userEmail;
+    private String userName;//<= 20
+    private String userEmail;//<= 50
     private String userPassword;
     private Timestamp createdAt;
     private Timestamp lastLogin;
