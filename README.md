@@ -12,6 +12,7 @@
 |vue|3.0|
 |springboot|2.5.6|
 |mybatis plus|3.4.3.4|
+|Junit|5.8.1|
 
 ## 待办事项
 1. ~~写pojo~~
