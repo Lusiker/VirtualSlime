@@ -16,8 +16,9 @@ public class CrudTest {
     public void userTest(){
         User u = new User("1","2","3");
         userMapper.insert(u);
-        System.out.println(userMapper.selectById(u.getUid()));
-        userMapper.selectList(new QueryWrapper<User>().eq("user_name", 222)).forEach(System.out::println);
+//        System.out.println(userMapper.selectById(u.getUid()));
+//        userMapper.selectList(new QueryWrapper<User>().eq("user_name", 222)).forEach(System.out::println);
+        System.out.println(userMapper.selectById(2));;
     }
 
 
