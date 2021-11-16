@@ -1,5 +1,6 @@
 package com.virtualSlime.Test;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.virtualSlime.Entity.User;
 import com.virtualSlime.Mapper.UserMapper;
 import org.junit.jupiter.api.Test;
@@ -17,8 +18,7 @@ public class CrudTest {
         userMapper.insert(u);
         System.out.println(userMapper.selectById(u.getUid()));
         u.setUserName("222");
-        userMapper.updateById(u);
-        System.out.println(userMapper.selectById(u.getUid()));
+        userMapper.selectList(new QueryWrapper<User>().eq("user_name", 222)).forEach(System.out::println);
     }
 
 
