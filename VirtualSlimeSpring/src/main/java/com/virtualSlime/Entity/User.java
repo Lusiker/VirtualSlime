@@ -28,11 +28,12 @@ public class User {
     private Boolean userIsMerchant;
     private UserState userState;
     private Integer userPoint;
-    private Integer userCurrency;
+    private Double userCurrency;
 
     public User(String userName, String userEmail, String userPassword) {
         this.userName = userName;
         this.userEmail = userEmail;
         this.userPassword = userPassword;
+        this.userState = UserState.RESTRICTED;
     }
 }

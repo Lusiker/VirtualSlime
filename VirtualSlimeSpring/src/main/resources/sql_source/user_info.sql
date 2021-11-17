@@ -14,5 +14,5 @@ create table user_info(
     user_is_merchant boolean default false,
     user_state tinyint default 0,
     user_point int default 0,
-    user_currency int default 0
+    user_currency decimal(12,2) default 0
 );
