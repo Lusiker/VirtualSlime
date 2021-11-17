@@ -8,11 +8,13 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.virtualSlime.Enum.UserSex;
 import com.virtualSlime.Enum.UserState;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
-@Getter @Setter @ToString
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName(schema = "virtual_slime", value = "user_info")
 public class User {
     @TableId(type = IdType.AUTO)
@@ -29,6 +31,7 @@ public class User {
     private Boolean userShowBirthday;
     private Boolean userShowDynamic;
     private Boolean userIsMerchant;
+    private Boolean userHasActivated;
     private UserState userState;
     private Integer userPoint;
     private Double userCurrency;
