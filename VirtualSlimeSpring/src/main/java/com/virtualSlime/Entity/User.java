@@ -19,6 +19,7 @@ public class User {
     private Integer uid;
     private String userName;//<= 20
     private String userEmail;//<= 50
+    private String userIntroduction;//<= 255
     private String userPassword;
     private Timestamp createdAt;
     private Timestamp lastLogin;
@@ -35,6 +36,7 @@ public class User {
     public User(String userName, String userEmail, String userPassword) {
         this.userName = userName;
         this.userEmail = userEmail;
+        this.userIntroduction = "undefined";
         this.userPassword = userPassword;
         this.userState = UserState.RESTRICTED;
     }
