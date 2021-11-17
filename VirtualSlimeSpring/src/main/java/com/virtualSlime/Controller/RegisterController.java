@@ -6,10 +6,12 @@ import com.virtualSlime.Entity.User;
 import com.virtualSlime.Enum.RegisterState;
 import com.virtualSlime.Mapper.UserMapper;
 import com.virtualSlime.Service.PasswordSimplicityChecker;
+import com.virtualSlime.Utils.NumberProcessing;
 import com.virtualSlime.Utils.StringEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +24,7 @@ public class RegisterController {
 
     /**
      * Read all users into a list, check their email one by one to find if duplicate exists
-     * @param email
+     * @param email - given email string
      * @return - a boolean value of whether the given email has been registered into the database
      */
     private boolean checkEmailDuplicate(String email){
@@ -46,7 +48,8 @@ public class RegisterController {
      */
     @RequestMapping(value = "/register")
     public String userRegister(@RequestParam(value = "userEmail",defaultValue = "")String newUserEmail,
-                               @RequestParam(value = "userPassword",defaultValue = "")String newUserPassword) throws JsonProcessingException {
+                               @RequestParam(value = "userPassword",defaultValue = "")String newUserPassword,
+                               HttpSession session) throws JsonProcessingException {
         if(newUserEmail.length() != 0 && newUserPassword.length() != 0) {
             if(!PasswordSimplicityChecker.checkPasswordSimplicity(newUserPassword)){
                 //password too simple
@@ -61,17 +64,15 @@ public class RegisterController {
             }
 
             //now is used for salting the password and generating user's initial username
-            long now = new Date().getTime();
-            String userNameTemp = Long.toString(now);
+            Date now = new Date();
+            String userNameTemp = Long.toString(now.getTime());
             int charSum = 0;
             for(char c : newUserEmail.toCharArray()){
                 charSum += c;
             }
             userNameTemp += Integer.toString(charSum);
             int len = userNameTemp.length();
-            if(len >= 10){
-                userNameTemp = userNameTemp.substring(len / 2 - 3, len);
-            }
+            userNameTemp = userNameTemp.substring(len / 2 - 3, len);
             // user's initial username is generated from the time the account is created
             // and the given email address
             String newUserName = "user_" + userNameTemp;
