@@ -92,6 +92,5 @@ public class RegisterController {
             //any empty parameter will cause input_error
             return objectMapper.writeValueAsString(RegisterState.INPUT_ERROR);
         }
-
     }
 }
