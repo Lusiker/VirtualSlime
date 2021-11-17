@@ -1,5 +1,6 @@
 package com.virtualSlime.Entity;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 
@@ -34,7 +35,7 @@ public class User {
     private Boolean userHasActivated;
     private UserState userState;
     private Integer userPoint;
-    private Double userCurrency;
+    private BigDecimal userCurrency;
 
     public User(String userName, String userEmail, String userPassword) {
         this.userName = userName;
