@@ -10,18 +10,6 @@ public class PasswordSimplicityChecker {
             '|','~'
     };
 
-    private static boolean isLowerLetter(char c){
-        return c >= 'a' && c <= 'z';
-    }
-
-    private static boolean isUpperLetter(char c){
-        return c >= 'A' && c <= 'Z';
-    }
-
-    private static boolean isNumber(char c){
-        return c >= '0' && c <= '9';
-    }
-
     private static boolean isAscChar(char c){
         for(char c0 : ascChar){
             if(c == c0){
@@ -49,15 +37,15 @@ public class PasswordSimplicityChecker {
         }
 
         for(char c : password.toCharArray()){
-            if(isLowerLetter(c)){
+            if(Character.isLowerCase(c)){
                 if(checkerArray[0] == 0){
                     checkerArray[0]++;
                 }
-            }else if(isUpperLetter(c)){
+            }else if(Character.isUpperCase(c)){
                 if(checkerArray[1] == 0){
                     checkerArray[1]++;
                 }
-            }else if(isNumber(c)){
+            }else if(Character.isDigit(c)){
                 if(checkerArray[2] == 0){
                     checkerArray[2]++;
                 }
