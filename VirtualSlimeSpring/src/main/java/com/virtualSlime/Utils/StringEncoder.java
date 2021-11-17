@@ -9,7 +9,7 @@ public class StringEncoder {
      * @param userPassword, passed in from register module
      * @return encoded user password
      */
-    public static String userPasswordEncode(String userPassword, long timestamp){
+    public static String userPasswordEncode(String userPassword){
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(10);
         return bCryptPasswordEncoder.encode(userPassword);
     }

@@ -77,7 +77,7 @@ public class RegisterController {
             String newUserName = "user_" + userNameTemp;
 
             // user password is encoded here
-            String encodedUserPassword = StringEncoder.userPasswordEncode(newUserPassword,now);
+            String encodedUserPassword = StringEncoder.userPasswordEncode(newUserPassword);
 
             //insert new user into the database
             User registeringUser = new User(newUserName, newUserEmail, encodedUserPassword);
