@@ -28,7 +28,7 @@ public enum LoginState implements ControllerStateEnum{
 
     public void refreshValue(){
         if(this.stateCode == 0){
-            this.value = "register_success_";
+            this.value = "login_success_";
         }else if(this.stateCode == 2){
             this.value = "email_duplicate_";
         }

@@ -22,8 +22,8 @@ public class LoginController {
     private UserMapper userMapper;
 
     @RequestMapping("/user/login")
-    public String login(@RequestParam(value = "email",defaultValue = "")String userEmail,
-                            @RequestParam(value = "password",defaultValue = "")String userPassword,
+    public String login(@RequestParam(value = "userEmail",defaultValue = "")String userEmail,
+                            @RequestParam(value = "userPassword",defaultValue = "")String userPassword,
                             HttpSession session) throws JsonProcessingException {
         if(userEmail.length() != 0 && userPassword.length() != 0){
             QueryWrapper<User> wrapper = new QueryWrapper<User>().eq("user_email",userEmail);
