@@ -1,7 +1,5 @@
 package com.virtualSlime.Service;
 
-import java.util.Arrays;
-
 public class PasswordSimplicityChecker {
     private static final char[] ascChar = {
             '!','"','#','$','%','&','\'','(',')',
@@ -32,10 +30,6 @@ public class PasswordSimplicityChecker {
         }
 
         int[] checkerArray = new int[4];
-        for(int i = 0;i < 4;i++){
-            checkerArray[i] = 0;
-        }
-
         for(char c : password.toCharArray()){
             if(Character.isLowerCase(c)){
                 if(checkerArray[0] == 0){
