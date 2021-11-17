@@ -1,2 +1,4 @@
 
 VirtualSlimeSpring/src/main/resources/application.yml
+*.yml
+VirtualSlimeSpring/src/main/resources/application.yml
