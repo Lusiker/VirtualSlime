@@ -9,11 +9,10 @@ public enum RegisterState implements ControllerStateEnum{
     SUCCESSFUL(0,"register_success_"),
     INPUT_ERROR(-1,"input_error"),
     PASSWORD_TOO_SIMPLE(1,"password_too_simple"),
-    EMAIL_DUPLICATE(2,"email_duplicate_");
+    EMAIL_DUPLICATE(2,"email_duplicate_"),
+    ACCESS_DENIED(3,"access_denied");
 
-    @JsonProperty("stateCode")
     private final Integer stateCode;
-    @JsonProperty("value")
     private String value;
 
     RegisterState(Integer stateCode,String value) {
