@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virtualSlime.Entity.User;
 import com.virtualSlime.Enum.RegisterState;
+import com.virtualSlime.Service.PasswordSimplicityChecker;
 import com.virtualSlime.Utils.StringEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,11 +26,18 @@ public class RegisterController {
         return false;
     }
 
+    /**
+     *
+     * @param newUserEmail - default value ""
+     * @param newUserPassword - this password SHOULD NOT be too long - default value ""
+     * @return - a state enum json including an int type code and a brief introduction
+     * @throws JsonProcessingException - under no circumstance will this exception be thrown (I guess...)
+     */
     @RequestMapping(value = "/register")
     public String userRegister(@RequestParam(value = "userEmail",defaultValue = "")String newUserEmail,
                                @RequestParam(value = "userPassword",defaultValue = "")String newUserPassword) throws JsonProcessingException {
         if(newUserEmail.length() != 0 && newUserPassword.length() != 0) {
-            if(!checkPasswordSimplicity(newUserPassword)){
+            if(!PasswordSimplicityChecker.checkPasswordSimplicity(newUserPassword)){
                 return objectMapper.writeValueAsString(RegisterState.PASSWORD_TOO_SIMPLE);
             }
 
@@ -43,7 +51,7 @@ public class RegisterController {
             userNameTemp += Integer.toString(charSum);
             int len = userNameTemp.length();
             if(len >= 10){
-                userNameTemp = userNameTemp.substring(len / 2, len);
+                userNameTemp = userNameTemp.substring(len / 2 - 3, len);
             }
             // user's initial username is generated from the time the account is created
             // and the given email address
