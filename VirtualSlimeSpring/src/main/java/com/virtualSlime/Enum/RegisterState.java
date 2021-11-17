@@ -9,7 +9,7 @@ public enum RegisterState implements ControllerStateEnum{
     SUCCESSFUL(0,"register_success_"),
     INPUT_ERROR(-1,"input_error"),
     PASSWORD_TOO_SIMPLE(1,"password_too_simple"),
-    ;
+    EMAIL_DUPLICATE(2,"email_duplicate_");
 
     @JsonProperty("stateCode")
     private final Integer stateCode;
@@ -36,6 +36,8 @@ public enum RegisterState implements ControllerStateEnum{
     public void refreshValue(){
         if(this.stateCode == 0){
             this.value = "register_success_";
+        }else if(this.stateCode == 2){
+            this.value = "email_duplicate_";
         }
     }
 }
