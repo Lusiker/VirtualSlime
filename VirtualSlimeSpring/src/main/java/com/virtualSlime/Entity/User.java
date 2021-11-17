@@ -8,9 +8,11 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.virtualSlime.Enum.UserSex;
 import com.virtualSlime.Enum.UserState;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@Getter @Setter @ToString
 @TableName(schema = "virtual_slime", value = "user_info")
 public class User {
     @TableId(type = IdType.AUTO)
