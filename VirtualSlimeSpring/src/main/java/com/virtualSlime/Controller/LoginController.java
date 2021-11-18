@@ -5,21 +5,27 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virtualSlime.Entity.User;
 import com.virtualSlime.Enum.LoginState;
+import com.virtualSlime.Enum.LogoutState;
+import com.virtualSlime.Enum.RegisterState;
 import com.virtualSlime.Mapper.UserMapper;
+import com.virtualSlime.Service.UserRepository;
+import com.virtualSlime.Utils.ControllerResultWrapper;
 import com.virtualSlime.Utils.StringEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
+import java.util.Date;
 
 @RestController
 public class LoginController {
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
-    private UserMapper userMapper;
+    private UserRepository userRepository;
 
     @RequestMapping("/user/login")
     public String login(@RequestParam(value = "userEmail",defaultValue = "")String userEmail,
@@ -28,23 +34,19 @@ public class LoginController {
         //If the user has logged in, return state HAS_LOGIN
         User currentUser = (User) session.getAttribute("loginUser");
         if(currentUser != null){
-            LoginState.HAS_LOGIN.refreshValue();
-            LoginState.HAS_LOGIN.resetInfo();
-            LoginState.HAS_LOGIN.addInfo(currentUser.getUserName());
-            LoginState.HAS_LOGIN.setInfo(currentUser);
-
-            return objectMapper.writeValueAsString(LoginState.HAS_LOGIN);
+            ControllerResultWrapper wrapper = new ControllerResultWrapper(LoginState.HAS_LOGIN,null);
+            return objectMapper.writeValueAsString(wrapper);
         }
 
         if(userEmail.length() != 0 && userPassword.length() != 0){
             //find the user by the given email address
-            QueryWrapper<User> wrapper = new QueryWrapper<User>().eq("user_email",userEmail);
-            User user = userMapper.selectOne(wrapper);
+            User user = userRepository.selectUserByEmail(userEmail);
 
             //if mapper returns null, return WRONG_INFO
             //which means the user does not exist
             if(user == null){
-                return objectMapper.writeValueAsString(LoginState.WRONG_INFO);
+                ControllerResultWrapper wrapper = new ControllerResultWrapper(LoginState.WRONG_INFO,null);
+                return objectMapper.writeValueAsString(wrapper);
             }
 
             //match the given password with the saved encoded password
@@ -52,30 +54,61 @@ public class LoginController {
                 //if matching is successful, add the user into session
                 session.setAttribute("loginUser",user);
 
-                LoginState.SUCCESSFUL.refreshValue();
-                LoginState.SUCCESSFUL.resetInfo();
-
-                LoginState.SUCCESSFUL.setInfo(user);
-                LoginState.SUCCESSFUL.addInfo(user.getUserName());
+                //update user's lastLogin and totalLogin in the database
+                Date now = new Date();
+                if(!userRepository.updateUserLogin(user,now)){
+                    //if the update process fails, return INTERNAL_ERROR
+                    ControllerResultWrapper wrapper = new ControllerResultWrapper(LoginState.INTERNAL_ERROR,null);
+                    return objectMapper.writeValueAsString(wrapper);
+                }
 
                 //return SUCCESSFUL json↓
                 //{
-                //  "state" : int,
-                //  "value" : String,
-                //  "info"  : {
-                //              "userA" : ...,
-                //              ...     : ...,
-                //              "userN" : ...
-                //             }
+                //  "stateEnum" : {
+                //      "state" : 0,
+                //      "value" : "login_success"
+                //  },
+                //  "returnValue" : {
+                //      "uid" : ...,
+                //      ... : ...,
+                //      "userCurrency" : ...
+                //  }
                 //}
-                return objectMapper.writeValueAsString(LoginState.SUCCESSFUL);
+                ControllerResultWrapper wrapper = new ControllerResultWrapper(LoginState.SUCCESSFUL,user);
+                return objectMapper.writeValueAsString(wrapper);
             }else{
                 //password wrong, return WRONG_INFO
-                return objectMapper.writeValueAsString(LoginState.WRONG_INFO);
+                ControllerResultWrapper wrapper = new ControllerResultWrapper(LoginState.WRONG_INFO,null);
+                return objectMapper.writeValueAsString(wrapper);
             }
         }else{
             //any empty input will cause INPUT_ERROR
-            return objectMapper.writeValueAsString(LoginState.INPUT_ERROR);
+            ControllerResultWrapper wrapper = new ControllerResultWrapper(LoginState.INPUT_ERROR,null);
+            return objectMapper.writeValueAsString(wrapper);
         }
+    }
+
+    @RequestMapping("/user/{id}/logout")
+    public String logout(@PathVariable(value = "id")int uid,
+                         HttpSession session) throws JsonProcessingException {
+        //if the user has not logged in, return ACCESS_DENIED
+        User currentUser = (User)session.getAttribute("loginUser");
+        if(currentUser == null){
+            ControllerResultWrapper wrapper = new ControllerResultWrapper(LogoutState.ACCESS_DENIED,null);
+            return objectMapper.writeValueAsString(wrapper);
+        }
+
+        //if current user's id does not match the given uid, return ACCESS_DENIED
+        if(currentUser.getUid() != uid){
+            ControllerResultWrapper wrapper = new ControllerResultWrapper(LogoutState.ACCESS_DENIED,null);
+            return objectMapper.writeValueAsString(wrapper);
+        }
+
+        //remove the login user from session
+        session.removeAttribute("loginUser");
+
+        //return SUCCESSFUL
+        ControllerResultWrapper wrapper = new ControllerResultWrapper(LogoutState.SUCCESSFUL,currentUser.getUserName());
+        return objectMapper.writeValueAsString(wrapper);
     }
 }

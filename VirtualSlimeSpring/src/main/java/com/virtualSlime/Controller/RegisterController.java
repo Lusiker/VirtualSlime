@@ -6,7 +6,7 @@ import com.virtualSlime.Entity.User;
 import com.virtualSlime.Enum.RegisterState;
 import com.virtualSlime.Mapper.UserMapper;
 import com.virtualSlime.Service.PasswordSimplicityChecker;
-import com.virtualSlime.Utils.NumberProcessing;
+import com.virtualSlime.Utils.ControllerResultWrapper;
 import com.virtualSlime.Utils.StringEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -53,14 +53,13 @@ public class RegisterController {
         if(newUserEmail.length() != 0 && newUserPassword.length() != 0) {
             if(!PasswordSimplicityChecker.checkPasswordSimplicity(newUserPassword)){
                 //password too simple
-                return objectMapper.writeValueAsString(RegisterState.PASSWORD_TOO_SIMPLE);
+                ControllerResultWrapper wrapper = new ControllerResultWrapper(RegisterState.PASSWORD_TOO_SIMPLE,null);
+                return objectMapper.writeValueAsString(wrapper);
             }
             if(checkEmailDuplicate(newUserEmail)){
                 //duplicate email address detected
-                RegisterState.EMAIL_DUPLICATE.refreshValue();
-                RegisterState.EMAIL_DUPLICATE.addInfo(newUserEmail);
-
-                return objectMapper.writeValueAsString(RegisterState.EMAIL_DUPLICATE);
+                ControllerResultWrapper wrapper = new ControllerResultWrapper(RegisterState.EMAIL_DUPLICATE,null);
+                return objectMapper.writeValueAsString(wrapper);
             }
 
             //now is used for salting the password and generating user's initial username
@@ -82,12 +81,14 @@ public class RegisterController {
 
             //insert new user into the database
             User registeringUser = new User(newUserName, newUserEmail, encodedUserPassword);
-            userMapper.insert(registeringUser);
-
-            RegisterState.SUCCESSFUL.refreshValue();
-            RegisterState.SUCCESSFUL.addInfo(newUserName);
-
-            return objectMapper.writeValueAsString(RegisterState.SUCCESSFUL);
+            //return value success or failure
+            if(userMapper.insert(registeringUser) == 1){
+                ControllerResultWrapper wrapper = new ControllerResultWrapper(RegisterState.SUCCESSFUL,null);
+                return objectMapper.writeValueAsString(wrapper);
+            }else {
+                ControllerResultWrapper wrapper = new ControllerResultWrapper(RegisterState.INTERNAL_ERROR,null);
+                return objectMapper.writeValueAsString(wrapper);
+            }
         }else{
             //any empty parameter will cause input_error
             return objectMapper.writeValueAsString(RegisterState.INPUT_ERROR);
