@@ -8,18 +8,18 @@ import com.virtualSlime.Mapper.UserMapper;
 import com.virtualSlime.Service.PasswordSimplicityChecker;
 import com.virtualSlime.Utils.ControllerResultWrapper;
 import com.virtualSlime.Utils.StringEncoder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.List;
 
 @RestController
 public class RegisterController {
-    @Autowired
+    @Resource
     private ObjectMapper objectMapper;
-    @Autowired
+    @Resource
     private UserMapper userMapper;
 
     /**
