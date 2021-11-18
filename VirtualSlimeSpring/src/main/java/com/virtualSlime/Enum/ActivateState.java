@@ -1,20 +1,16 @@
 package com.virtualSlime.Enum;
 
-/**
- * LoginState manage states of login
- */
-public enum LoginState implements ControllerStateEnum{
-    SUCCESSFUL(0,"login_success"),
-    INPUT_ERROR(-1,"input_error"),
+public enum ActivateState implements ControllerStateEnum{
+    SUCCESSFUL(0,"activate_start"),
+    NOT_LOGIN(-1,"not_login"),
     WRONG_INFO(1,"wrong_info"),
-    HAS_LOGIN(2,"has_login_"),
-    INTERNAL_ERROR(3,"internal_error"),
-    ACCESS_DENIED(4,"access_denied");
+    TIME_OUT(2,"time_out"),
+    ACCESS_DENIED(3,"access_denied");
 
     private final Integer stateCode;
     private final String value;
 
-    LoginState(Integer stateCode,String value) {
+    ActivateState(Integer stateCode,String value) {
         this.stateCode = stateCode;
         this.value = value;
     }
