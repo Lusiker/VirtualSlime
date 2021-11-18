@@ -36,7 +36,6 @@ public class User {
     public User(String userName, String userEmail, String userPassword) {
         this.userName = userName;
         this.userEmail = userEmail;
-        this.userIntroduction = "undefined";
         this.userPassword = userPassword;
         this.userState = UserState.RESTRICTED;
     }
