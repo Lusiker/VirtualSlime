@@ -1,9 +1,5 @@
 package com.virtualSlime.Enum;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public enum RegisterState implements ControllerStateEnum{
     //states for register controller
     SUCCESSFUL(0,"register_success_"),
@@ -20,12 +16,19 @@ public enum RegisterState implements ControllerStateEnum{
         this.value = value;
     }
 
+    @Override
     public int getStateCode(){
         return this.stateCode;
     }
 
+    @Override
     public String getValue() {
         return this.value;
+    }
+
+    @Override
+    public Object getInfo() {
+        return null;
     }
 
     public void addInfo(String info){

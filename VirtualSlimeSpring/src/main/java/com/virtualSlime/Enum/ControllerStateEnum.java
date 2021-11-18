@@ -5,5 +5,6 @@ package com.virtualSlime.Enum;
 public interface ControllerStateEnum {
     int getStateCode();
     String getValue();
+    Object getInfo();
     void addInfo(String info);
 }

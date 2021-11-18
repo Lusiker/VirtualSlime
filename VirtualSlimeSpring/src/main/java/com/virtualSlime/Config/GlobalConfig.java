@@ -21,6 +21,7 @@ public class GlobalConfig {
                 generator.writeStartObject();
                 generator.writeNumberField("state",stateEnum.getStateCode());
                 generator.writeStringField("value",stateEnum.getValue());
+                generator.writeObjectField("info",stateEnum.getInfo());
                 generator.writeEndObject();
             }
         });
