@@ -16,3 +16,7 @@
 ###Implemented the serializer for controller enums
 ###Introduced Lombok to the project and made changed to entities accordingly
 ###Added the incomplete register controller
+***
+##11-19
+###Enabled project's async functionality
+###Added Activation api
