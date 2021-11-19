@@ -87,15 +87,15 @@ public class RegisterController {
             User registeringUser = new User(newUserName, newUserEmail, encodedUserPassword);
             //return value success or failure
             if(userMapper.insert(registeringUser) == 1){
-                Result wrapper = new Result(RegisterState.SUCCESSFUL,null);
-                return objectMapper.writeValueAsString(wrapper);
+                Result result = new Result(RegisterState.SUCCESSFUL,null);
+                return result.asJson();
             }else {
-                Result wrapper = new Result(RegisterState.INTERNAL_ERROR,null);
-                return objectMapper.writeValueAsString(wrapper);
+                Result result = new Result(RegisterState.INTERNAL_ERROR,null);
+                return result.asJson();
             }
         }else{
             //any empty parameter will cause input_error
-            return objectMapper.writeValueAsString(RegisterState.INPUT_ERROR);
+            return new Result(RegisterState.INPUT_ERROR, null).asJson();
         }
     }
 }

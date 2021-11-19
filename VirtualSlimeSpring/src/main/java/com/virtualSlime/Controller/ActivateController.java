@@ -68,7 +68,7 @@ public class ActivateController {
     public String activate(@PathVariable(value = "uid")int uid,
                            HttpSession session) throws JsonProcessingException {
         User loginUser = (User) session.getAttribute("loginUser");
-        String invalidResult = checkInvalidAccess(loginUser,uid,session);
+        String invalidResult = checkInvalidAccess(loginUser,uid);
         if(invalidResult != null){
             return invalidResult;
         }
@@ -95,7 +95,7 @@ public class ActivateController {
                             @PathVariable(value = "checkCode")String checkCode,
                             HttpSession session) throws JsonProcessingException {
         User loginUser = (User) session.getAttribute("loginUser");
-        String invalidResult = checkInvalidAccess(loginUser,uid,session);
+        String invalidResult = checkInvalidAccess(loginUser,uid);
         if(invalidResult != null){
             return invalidResult;
         }
