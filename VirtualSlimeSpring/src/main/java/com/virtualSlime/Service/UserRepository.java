@@ -17,6 +17,10 @@ public class UserRepository {
     @Resource
     UserMapper userMapper;
 
+    public boolean insertUser(User user){
+        return userMapper.insert(user) == 1;
+    }
+
     public User selectUserByEmail(String userEmail){
         //select a user by given email
         QueryWrapper<User> wrapper = new QueryWrapper<User>().eq("user_email", userEmail);

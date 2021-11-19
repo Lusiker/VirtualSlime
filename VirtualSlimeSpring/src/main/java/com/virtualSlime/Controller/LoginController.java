@@ -1,27 +1,24 @@
 package com.virtualSlime.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virtualSlime.Entity.User;
 import com.virtualSlime.Enum.LoginState;
 import com.virtualSlime.Enum.LogoutState;
 import com.virtualSlime.Service.UserRepository;
 import com.virtualSlime.Utils.Result;
 import com.virtualSlime.Utils.StringEncoder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
 
 @RestController
 public class LoginController {
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
+    @Resource
     private UserRepository userRepository;
 
     @RequestMapping("/user/login")
@@ -31,8 +28,7 @@ public class LoginController {
         //If the user has logged in, return state HAS_LOGIN
         User currentUser = (User) session.getAttribute("loginUser");
         if(currentUser != null){
-            Result wrapper = new Result(LoginState.HAS_LOGIN,null);
-            return objectMapper.writeValueAsString(wrapper);
+            return new Result(LoginState.HAS_LOGIN,null).asJson();
         }
 
         if(userEmail.length() != 0 && userPassword.length() != 0){
@@ -42,8 +38,7 @@ public class LoginController {
             //if mapper returns null, return WRONG_INFO
             //which means the user does not exist
             if(user == null){
-                Result wrapper = new Result(LoginState.WRONG_INFO,null);
-                return objectMapper.writeValueAsString(wrapper);
+                return new Result(LoginState.WRONG_INFO,null).asJson();
             }
 
             //match the given password with the saved encoded password
@@ -55,8 +50,7 @@ public class LoginController {
                 Date now = new Date();
                 if(!userRepository.updateUserLogin(user,now)){
                     //if the update process fails, return INTERNAL_ERROR
-                    Result wrapper = new Result(LoginState.INTERNAL_ERROR,null);
-                    return objectMapper.writeValueAsString(wrapper);
+                    return new Result(LoginState.INTERNAL_ERROR,null).asJson();
                 }
 
                 //return SUCCESSFUL json↓
@@ -71,17 +65,14 @@ public class LoginController {
                 //      "userCurrency" : ...
                 //  }
                 //}
-                Result wrapper = new Result(LoginState.SUCCESSFUL,user);
-                return objectMapper.writeValueAsString(wrapper);
+                return new Result(LoginState.SUCCESSFUL,user).asJson();
             }else{
                 //password wrong, return WRONG_INFO
-                Result wrapper = new Result(LoginState.WRONG_INFO,null);
-                return objectMapper.writeValueAsString(wrapper);
+                return new Result(LoginState.WRONG_INFO,null).asJson();
             }
         }else{
             //any empty input will cause INPUT_ERROR
-            Result wrapper = new Result(LoginState.INPUT_ERROR,null);
-            return objectMapper.writeValueAsString(wrapper);
+            return new Result(LoginState.INPUT_ERROR,null).asJson();
         }
     }
 
@@ -91,21 +82,18 @@ public class LoginController {
         //if the user has not logged in, return ACCESS_DENIED
         User currentUser = (User)session.getAttribute("loginUser");
         if(currentUser == null){
-            Result wrapper = new Result(LogoutState.ACCESS_DENIED,null);
-            return objectMapper.writeValueAsString(wrapper);
+            return new Result(LogoutState.ACCESS_DENIED,null).asJson();
         }
 
         //if current user's id does not match the given uid, return ACCESS_DENIED
         if(currentUser.getUid() != uid){
-            Result wrapper = new Result(LogoutState.ACCESS_DENIED,null);
-            return objectMapper.writeValueAsString(wrapper);
+            return new Result(LogoutState.ACCESS_DENIED,null).asJson();
         }
 
         //remove the login user from session
         session.removeAttribute("loginUser");
 
         //return SUCCESSFUL
-        Result wrapper = new Result(LogoutState.SUCCESSFUL,currentUser.getUserName());
-        return objectMapper.writeValueAsString(wrapper);
+        return new Result(LogoutState.SUCCESSFUL,currentUser.getUserName()).asJson();
     }
 }

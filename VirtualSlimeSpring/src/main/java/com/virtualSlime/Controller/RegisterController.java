@@ -5,6 +5,7 @@ import com.virtualSlime.Entity.User;
 import com.virtualSlime.Enum.RegisterState;
 import com.virtualSlime.Mapper.UserMapper;
 import com.virtualSlime.Service.PasswordSimplicityChecker;
+import com.virtualSlime.Service.UserRepository;
 import com.virtualSlime.Utils.Result;
 import com.virtualSlime.Utils.StringEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ import java.util.List;
 @RestController
 public class RegisterController {
     @Resource
-    private UserMapper userMapper;
+    private UserRepository userRepository;
 
     /**
      * Read all users into a list, check their email one by one to find if duplicate exists
@@ -25,15 +26,9 @@ public class RegisterController {
      * @return - a boolean value of whether the given email has been registered into the database
      */
     private boolean checkEmailDuplicate(String email){
-        List<User> list = userMapper.selectList(null);
+        User user = userRepository.selectUserByEmail(email);
 
-        for(User user : list){
-            if(user.getUserEmail().equals(email)){
-                return true;
-            }
-        }
-
-        return false;
+        return user == null;
     }
 
     /**
@@ -50,20 +45,17 @@ public class RegisterController {
         User currentUser = (User)session.getAttribute("loginUser");
         if(currentUser != null){
             //if the user has logged in, return ACCESS_DENIED
-            Result result = new Result(RegisterState.ACCESS_DENIED,null);
-            return result.asJson();
+            return new Result(RegisterState.ACCESS_DENIED,null).asJson();
         }
 
         if(newUserEmail.length() != 0 && newUserPassword.length() != 0) {
             if(!PasswordSimplicityChecker.checkPasswordSimplicity(newUserPassword)){
                 //password too simple
-                Result result = new Result(RegisterState.PASSWORD_TOO_SIMPLE,null);
-                return result.asJson();
+                return new Result(RegisterState.PASSWORD_TOO_SIMPLE,null).asJson();
             }
             if(checkEmailDuplicate(newUserEmail)){
                 //duplicate email address detected
-                Result result = new Result(RegisterState.EMAIL_DUPLICATE,null);
-                return result.asJson();
+                return  new Result(RegisterState.EMAIL_DUPLICATE,null).asJson();
             }
 
             //now is used for salting the password and generating user's initial username
@@ -86,12 +78,10 @@ public class RegisterController {
             //insert new user into the database
             User registeringUser = new User(newUserName, newUserEmail, encodedUserPassword);
             //return value success or failure
-            if(userMapper.insert(registeringUser) == 1){
-                Result result = new Result(RegisterState.SUCCESSFUL,null);
-                return result.asJson();
+            if(userRepository.insertUser(registeringUser)){
+                return new Result(RegisterState.SUCCESSFUL,null).asJson();
             }else {
-                Result result = new Result(RegisterState.INTERNAL_ERROR,null);
-                return result.asJson();
+                return new Result(RegisterState.INTERNAL_ERROR,null).asJson();
             }
         }else{
             //any empty parameter will cause input_error
