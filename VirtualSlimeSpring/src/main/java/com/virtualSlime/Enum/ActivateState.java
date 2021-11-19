@@ -10,7 +10,7 @@ public enum ActivateState implements ControllerStateEnum{
     HAS_ACTIVATED(4,"has_activated"),
     RESEND_SUCCESS(5,"resend_success"),
     REQUEST_TOO_FREQUENT(6,"request_too_frequent"),
-    ACCESS_DENIED(8,"access_denied");
+    ACCESS_DENIED(7,"access_denied");
 
     private final Integer stateCode;
     private final String value;
