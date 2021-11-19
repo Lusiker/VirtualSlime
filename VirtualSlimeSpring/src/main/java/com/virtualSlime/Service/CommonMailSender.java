@@ -1,8 +1,6 @@
 package com.virtualSlime.Service;
 
-import com.virtualSlime.Entity.User;
 import com.virtualSlime.Utils.UserVerificationWrapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.SimpleMailMessage;
@@ -10,12 +8,14 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+
 @Service
 @PropertySource("classpath:application.yml")
 public class CommonMailSender {
     @Value("${spring.mail.username}")
     private String from;
-    @Autowired
+    @Resource
     JavaMailSenderImpl javaMailSender;
 
     @Async

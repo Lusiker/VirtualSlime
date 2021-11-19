@@ -8,18 +8,19 @@ import com.virtualSlime.Mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.util.Date;
 
 @Service
 public class UserRepository {
-    @Autowired
+    @Resource
     UserMapper userMapper;
 
     public User selectUserByEmail(String userEmail){
         //select a user by given email
-        QueryWrapper<User> wrapper = new QueryWrapper<User>().eq("user_email",userEmail);
-        return  userMapper.selectOne(wrapper);
+        QueryWrapper<User> wrapper = new QueryWrapper<User>().eq("user_email", userEmail);
+        return userMapper.selectOne(wrapper);
     }
 
     public boolean updateUserLogin(User user, Date now){

@@ -1,12 +1,11 @@
 package com.virtualSlime.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virtualSlime.Entity.User;
 import com.virtualSlime.Enum.RegisterState;
 import com.virtualSlime.Mapper.UserMapper;
 import com.virtualSlime.Service.PasswordSimplicityChecker;
-import com.virtualSlime.Utils.ControllerResultWrapper;
+import com.virtualSlime.Utils.Result;
 import com.virtualSlime.Utils.StringEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,8 +16,6 @@ import java.util.List;
 
 @RestController
 public class RegisterController {
-    @Resource
-    private ObjectMapper objectMapper;
     @Resource
     private UserMapper userMapper;
 
@@ -53,20 +50,20 @@ public class RegisterController {
         User currentUser = (User)session.getAttribute("loginUser");
         if(currentUser != null){
             //if the user has logged in, return ACCESS_DENIED
-            ControllerResultWrapper wrapper = new ControllerResultWrapper(RegisterState.ACCESS_DENIED,null);
-            return objectMapper.writeValueAsString(wrapper);
+            Result result = new Result(RegisterState.ACCESS_DENIED,null);
+            return result.asJson();
         }
 
         if(newUserEmail.length() != 0 && newUserPassword.length() != 0) {
             if(!PasswordSimplicityChecker.checkPasswordSimplicity(newUserPassword)){
                 //password too simple
-                ControllerResultWrapper wrapper = new ControllerResultWrapper(RegisterState.PASSWORD_TOO_SIMPLE,null);
-                return objectMapper.writeValueAsString(wrapper);
+                Result result = new Result(RegisterState.PASSWORD_TOO_SIMPLE,null);
+                return result.asJson();
             }
             if(checkEmailDuplicate(newUserEmail)){
                 //duplicate email address detected
-                ControllerResultWrapper wrapper = new ControllerResultWrapper(RegisterState.EMAIL_DUPLICATE,null);
-                return objectMapper.writeValueAsString(wrapper);
+                Result result = new Result(RegisterState.EMAIL_DUPLICATE,null);
+                return result.asJson();
             }
 
             //now is used for salting the password and generating user's initial username
@@ -90,10 +87,10 @@ public class RegisterController {
             User registeringUser = new User(newUserName, newUserEmail, encodedUserPassword);
             //return value success or failure
             if(userMapper.insert(registeringUser) == 1){
-                ControllerResultWrapper wrapper = new ControllerResultWrapper(RegisterState.SUCCESSFUL,null);
+                Result wrapper = new Result(RegisterState.SUCCESSFUL,null);
                 return objectMapper.writeValueAsString(wrapper);
             }else {
-                ControllerResultWrapper wrapper = new ControllerResultWrapper(RegisterState.INTERNAL_ERROR,null);
+                Result wrapper = new Result(RegisterState.INTERNAL_ERROR,null);
                 return objectMapper.writeValueAsString(wrapper);
             }
         }else{

@@ -6,7 +6,7 @@ import com.virtualSlime.Entity.User;
 import com.virtualSlime.Enum.ActivateState;
 import com.virtualSlime.Service.CommonMailSender;
 import com.virtualSlime.Service.UserRepository;
-import com.virtualSlime.Utils.ControllerResultWrapper;
+import com.virtualSlime.Utils.Result;
 import com.virtualSlime.Utils.GlobalMailCollector;
 import com.virtualSlime.Utils.NumberProcessing;
 import com.virtualSlime.Utils.UserVerificationWrapper;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
 
@@ -27,32 +28,30 @@ import java.util.Date;
  */
 @RestController
 public class ActivateController {
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
+    @Resource
     private CommonMailSender sender;
-    @Autowired
+    @Resource
     private GlobalMailCollector collector;
-    @Autowired
+    @Resource
     private UserRepository userRepository;
 
-    private String checkInvalidAccess(User loginUser,int uid,HttpSession session) throws JsonProcessingException {
+    private String checkInvalidAccess(User loginUser,int uid) throws JsonProcessingException {
         if(loginUser == null){
             //user not logging in cannot access activate process
-            ControllerResultWrapper wrapper = new ControllerResultWrapper(ActivateState.NOT_LOGIN,null);
-            return objectMapper.writeValueAsString(wrapper);
+            Result result = new Result(ActivateState.NOT_LOGIN,null);
+            return result.asJson();
         }
 
         if(loginUser.getUid() != uid){
             //user cannot access other user's activate process
-            ControllerResultWrapper wrapper = new ControllerResultWrapper(ActivateState.ACCESS_DENIED,null);
-            return objectMapper.writeValueAsString(wrapper);
+            Result result = new Result(ActivateState.ACCESS_DENIED,null);
+            return result.asJson();
         }
 
         if(loginUser.getUserHasActivated()){
             //user that has activated cannot access activate process
-            ControllerResultWrapper wrapper = new ControllerResultWrapper(ActivateState.HAS_ACTIVATED,null);
-            return objectMapper.writeValueAsString(wrapper);
+            Result result = new Result(ActivateState.HAS_ACTIVATED,null);
+            return result.asJson();
         }
 
         return null;
@@ -87,8 +86,8 @@ public class ActivateController {
         }
 
         //return START
-        ControllerResultWrapper wrapper = new ControllerResultWrapper(ActivateState.START,null);
-        return objectMapper.writeValueAsString(wrapper);
+        Result result = new Result(ActivateState.START,null);
+        return result.asJson();
     }
 
     @RequestMapping("/user/{uid}/activate/checkCode={checkCode}")
@@ -104,19 +103,19 @@ public class ActivateController {
         int checkResult = collector.checkAvailability(uid,checkCode);
         if(checkResult == -1){
             //verification failed due to time expiration or there is no wrapper submitted before verification
-            ControllerResultWrapper wrapper = new ControllerResultWrapper(ActivateState.FAILED,null);
-            return objectMapper.writeValueAsString(wrapper);
+            Result result = new Result(ActivateState.FAILED,null);
+            return result.asJson();
         }else if(checkResult == 1){
             //wrong code provided, return WRONG_CODE
-            ControllerResultWrapper wrapper = new ControllerResultWrapper(ActivateState.WRONG_CODE,null);
-            return objectMapper.writeValueAsString(wrapper);
+            Result result = new Result(ActivateState.WRONG_CODE,null);
+            return result.asJson();
         }else{
             //checkResult == 0
             //update loginUser's info
             userRepository.updateUserHasActivatedTrue(loginUser);
             //return SUCCESSFUL with updated loginUser
-            ControllerResultWrapper wrapper = new ControllerResultWrapper(ActivateState.SUCCESSFUL,loginUser);
-            return objectMapper.writeValueAsString(wrapper);
+            Result result = new Result(ActivateState.SUCCESSFUL,loginUser);
+            return result.asJson();
         }
     }
 }

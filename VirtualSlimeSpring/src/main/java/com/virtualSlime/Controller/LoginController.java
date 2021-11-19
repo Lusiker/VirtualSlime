@@ -1,15 +1,12 @@
 package com.virtualSlime.Controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virtualSlime.Entity.User;
 import com.virtualSlime.Enum.LoginState;
 import com.virtualSlime.Enum.LogoutState;
-import com.virtualSlime.Enum.RegisterState;
-import com.virtualSlime.Mapper.UserMapper;
 import com.virtualSlime.Service.UserRepository;
-import com.virtualSlime.Utils.ControllerResultWrapper;
+import com.virtualSlime.Utils.Result;
 import com.virtualSlime.Utils.StringEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,7 +31,7 @@ public class LoginController {
         //If the user has logged in, return state HAS_LOGIN
         User currentUser = (User) session.getAttribute("loginUser");
         if(currentUser != null){
-            ControllerResultWrapper wrapper = new ControllerResultWrapper(LoginState.HAS_LOGIN,null);
+            Result wrapper = new Result(LoginState.HAS_LOGIN,null);
             return objectMapper.writeValueAsString(wrapper);
         }
 
@@ -45,7 +42,7 @@ public class LoginController {
             //if mapper returns null, return WRONG_INFO
             //which means the user does not exist
             if(user == null){
-                ControllerResultWrapper wrapper = new ControllerResultWrapper(LoginState.WRONG_INFO,null);
+                Result wrapper = new Result(LoginState.WRONG_INFO,null);
                 return objectMapper.writeValueAsString(wrapper);
             }
 
@@ -58,7 +55,7 @@ public class LoginController {
                 Date now = new Date();
                 if(!userRepository.updateUserLogin(user,now)){
                     //if the update process fails, return INTERNAL_ERROR
-                    ControllerResultWrapper wrapper = new ControllerResultWrapper(LoginState.INTERNAL_ERROR,null);
+                    Result wrapper = new Result(LoginState.INTERNAL_ERROR,null);
                     return objectMapper.writeValueAsString(wrapper);
                 }
 
@@ -74,16 +71,16 @@ public class LoginController {
                 //      "userCurrency" : ...
                 //  }
                 //}
-                ControllerResultWrapper wrapper = new ControllerResultWrapper(LoginState.SUCCESSFUL,user);
+                Result wrapper = new Result(LoginState.SUCCESSFUL,user);
                 return objectMapper.writeValueAsString(wrapper);
             }else{
                 //password wrong, return WRONG_INFO
-                ControllerResultWrapper wrapper = new ControllerResultWrapper(LoginState.WRONG_INFO,null);
+                Result wrapper = new Result(LoginState.WRONG_INFO,null);
                 return objectMapper.writeValueAsString(wrapper);
             }
         }else{
             //any empty input will cause INPUT_ERROR
-            ControllerResultWrapper wrapper = new ControllerResultWrapper(LoginState.INPUT_ERROR,null);
+            Result wrapper = new Result(LoginState.INPUT_ERROR,null);
             return objectMapper.writeValueAsString(wrapper);
         }
     }
@@ -94,13 +91,13 @@ public class LoginController {
         //if the user has not logged in, return ACCESS_DENIED
         User currentUser = (User)session.getAttribute("loginUser");
         if(currentUser == null){
-            ControllerResultWrapper wrapper = new ControllerResultWrapper(LogoutState.ACCESS_DENIED,null);
+            Result wrapper = new Result(LogoutState.ACCESS_DENIED,null);
             return objectMapper.writeValueAsString(wrapper);
         }
 
         //if current user's id does not match the given uid, return ACCESS_DENIED
         if(currentUser.getUid() != uid){
-            ControllerResultWrapper wrapper = new ControllerResultWrapper(LogoutState.ACCESS_DENIED,null);
+            Result wrapper = new Result(LogoutState.ACCESS_DENIED,null);
             return objectMapper.writeValueAsString(wrapper);
         }
 
@@ -108,7 +105,7 @@ public class LoginController {
         session.removeAttribute("loginUser");
 
         //return SUCCESSFUL
-        ControllerResultWrapper wrapper = new ControllerResultWrapper(LogoutState.SUCCESSFUL,currentUser.getUserName());
+        Result wrapper = new Result(LogoutState.SUCCESSFUL,currentUser.getUserName());
         return objectMapper.writeValueAsString(wrapper);
     }
 }
