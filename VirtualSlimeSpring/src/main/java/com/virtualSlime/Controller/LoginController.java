@@ -1,6 +1,7 @@
 package com.virtualSlime.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virtualSlime.Entity.User;
 import com.virtualSlime.Enum.LoginState;
 import com.virtualSlime.Enum.LogoutState;
@@ -20,6 +21,8 @@ import java.util.Date;
 public class LoginController {
     @Resource
     private UserRepository userRepository;
+    @Resource
+    private ObjectMapper objectMapper;
 
     @RequestMapping("/user/login")
     public String login(@RequestParam(value = "userEmail",defaultValue = "")String userEmail,
@@ -28,7 +31,7 @@ public class LoginController {
         //If the user has logged in, return state HAS_LOGIN
         User currentUser = (User) session.getAttribute("loginUser");
         if(currentUser != null){
-            return new Result(LoginState.HAS_LOGIN,null).asJson();
+            return objectMapper.writeValueAsString(new Result(LoginState.HAS_LOGIN,null));
         }
 
         if(userEmail.length() != 0 && userPassword.length() != 0){
@@ -38,7 +41,7 @@ public class LoginController {
             //if mapper returns null, return WRONG_INFO
             //which means the user does not exist
             if(user == null){
-                return new Result(LoginState.WRONG_INFO,null).asJson();
+                return objectMapper.writeValueAsString(new Result(LoginState.WRONG_INFO,null));
             }
 
             //match the given password with the saved encoded password
@@ -50,7 +53,7 @@ public class LoginController {
                 Date now = new Date();
                 if(!userRepository.updateUserLogin(user,now)){
                     //if the update process fails, return INTERNAL_ERROR
-                    return new Result(LoginState.INTERNAL_ERROR,null).asJson();
+                    return objectMapper.writeValueAsString(new Result(LoginState.INTERNAL_ERROR,null));
                 }
 
                 //return SUCCESSFUL json↓
@@ -65,14 +68,14 @@ public class LoginController {
                 //      "userCurrency" : ...
                 //  }
                 //}
-                return new Result(LoginState.SUCCESSFUL,user).asJson();
+                return objectMapper.writeValueAsString(new Result(LoginState.SUCCESSFUL,user));
             }else{
                 //password wrong, return WRONG_INFO
-                return new Result(LoginState.WRONG_INFO,null).asJson();
+                return objectMapper.writeValueAsString(new Result(LoginState.WRONG_INFO,null));
             }
         }else{
             //any empty input will cause INPUT_ERROR
-            return new Result(LoginState.INPUT_ERROR,null).asJson();
+            return objectMapper.writeValueAsString(new Result(LoginState.INPUT_ERROR,null));
         }
     }
 
@@ -82,18 +85,18 @@ public class LoginController {
         //if the user has not logged in, return ACCESS_DENIED
         User currentUser = (User)session.getAttribute("loginUser");
         if(currentUser == null){
-            return new Result(LogoutState.ACCESS_DENIED,null).asJson();
+            return objectMapper.writeValueAsString(new Result(LogoutState.ACCESS_DENIED,null));
         }
 
         //if current user's id does not match the given uid, return ACCESS_DENIED
         if(currentUser.getUid() != uid){
-            return new Result(LogoutState.ACCESS_DENIED,null).asJson();
+            return objectMapper.writeValueAsString(new Result(LogoutState.ACCESS_DENIED,null));
         }
 
         //remove the login user from session
         session.removeAttribute("loginUser");
 
         //return SUCCESSFUL
-        return new Result(LogoutState.SUCCESSFUL,currentUser.getUserName()).asJson();
+        return objectMapper.writeValueAsString(new Result(LogoutState.SUCCESSFUL,currentUser.getUserName()));
     }
 }

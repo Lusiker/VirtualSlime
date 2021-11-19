@@ -1,6 +1,7 @@
 package com.virtualSlime.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virtualSlime.Entity.User;
 import com.virtualSlime.Enum.RegisterState;
 import com.virtualSlime.Mapper.UserMapper;
@@ -13,12 +14,13 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
-import java.util.List;
 
 @RestController
 public class RegisterController {
     @Resource
     private UserRepository userRepository;
+    @Resource
+    private ObjectMapper objectMapper;
 
     /**
      * Read all users into a list, check their email one by one to find if duplicate exists
@@ -45,17 +47,17 @@ public class RegisterController {
         User currentUser = (User)session.getAttribute("loginUser");
         if(currentUser != null){
             //if the user has logged in, return ACCESS_DENIED
-            return new Result(RegisterState.ACCESS_DENIED,null).asJson();
+            return objectMapper.writeValueAsString(new Result(RegisterState.ACCESS_DENIED,null));
         }
 
         if(newUserEmail.length() != 0 && newUserPassword.length() != 0) {
             if(!PasswordSimplicityChecker.checkPasswordSimplicity(newUserPassword)){
                 //password too simple
-                return new Result(RegisterState.PASSWORD_TOO_SIMPLE,null).asJson();
+                return objectMapper.writeValueAsString(new Result(RegisterState.PASSWORD_TOO_SIMPLE,null));
             }
             if(checkEmailDuplicate(newUserEmail)){
                 //duplicate email address detected
-                return  new Result(RegisterState.EMAIL_DUPLICATE,null).asJson();
+                return objectMapper.writeValueAsString(new Result(RegisterState.EMAIL_DUPLICATE,null));
             }
 
             //now is used for salting the password and generating user's initial username
@@ -79,13 +81,13 @@ public class RegisterController {
             User registeringUser = new User(newUserName, newUserEmail, encodedUserPassword);
             //return value success or failure
             if(userRepository.insertUser(registeringUser)){
-                return new Result(RegisterState.SUCCESSFUL,null).asJson();
+                return objectMapper.writeValueAsString(new Result(RegisterState.SUCCESSFUL,null));
             } else {
-                return new Result(RegisterState.INTERNAL_ERROR,null).asJson();
+                return objectMapper.writeValueAsString(new Result(RegisterState.INTERNAL_ERROR,null));
             }
         } else {
             //any empty parameter will cause input_error
-            return new Result(RegisterState.INPUT_ERROR, null).asJson();
+            return objectMapper.writeValueAsString(new Result(RegisterState.INPUT_ERROR, null));
         }
     }
 }

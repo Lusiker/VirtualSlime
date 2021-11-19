@@ -1,6 +1,7 @@
 package com.virtualSlime.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virtualSlime.Entity.User;
 import com.virtualSlime.Enum.ActivateState;
 import com.virtualSlime.Service.CommonMailSender;
@@ -32,21 +33,23 @@ public class ActivateController {
     private GlobalMailCollector collector;
     @Resource
     private UserRepository userRepository;
+    @Resource
+    private ObjectMapper objectMapper;
 
     private String checkInvalidAccess(User loginUser,int uid) throws JsonProcessingException {
         if(loginUser == null){
             //user not logging in cannot access activate process
-            return new Result(ActivateState.NOT_LOGIN,null).asJson();
+            return objectMapper.writeValueAsString(new Result(ActivateState.NOT_LOGIN,null));
         }
 
         if(loginUser.getUid() != uid){
             //user cannot access other user's activate process
-            return new Result(ActivateState.ACCESS_DENIED,null).asJson();
+            return objectMapper.writeValueAsString(new Result(ActivateState.ACCESS_DENIED,null));
         }
 
         if(loginUser.getUserHasActivated()){
             //user that has activated cannot access activate process
-            return new Result(ActivateState.HAS_ACTIVATED,null).asJson();
+            return objectMapper.writeValueAsString(new Result(ActivateState.HAS_ACTIVATED,null));
         }
 
         return null;
@@ -81,7 +84,7 @@ public class ActivateController {
         }
 
         //return START
-        return new Result(ActivateState.START,null).asJson();
+        return objectMapper.writeValueAsString(new Result(ActivateState.START,null));
     }
 
     @RequestMapping("/user/{uid}/activate/checkCode={checkCode}")
@@ -97,16 +100,16 @@ public class ActivateController {
         int checkResult = collector.checkAvailability(uid,checkCode);
         if(checkResult == -1){
             //verification failed due to time expiration or there is no wrapper submitted before verification
-            return new Result(ActivateState.FAILED,null).asJson();
+            return objectMapper.writeValueAsString(new Result(ActivateState.FAILED,null));
         }else if(checkResult == 1){
             //wrong code provided, return WRONG_CODE
-            return new Result(ActivateState.WRONG_CODE,null).asJson();
+            return objectMapper.writeValueAsString(new Result(ActivateState.WRONG_CODE,null));
         }else{
             //checkResult == 0
             //update loginUser's info
             userRepository.updateUserHasActivatedTrue(loginUser);
             //return SUCCESSFUL with updated loginUser
-            return new Result(ActivateState.SUCCESSFUL,loginUser).asJson();
+            return objectMapper.writeValueAsString(new Result(ActivateState.SUCCESSFUL,loginUser));
         }
     }
 }
