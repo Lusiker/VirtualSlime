@@ -1,11 +1,16 @@
 package com.virtualSlime.Enum;
 
 public enum ActivateState implements ControllerStateEnum{
-    SUCCESSFUL(0,"activate_start"),
+    SUCCESSFUL(0,"activate_successful"),
     NOT_LOGIN(-1,"not_login"),
-    WRONG_INFO(1,"wrong_info"),
-    TIME_OUT(2,"time_out"),
-    ACCESS_DENIED(3,"access_denied");
+    FAILED(-2,"failed"),
+    START(1,"activate_start"),
+    WRONG_CODE(2,"wrong_info"),
+    HAS_STARTED(3,"has_started"),
+    HAS_ACTIVATED(4,"has_activated"),
+    RESEND_SUCCESS(5,"resend_success"),
+    REQUEST_TOO_FREQUENT(6,"request_too_frequent"),
+    ACCESS_DENIED(8,"access_denied");
 
     private final Integer stateCode;
     private final String value;
