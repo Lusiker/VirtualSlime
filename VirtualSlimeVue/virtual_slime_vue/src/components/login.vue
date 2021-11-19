@@ -25,7 +25,6 @@
 </template>
 
 <script>
-import request from "@/utils/request";
 export default {
   data() {
     return {
@@ -40,12 +39,8 @@ export default {
   },
   methods: {
     register() {
-      request.post("api/register", this.registerData).then(
-        res => {
-          console.log(res)
-        }
-      )
-    },
+      
+    },  
     login() {
 
     }
