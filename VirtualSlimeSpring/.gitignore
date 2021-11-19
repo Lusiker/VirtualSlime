@@ -31,6 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-### Npm ###
-/VirtualSlimeVue/virtual_slime_vue/node_modules/
