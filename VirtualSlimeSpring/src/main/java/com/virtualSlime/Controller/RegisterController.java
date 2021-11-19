@@ -28,7 +28,7 @@ public class RegisterController {
     private boolean checkEmailDuplicate(String email){
         User user = userRepository.selectUserByEmail(email);
 
-        return user == null;
+        return user != null;
     }
 
     /**
@@ -80,10 +80,10 @@ public class RegisterController {
             //return value success or failure
             if(userRepository.insertUser(registeringUser)){
                 return new Result(RegisterState.SUCCESSFUL,null).asJson();
-            }else {
+            } else {
                 return new Result(RegisterState.INTERNAL_ERROR,null).asJson();
             }
-        }else{
+        } else {
             //any empty parameter will cause input_error
             return new Result(RegisterState.INPUT_ERROR, null).asJson();
         }

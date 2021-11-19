@@ -50,7 +50,7 @@ export default {
         }],
         data: this.registerData
       }).then(res =>{
-        console.log(res);
+        console.log(res.data.stateEnum == 'PASSWORD_TOO_SIMPLE' ? '太简单了！' : '你行');
       })
       // slime({
 
