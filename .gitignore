@@ -1,5 +1,5 @@
 
 VirtualSlimeSpring/src/main/resources/application.yml
 *.yml
-VirtualSlimeVue/virtual_slime_vue/node_modules/
+VirtualSlimeVue/node_modules/
 /VirtualSlimeVue/vue.config.js
