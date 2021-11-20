@@ -31,7 +31,7 @@ public class LoginController {
         //If the user has logged in, return state HAS_LOGIN
         User currentUser = (User) session.getAttribute("loginUser");
         if(currentUser != null){
-            return objectMapper.writeValueAsString(new Result(LoginState.HAS_LOGIN,null));
+            return objectMapper.writeValueAsString(new Result(LoginState.HAS_LOGIN,currentUser.getUserName()));
         }
 
         if(userEmail.length() != 0 && userPassword.length() != 0){
