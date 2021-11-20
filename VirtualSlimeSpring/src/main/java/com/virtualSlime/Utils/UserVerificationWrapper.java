@@ -13,4 +13,5 @@ public class UserVerificationWrapper {
     private Date startedTime;
     private String code;
     private Boolean isChecking;
+    private Boolean isChecked;
 }

@@ -59,12 +59,19 @@ public class ActivateController {
         Date now = new Date();
         String code = NumberProcessing.getRandomFourDigitNumber(now.getTime());
 
-        return new UserVerificationWrapper(loginUser,now,code,false);
+        return new UserVerificationWrapper(loginUser,now,code,false,false);
     }
 
     @RequestMapping("/user/{uid}/activate")
-    public String activate(@PathVariable(value = "uid")int uid,
+    public String activate(@PathVariable(value = "uid")String newUid,
                            HttpSession session) throws JsonProcessingException {
+        int uid;
+        try{
+            uid = Integer.parseInt(newUid);
+        }catch (Exception e){
+            return objectMapper.writeValueAsString(new Result(ActivateState.FAILED,newUid));
+        }
+
         User loginUser = (User) session.getAttribute("loginUser");
         String invalidResult = checkInvalidAccess(loginUser,uid);
         if(invalidResult != null){
@@ -88,9 +95,16 @@ public class ActivateController {
     }
 
     @RequestMapping("/user/{uid}/activate/checkCode={checkCode}")
-    public String checkCode(@PathVariable(value = "uid")int uid,
+    public String checkCode(@PathVariable(value = "uid")String newUid,
                             @PathVariable(value = "checkCode")String checkCode,
                             HttpSession session) throws JsonProcessingException {
+        int uid;
+        try{
+            uid = Integer.parseInt(newUid);
+        }catch (Exception e){
+            return objectMapper.writeValueAsString(new Result(ActivateState.FAILED,newUid));
+        }
+
         User loginUser = (User) session.getAttribute("loginUser");
         String invalidResult = checkInvalidAccess(loginUser,uid);
         if(invalidResult != null){

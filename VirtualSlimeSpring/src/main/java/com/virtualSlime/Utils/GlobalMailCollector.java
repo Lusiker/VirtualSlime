@@ -13,13 +13,21 @@ public class GlobalMailCollector {
 
     private final HashMap<Integer, UserVerificationWrapper> map;
     private Boolean processing;
+    private Boolean pause;
 
     private void checkMailExpired(Date now){
-        //check all the existing wrapper, remove wrappers with expired time
+        //check all the existing wrapper, remove wrappers with expired time and
+        //wrappers that has been checked
         for(Map.Entry<Integer, UserVerificationWrapper> entry : map.entrySet()){
-            if(now.getTime() - entry.getValue().getStartedTime().getTime() >= EXPIRE_LIMIT){
-                if(!entry.getValue().getIsChecking()) {
+            if(!entry.getValue().getIsChecking()) {
+                if(entry.getValue().getIsChecked()){
                     map.remove(entry.getKey());
+                    break;
+                }
+
+                if(now.getTime() - entry.getValue().getStartedTime().getTime() >= EXPIRE_LIMIT){
+                    map.remove(entry.getKey());
+                    break;
                 }
             }
         }
@@ -28,25 +36,31 @@ public class GlobalMailCollector {
     public GlobalMailCollector(){
         this.map = new HashMap<Integer, UserVerificationWrapper>();
         this.processing = false;
+        this.pause = false;
     }
 
     public void addNewMailEntity(UserVerificationWrapper wrapper){
         //both update and insert new one
+        pause = true;
         map.put(wrapper.getUser().getUid(),wrapper);
+        pause = false;
     }
 
     public int checkAvailability(int uid, String code){
         UserVerificationWrapper wrapper = map.get(uid);
 
         if(wrapper == null){
-            //the verification failed
+            //the verification failed due to time expiration
             return -1;
         }
 
+        //lock this node to prevent being removed
         wrapper.setIsChecking(true);
+
         if(code.equals(wrapper.getCode())){
             //verification successful, remove wrapper
-            map.remove(uid);
+            wrapper.setIsChecked(true);
+            wrapper.setIsChecking(false);
 
             return 0;
         }else{
@@ -68,7 +82,9 @@ public class GlobalMailCollector {
 
         while(processing){
             Date lastUpdate = new Date();
-            checkMailExpired(lastUpdate);
+            if(!pause) {
+                checkMailExpired(lastUpdate);
+            }
 
             if(map.size() == 0){
                 break;
