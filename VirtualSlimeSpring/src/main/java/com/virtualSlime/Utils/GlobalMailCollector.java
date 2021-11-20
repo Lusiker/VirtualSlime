@@ -9,7 +9,7 @@ import java.util.Map;
 
 @Component
 public class GlobalMailCollector {
-    private final int EXPIRE_LIMIT = 300000;//5 min in ms
+    private final long EXPIRE_LIMIT = 300000;//5 min in ms
 
     private final HashMap<Integer, UserVerificationWrapper> map;
     private Boolean processing;
