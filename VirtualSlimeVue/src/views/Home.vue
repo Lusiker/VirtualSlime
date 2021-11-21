@@ -1,7 +1,6 @@
 <template>
   <div>
-    <HelloWorld msg="Welcome to VS!"/>
-    <RegisterLogin/>
+    <HelloWorld msg="这是首页"/>
   </div>
 </template>
 
