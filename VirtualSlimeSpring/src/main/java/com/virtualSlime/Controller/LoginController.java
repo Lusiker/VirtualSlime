@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virtualSlime.Entity.User;
 import com.virtualSlime.Enum.LoginState;
 import com.virtualSlime.Enum.LogoutState;
+import com.virtualSlime.Enum.UserState;
 import com.virtualSlime.Service.UserRepository;
 import com.virtualSlime.Utils.Result;
 import com.virtualSlime.Utils.StringEncoder;
@@ -24,26 +25,22 @@ public class LoginController {
     @Resource
     private ObjectMapper objectMapper;
 
-    @RequestMapping("/user/login")
-    public String login(@RequestParam(value = "userEmail",defaultValue = "")String userEmail,
-                            @RequestParam(value = "userPassword",defaultValue = "")String userPassword,
-                            HttpSession session) throws JsonProcessingException {
-        //If the user has logged in, return state HAS_LOGIN
-        User currentUser = (User) session.getAttribute("loginUser");
-        if(currentUser != null){
-            return objectMapper.writeValueAsString(new Result(LoginState.HAS_LOGIN,currentUser.getUserName()));
+    private String checkInvalidity(User user) throws JsonProcessingException {
+        //if user is null, return WRONG_INFO
+        //which means the user does not exist
+        if(user == null){
+            return objectMapper.writeValueAsString(new Result(LoginState.WRONG_INFO,null));
         }
 
-        if(userEmail.length() != 0 && userPassword.length() != 0){
-            //find the user by the given email address
-            User user = userRepository.selectUserByEmail(userEmail);
+        if(user.getUserState() == UserState.LOGOFF){
+            //return UserState.LOGOFF to logged off user
+            return objectMapper.writeValueAsString(new Result(LoginState.ACCESS_DENIED,null));
+        }
 
-            //if mapper returns null, return WRONG_INFO
-            //which means the user does not exist
-            if(user == null){
-                return objectMapper.writeValueAsString(new Result(LoginState.WRONG_INFO,null));
-            }
+        return null;
+    }
 
+    private String login(String userPassword,User user,HttpSession session) throws JsonProcessingException {
             //match the given password with the saved encoded password
             if(StringEncoder.matchPassword(userPassword,user.getUserPassword())){
                 //if matching is successful, add the user into session
@@ -73,6 +70,54 @@ public class LoginController {
                 //password wrong, return WRONG_INFO
                 return objectMapper.writeValueAsString(new Result(LoginState.WRONG_INFO,null));
             }
+    }
+
+    @RequestMapping("/user/login/email")
+    public String loginByEmail(@RequestParam(value = "userEmail",defaultValue = "")String userEmail,
+                            @RequestParam(value = "userPassword",defaultValue = "")String userPassword,
+                            HttpSession session) throws JsonProcessingException {
+        //If the user has logged in, return state HAS_LOGIN
+        User currentUser = (User) session.getAttribute("loginUser");
+        if(currentUser != null){
+            return objectMapper.writeValueAsString(new Result(LoginState.HAS_LOGIN,currentUser.getUserName()));
+        }
+
+        //find the user by the given email address
+        User user = userRepository.selectUserByEmail(userEmail);
+
+        String invalidity = checkInvalidity(user);
+        if(invalidity != null){
+            return invalidity;
+        }
+
+        if(userEmail.length() != 0 && userPassword.length() != 0){
+            return login(userPassword,user,session);
+        }else{
+            //any empty input will cause INPUT_ERROR
+            return objectMapper.writeValueAsString(new Result(LoginState.INPUT_ERROR,null));
+        }
+    }
+
+    @RequestMapping("/user/login/name")
+    public String loginByUserName(@RequestParam(value = "userName",defaultValue = "")String userName,
+                                  @RequestParam(value = "userPassword",defaultValue = "")String userPassword,
+                                  HttpSession session) throws JsonProcessingException {
+        //If the user has logged in, return state HAS_LOGIN
+        User currentUser = (User) session.getAttribute("loginUser");
+        if(currentUser != null){
+            return objectMapper.writeValueAsString(new Result(LoginState.HAS_LOGIN,currentUser.getUserName()));
+        }
+
+        //find the user by the given username
+        User user = userRepository.selectUserByUserName(userName);
+
+        String invalidity = checkInvalidity(user);
+        if(invalidity != null){
+            return invalidity;
+        }
+
+        if(userName.length() != 0 && userPassword.length() != 0){
+            return login(userPassword,user,session);
         }else{
             //any empty input will cause INPUT_ERROR
             return objectMapper.writeValueAsString(new Result(LoginState.INPUT_ERROR,null));
