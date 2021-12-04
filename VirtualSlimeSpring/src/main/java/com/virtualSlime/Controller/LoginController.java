@@ -79,7 +79,7 @@ public class LoginController {
         //If the user has logged in, return state HAS_LOGIN
         User currentUser = (User) session.getAttribute("loginUser");
         if(currentUser != null){
-            return objectMapper.writeValueAsString(new Result(LoginState.HAS_LOGIN,currentUser.getUserName()));
+            return objectMapper.writeValueAsString(new Result(LoginState.HAS_LOGIN,currentUser.getUid()));
         }
 
         //find the user by the given email address
@@ -105,7 +105,7 @@ public class LoginController {
         //If the user has logged in, return state HAS_LOGIN
         User currentUser = (User) session.getAttribute("loginUser");
         if(currentUser != null){
-            return objectMapper.writeValueAsString(new Result(LoginState.HAS_LOGIN,currentUser.getUserName()));
+            return objectMapper.writeValueAsString(new Result(LoginState.HAS_LOGIN,currentUser.getUid()));
         }
 
         //find the user by the given username
