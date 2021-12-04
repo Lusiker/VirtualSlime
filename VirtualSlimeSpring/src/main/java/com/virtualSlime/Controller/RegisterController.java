@@ -40,7 +40,7 @@ public class RegisterController {
      * @throws JsonProcessingException - under no circumstance will this exception be thrown (I guess...)
      */
     @RequestMapping(value = "/register")
-    public String userRegister(@RequestParam(value = "email",defaultValue = "")String newUserEmail,
+    public String userRegister(@RequestParam(value = "useremail",defaultValue = "")String newUserEmail,
                                @RequestParam(value = "password",defaultValue = "")String newUserPassword,
                                HttpSession session) throws JsonProcessingException {
         User currentUser = (User)session.getAttribute("loginUser");
@@ -75,7 +75,7 @@ public class RegisterController {
 
             // user password is encoded here
             String encodedUserPassword = StringEncoder.userPasswordEncode(newUserPassword);
-            
+
             //insert new user into the database
             User registeringUser = new User(newUserName, newUserEmail, encodedUserPassword);
             //return value success or failure
