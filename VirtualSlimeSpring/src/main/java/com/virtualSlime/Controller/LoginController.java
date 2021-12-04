@@ -72,9 +72,9 @@ public class LoginController {
             }
     }
 
-    @RequestMapping("/user/login/email")
-    public String loginByEmail(@RequestParam(value = "userEmail",defaultValue = "")String userEmail,
-                            @RequestParam(value = "userPassword",defaultValue = "")String userPassword,
+    @RequestMapping("/login/email")
+    public String loginByEmail(@RequestParam(value = "useremail",defaultValue = "")String userEmail,
+                            @RequestParam(value = "password",defaultValue = "")String userPassword,
                             HttpSession session) throws JsonProcessingException {
         //If the user has logged in, return state HAS_LOGIN
         User currentUser = (User) session.getAttribute("loginUser");
@@ -98,9 +98,9 @@ public class LoginController {
         }
     }
 
-    @RequestMapping("/user/login/name")
-    public String loginByUserName(@RequestParam(value = "userName",defaultValue = "")String userName,
-                                  @RequestParam(value = "userPassword",defaultValue = "")String userPassword,
+    @RequestMapping("/login/name")
+    public String loginByUserName(@RequestParam(value = "username",defaultValue = "")String userName,
+                                  @RequestParam(value = "password",defaultValue = "")String userPassword,
                                   HttpSession session) throws JsonProcessingException {
         //If the user has logged in, return state HAS_LOGIN
         User currentUser = (User) session.getAttribute("loginUser");
