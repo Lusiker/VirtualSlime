@@ -96,7 +96,7 @@ public class ProfileController {
             return objectMapper.writeValueAsString(new Result(ProfileState.ACCESS_DENIED,newUid));
         }
 
-        if(userRepository.updateUserName(loginUser,newName)){
+        if(!userRepository.updateUserName(loginUser,newName)){
             return objectMapper.writeValueAsString(new Result(ProfileState.UPDATE_FAILED,"duplicated:" + newName));
         }
 
