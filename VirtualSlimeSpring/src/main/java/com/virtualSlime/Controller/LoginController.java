@@ -65,7 +65,7 @@ public class LoginController {
                 //      "userCurrency" : ...
                 //  }
                 //}
-                return objectMapper.writeValueAsString(new Result(LoginState.SUCCESSFUL,user));
+                return objectMapper.writeValueAsString(new Result(LoginState.SUCCESSFUL,user.getUid()));
             }else{
                 //password wrong, return WRONG_INFO
                 return objectMapper.writeValueAsString(new Result(LoginState.WRONG_INFO,null));
