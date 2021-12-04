@@ -40,8 +40,8 @@ public class RegisterController {
      * @throws JsonProcessingException - under no circumstance will this exception be thrown (I guess...)
      */
     @RequestMapping(value = "/register")
-    public String userRegister(@RequestParam(value = "userEmail",defaultValue = "")String newUserEmail,
-                               @RequestParam(value = "userPassword",defaultValue = "")String newUserPassword,
+    public String userRegister(@RequestParam(value = "email",defaultValue = "")String newUserEmail,
+                               @RequestParam(value = "password",defaultValue = "")String newUserPassword,
                                HttpSession session) throws JsonProcessingException {
         User currentUser = (User)session.getAttribute("loginUser");
         if(currentUser != null){
