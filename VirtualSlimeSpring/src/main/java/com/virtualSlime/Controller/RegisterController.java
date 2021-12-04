@@ -44,10 +44,10 @@ public class RegisterController {
                                @RequestParam(value = "password",defaultValue = "")String newUserPassword,
                                HttpSession session) throws JsonProcessingException {
         User currentUser = (User)session.getAttribute("loginUser");
-        if(currentUser != null){
-            //if the user has logged in, return ACCESS_DENIED
-            return objectMapper.writeValueAsString(new Result(RegisterState.ACCESS_DENIED,null));
-        }
+//        if(currentUser != null){
+//            //if the user has logged in, return ACCESS_DENIED
+//            return objectMapper.writeValueAsString(new Result(RegisterState.ACCESS_DENIED,null));
+//        }
 
         if(newUserEmail.length() != 0 && newUserPassword.length() != 0) {
             if(!PasswordSimplicityChecker.checkPasswordSimplicity(newUserPassword)){
