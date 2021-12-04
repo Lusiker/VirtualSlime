@@ -40,15 +40,13 @@ public class LoginController {
         return null;
     }
 
-    private String login(String userPassword,User user,HttpSession session) throws JsonProcessingException {
+    private String login(String userPassword, User user) throws JsonProcessingException {
             //match the given password with the saved encoded password
-            if(StringEncoder.matchPassword(userPassword,user.getUserPassword())){
-                //if matching is successful, add the user into session
-                session.setAttribute("loginUser",user);
+            if(StringEncoder.matchPassword(userPassword, user.getUserPassword())){
 
                 //update user's lastLogin and totalLogin in the database
                 Date now = new Date();
-                if(!userRepository.updateUserLogin(user,now)){
+                if(!userRepository.updateUserLogin(user, now)){
                     //if the update process fails, return INTERNAL_ERROR
                     return objectMapper.writeValueAsString(new Result(LoginState.INTERNAL_ERROR,null));
                 }
@@ -74,13 +72,8 @@ public class LoginController {
 
     @RequestMapping("/login/email")
     public String loginByEmail(@RequestParam(value = "useremail",defaultValue = "")String userEmail,
-                            @RequestParam(value = "password",defaultValue = "")String userPassword,
-                            HttpSession session) throws JsonProcessingException {
-        //If the user has logged in, return state HAS_LOGIN
-        User currentUser = (User) session.getAttribute("loginUser");
-        if(currentUser != null){
-            return objectMapper.writeValueAsString(new Result(LoginState.HAS_LOGIN,currentUser.getUid()));
-        }
+                            @RequestParam(value = "password",defaultValue = "")String userPassword
+                            ) throws JsonProcessingException {
 
         //find the user by the given email address
         User user = userRepository.selectUserByEmail(userEmail);
@@ -91,7 +84,7 @@ public class LoginController {
         }
 
         if(userEmail.length() != 0 && userPassword.length() != 0){
-            return login(userPassword,user,session);
+            return login(userPassword, user);
         }else{
             //any empty input will cause INPUT_ERROR
             return objectMapper.writeValueAsString(new Result(LoginState.INPUT_ERROR,null));
@@ -100,14 +93,8 @@ public class LoginController {
 
     @RequestMapping("/login/name")
     public String loginByUserName(@RequestParam(value = "username",defaultValue = "")String userName,
-                                  @RequestParam(value = "password",defaultValue = "")String userPassword,
-                                  HttpSession session) throws JsonProcessingException {
-        //If the user has logged in, return state HAS_LOGIN
-        User currentUser = (User) session.getAttribute("loginUser");
-        if(currentUser != null){
-            return objectMapper.writeValueAsString(new Result(LoginState.HAS_LOGIN,currentUser.getUid()));
-        }
-
+                                  @RequestParam(value = "password",defaultValue = "")String userPassword
+                                  ) throws JsonProcessingException {
         //find the user by the given username
         User user = userRepository.selectUserByUserName(userName);
 
@@ -117,31 +104,10 @@ public class LoginController {
         }
 
         if(userName.length() != 0 && userPassword.length() != 0){
-            return login(userPassword,user,session);
+            return login(userPassword, user);
         }else{
             //any empty input will cause INPUT_ERROR
             return objectMapper.writeValueAsString(new Result(LoginState.INPUT_ERROR,null));
         }
-    }
-
-    @RequestMapping("/user/{id}/logout")
-    public String logout(@PathVariable(value = "id")int uid,
-                         HttpSession session) throws JsonProcessingException {
-        //if the user has not logged in, return ACCESS_DENIED
-        User currentUser = (User)session.getAttribute("loginUser");
-        if(currentUser == null){
-            return objectMapper.writeValueAsString(new Result(LogoutState.ACCESS_DENIED,null));
-        }
-
-        //if current user's id does not match the given uid, return ACCESS_DENIED
-        if(currentUser.getUid() != uid){
-            return objectMapper.writeValueAsString(new Result(LogoutState.ACCESS_DENIED,null));
-        }
-
-        //remove the login user from session
-        session.removeAttribute("loginUser");
-
-        //return SUCCESSFUL
-        return objectMapper.writeValueAsString(new Result(LogoutState.SUCCESSFUL,currentUser.getUserName()));
     }
 }
