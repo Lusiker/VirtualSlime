@@ -106,6 +106,10 @@ public class ProfileController {
             return objectMapper.writeValueAsString(new Result(ProfileState.FAILED,"Wrong info:" + newUid));
         }
 
+        if(newName.length() == 0){
+            return objectMapper.writeValueAsString(new Result(ProfileState.FAILED,"Wrong input"));
+        }
+
         User user = userRepository.selectUserByUid(uid);
         if(user == null){
             return objectMapper.writeValueAsString(new Result(ProfileState.INTERNAL_ERROR,null));
