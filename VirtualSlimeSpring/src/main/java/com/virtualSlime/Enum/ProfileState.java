@@ -1,6 +1,7 @@
 package com.virtualSlime.Enum;
 
 public enum ProfileState implements ControllerStateEnum{
+    INTERNAL_ERROR(-2,"internal_error"),
     FAILED(-1,"failed"),
     ACCESS_DENIED(-1,"access_denied"),
     AS_MASTER(0,"as_master"),
