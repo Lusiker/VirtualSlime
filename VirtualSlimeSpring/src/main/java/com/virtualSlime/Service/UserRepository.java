@@ -2,12 +2,13 @@ package com.virtualSlime.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.virtualSlime.Entity.Coupon;
 import com.virtualSlime.Entity.User;
+import com.virtualSlime.Entity.UserCoupon;
 import com.virtualSlime.Enum.UserSex;
 import com.virtualSlime.Enum.UserState;
-import com.virtualSlime.Mapper.IntegerMapper;
+import com.virtualSlime.Mapper.UserCouponMapper;
 import com.virtualSlime.Mapper.UserMapper;
-import com.virtualSlime.Utils.IntegerWrapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -20,7 +21,7 @@ public class UserRepository {
     @Resource
     UserMapper userMapper;
     @Resource
-    IntegerMapper integerMapper;
+    UserCouponMapper userCouponMapper;
 
     //basic insert
     public boolean insertUser(User user){
@@ -55,16 +56,15 @@ public class UserRepository {
     }
 
     public int selectUserCouponCount(int uid){
-        QueryWrapper<IntegerWrapper> wrapper = new QueryWrapper<IntegerWrapper>().inSql("count",
-                "select count from virtual_slime.r_user_have_coupon where uid = " + uid);
+        QueryWrapper<UserCoupon> wrapper = new QueryWrapper<UserCoupon>().eq("uid",uid);
 
-        List<IntegerWrapper> list = integerMapper.selectList(wrapper);
+        Long newCount = userCouponMapper.selectCount(wrapper);
         int couponCount = 0;
-        for(IntegerWrapper i : list){
-            couponCount += i.getValue();
+        if(newCount == null){
+            return couponCount;
+        }else{
+            return (int) (couponCount + newCount);
         }
-
-        return couponCount;
     }
 
     public int selectUserFollowerCount(int uid){
