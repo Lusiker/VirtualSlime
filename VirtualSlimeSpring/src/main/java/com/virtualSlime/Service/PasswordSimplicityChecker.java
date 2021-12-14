@@ -26,7 +26,7 @@ public class PasswordSimplicityChecker {
      */
     public static boolean checkPasswordSimplicity(String password){
         if(password.length() <= 8){
-            return false;
+            return true;
         }
 
         int[] checkerArray = new int[4];
@@ -57,6 +57,6 @@ public class PasswordSimplicityChecker {
             }
         }
 
-        return simplicity >= 2;
+        return simplicity < 2;
     }
 }
