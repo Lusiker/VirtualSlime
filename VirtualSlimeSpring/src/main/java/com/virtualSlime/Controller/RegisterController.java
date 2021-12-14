@@ -11,7 +11,6 @@ import com.virtualSlime.Utils.StringEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
 import java.util.Date;
 
 @RestController
@@ -49,7 +48,7 @@ public class RegisterController {
 //        }
 
         if(newUserEmail.length() != 0 && newUserPassword.length() != 0) {
-            if(!PasswordSimplicityChecker.checkPasswordSimplicity(newUserPassword)){
+            if(PasswordSimplicityChecker.checkPasswordSimplicity(newUserPassword)){
                 //password too simple
                 return objectMapper.writeValueAsString(new Result(RegisterState.PASSWORD_TOO_SIMPLE,null));
             }
