@@ -155,6 +155,13 @@ public class UserRepository {
         return updateUser(user);
     }
 
+    public boolean updateUserPassword(User user,String password){
+        //update user's password
+        user.setUserPassword(password);
+
+        return updateUser(user);
+    }
+
     public boolean updateUserHasActivatedTrue(User user){
         //set user's hasActivated to true and state to NORMAL
         user.setUserHasActivated(true);
