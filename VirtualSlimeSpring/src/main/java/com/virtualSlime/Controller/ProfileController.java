@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virtualSlime.Entity.User;
 import com.virtualSlime.Enum.ProfileState;
 import com.virtualSlime.Enum.UserSex;
+import com.virtualSlime.Service.PasswordSimplicityChecker;
 import com.virtualSlime.Service.UserRepository;
 import com.virtualSlime.Utils.Result;
+import com.virtualSlime.Utils.StringEncoder;
 import com.virtualSlime.Utils.UserInfoWrapper;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -136,6 +138,11 @@ public class ProfileController {
         return objectMapper.writeValueAsString(new Result(ProfileState.UPDATE_SUCCESSFUL,newIntro));
     }
 
+    /**
+     * @param newUid uid
+     * @param newSex 0/1/2/3 -> undefined/male/female/secret
+     * @return result
+     */
     @RequestMapping("user/{uid}/update/sex={newSex}")
     public String userProfileUpdateSex(@PathVariable(value = "uid")String newUid,
                                        @PathVariable(value = "newSex")String newSex) throws JsonProcessingException{
@@ -282,6 +289,19 @@ public class ProfileController {
             return objectMapper.writeValueAsString(new Result(ProfileState.INTERNAL_ERROR,null));
         }
 
-        return newPassword;
+        if(newPassword.length() != 0){
+            if(PasswordSimplicityChecker.checkPasswordSimplicity(newPassword)){
+                return objectMapper.writeValueAsString(new Result(ProfileState.FAILED,"New Password Too Simple"));
+            }
+
+            String encodedUserPassword = StringEncoder.userPasswordEncode(newPassword);
+            if(!userRepository.updateUserPassword(user,encodedUserPassword)){
+                return objectMapper.writeValueAsString(new Result(ProfileState.UPDATE_FAILED,null));
+            }
+
+            return objectMapper.writeValueAsString(new Result(ProfileState.UPDATE_SUCCESSFUL,null));
+        }else{
+            return objectMapper.writeValueAsString(new Result(ProfileState.FAILED,"Empty Input"));
+        }
     }
 }
