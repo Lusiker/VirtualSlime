@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
 import java.util.Date;
 
 /**
@@ -36,18 +35,13 @@ public class ActivateController {
     @Resource
     private ObjectMapper objectMapper;
 
-    private String checkInvalidAccess(User loginUser,int uid) throws JsonProcessingException {
-        if(loginUser == null){
-            //user not logging in cannot access activate process
-            return objectMapper.writeValueAsString(new Result(ActivateState.NOT_LOGIN,null));
+    private String checkInvalidAccess(User user) throws JsonProcessingException {
+        if(user == null){
+            //user may not exist
+            return objectMapper.writeValueAsString(new Result(ActivateState.FAILED,null));
         }
 
-        if(loginUser.getUid() != uid){
-            //user cannot access other user's activate process
-            return objectMapper.writeValueAsString(new Result(ActivateState.ACCESS_DENIED,null));
-        }
-
-        if(loginUser.getUserHasActivated()){
+        if(user.getUserHasActivated()){
             //user that has activated cannot access activate process
             return objectMapper.writeValueAsString(new Result(ActivateState.HAS_ACTIVATED,null));
         }
@@ -55,16 +49,15 @@ public class ActivateController {
         return null;
     }
 
-    private UserVerificationWrapper getVerificationWrapper(User loginUser){
+    private UserVerificationWrapper getVerificationWrapper(User user){
         Date now = new Date();
         String code = NumberProcessing.getRandomFourDigitNumber(now.getTime());
 
-        return new UserVerificationWrapper(loginUser,now,code,false,false);
+        return new UserVerificationWrapper(user,now,code,false,false);
     }
 
     @RequestMapping("/user/{uid}/activate")
-    public String activate(@PathVariable(value = "uid")String newUid,
-                           HttpSession session) throws JsonProcessingException {
+    public String activate(@PathVariable(value = "uid")String newUid) throws JsonProcessingException {
         int uid;
         try{
             uid = Integer.parseInt(newUid);
@@ -72,14 +65,14 @@ public class ActivateController {
             return objectMapper.writeValueAsString(new Result(ActivateState.FAILED,newUid));
         }
 
-        User loginUser = (User) session.getAttribute("loginUser");
-        String invalidResult = checkInvalidAccess(loginUser,uid);
+        User user = userRepository.selectUserByUid(uid);
+        String invalidResult = checkInvalidAccess(user);
         if(invalidResult != null){
             return invalidResult;
         }
 
         //create a verification wrapper
-        UserVerificationWrapper verificationWrapper = getVerificationWrapper(loginUser);
+        UserVerificationWrapper verificationWrapper = getVerificationWrapper(user);
 
         //send the verification code mail
         sender.sendCertificationCode(verificationWrapper);
@@ -96,8 +89,7 @@ public class ActivateController {
 
     @RequestMapping("/user/{uid}/activate/checkCode={checkCode}")
     public String checkCode(@PathVariable(value = "uid")String newUid,
-                            @PathVariable(value = "checkCode")String checkCode,
-                            HttpSession session) throws JsonProcessingException {
+                            @PathVariable(value = "checkCode")String checkCode) throws JsonProcessingException {
         int uid;
         try{
             uid = Integer.parseInt(newUid);
@@ -105,8 +97,8 @@ public class ActivateController {
             return objectMapper.writeValueAsString(new Result(ActivateState.FAILED,newUid));
         }
 
-        User loginUser = (User) session.getAttribute("loginUser");
-        String invalidResult = checkInvalidAccess(loginUser,uid);
+        User user = userRepository.selectUserByUid(uid);
+        String invalidResult = checkInvalidAccess(user);
         if(invalidResult != null){
             return invalidResult;
         }
@@ -121,9 +113,11 @@ public class ActivateController {
         }else{
             //checkResult == 0
             //update loginUser's info
-            userRepository.updateUserHasActivatedTrue(loginUser);
+            if(!userRepository.updateUserHasActivatedTrue(user)){
+                return objectMapper.writeValueAsString(new Result(ActivateState.FAILED,null));
+            }
             //return SUCCESSFUL with updated loginUser
-            return objectMapper.writeValueAsString(new Result(ActivateState.SUCCESSFUL,loginUser));
+            return objectMapper.writeValueAsString(new Result(ActivateState.SUCCESSFUL,user));
         }
     }
 }
