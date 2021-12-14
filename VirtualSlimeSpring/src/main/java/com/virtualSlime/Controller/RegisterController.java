@@ -40,13 +40,7 @@ public class RegisterController {
      */
     @RequestMapping(value = "/register")
     public String userRegister(@RequestParam(value = "useremail",defaultValue = "")String newUserEmail,
-                               @RequestParam(value = "password",defaultValue = "")String newUserPassword
-                               ) throws JsonProcessingException {
-//        if(currentUser != null){
-//            //if the user has logged in, return ACCESS_DENIED
-//            return objectMapper.writeValueAsString(new Result(RegisterState.ACCESS_DENIED,null));
-//        }
-
+                               @RequestParam(value = "password",defaultValue = "")String newUserPassword) throws JsonProcessingException {
         if(newUserEmail.length() != 0 && newUserPassword.length() != 0) {
             if(PasswordSimplicityChecker.checkPasswordSimplicity(newUserPassword)){
                 //password too simple
