@@ -1,5 +1,5 @@
-drop table if exists correlation_user_follow_user;
-create table correlation_user_follow_user(
+drop table if exists r_user_follow;
+create table r_user_follow(
     uid_from int unsigned,
     uid_to int unsigned,
     is_specialized boolean default false,

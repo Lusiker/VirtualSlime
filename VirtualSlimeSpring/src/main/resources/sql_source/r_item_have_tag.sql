@@ -1,5 +1,5 @@
-drop table if exists correlation_item_have_tag;
-create table correlation_item_have_tag(
+drop table if exists r_item_have_tag;
+create table r_item_have_tag(
     iid int unsigned,
     tid smallint unsigned
 );
