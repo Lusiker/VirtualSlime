@@ -4,18 +4,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virtualSlime.Entity.User;
 import com.virtualSlime.Enum.LoginState;
-import com.virtualSlime.Enum.LogoutState;
 import com.virtualSlime.Enum.UserState;
 import com.virtualSlime.Service.UserRepository;
 import com.virtualSlime.Utils.Result;
 import com.virtualSlime.Utils.StringEncoder;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
 import java.util.Date;
 
 @RestController
@@ -72,8 +69,7 @@ public class LoginController {
 
     @RequestMapping("/login/email")
     public String loginByEmail(@RequestParam(value = "useremail",defaultValue = "")String userEmail,
-                            @RequestParam(value = "password",defaultValue = "")String userPassword
-                            ) throws JsonProcessingException {
+                               @RequestParam(value = "password",defaultValue = "")String userPassword) throws JsonProcessingException {
 
         //find the user by the given email address
         User user = userRepository.selectUserByEmail(userEmail);
@@ -93,8 +89,7 @@ public class LoginController {
 
     @RequestMapping("/login/name")
     public String loginByUserName(@RequestParam(value = "username",defaultValue = "")String userName,
-                                  @RequestParam(value = "password",defaultValue = "")String userPassword
-                                  ) throws JsonProcessingException {
+                                  @RequestParam(value = "password",defaultValue = "")String userPassword) throws JsonProcessingException {
         //find the user by the given username
         User user = userRepository.selectUserByUserName(userName);
 
