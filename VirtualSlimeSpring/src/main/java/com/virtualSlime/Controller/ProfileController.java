@@ -59,7 +59,7 @@ public class ProfileController {
             UserInfoWrapper infoWrapper = new UserInfoWrapper(targetUser,1);
             infoWrapper.setFollowerCount(userRepository.selectUserFollowerCount(targetUser.getUid()));
             infoWrapper.setFollowingCount(userRepository.selectUserFollowingCount(targetUser.getUid()));
-            infoWrapper.setCouponCount(userRepository.selectUserCouponCount(targetUser.getUid()));
+            infoWrapper.setCouponCount(null);
 
             return objectMapper.writeValueAsString(new Result(ProfileState.AS_GUEST,infoWrapper));
         }

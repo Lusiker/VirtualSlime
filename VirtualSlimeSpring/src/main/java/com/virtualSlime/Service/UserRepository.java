@@ -2,7 +2,6 @@ package com.virtualSlime.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.virtualSlime.Entity.Coupon;
 import com.virtualSlime.Entity.User;
 import com.virtualSlime.Entity.UserCoupon;
 import com.virtualSlime.Enum.UserSex;
