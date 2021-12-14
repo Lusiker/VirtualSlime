@@ -11,7 +11,9 @@ import com.virtualSlime.Enum.UserSex;
 import com.virtualSlime.Enum.UserState;
 import lombok.*;
 
-@Getter @Setter @ToString
+@Getter
+@Setter
+@ToString
 @TableName(schema = "virtual_slime", value = "user_info")
 public class User {
     @TableId(type = IdType.AUTO)
