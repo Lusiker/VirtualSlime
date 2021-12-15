@@ -87,9 +87,9 @@ export default {
 	},
 	methods: {
 		loginName: function() {
-			if(this.loginNameData.username == '') {
+			if(this.loginNameData.username === '') {
 				Notify({ type: 'primary', message: '请输入用户名' })
-			} else if(this.loginNameData.password == '') {
+			} else if(this.loginNameData.password === '') {
 				Notify({ type: 'primary', message: '请输入密码' })
 			} else {
 				axios({
@@ -102,9 +102,9 @@ export default {
       	}).then(res =>{
 					console.log(res.data.stateEnum);
 					let resState = res.data.stateEnum.state				
-					if(resState == 1) {
+					if(resState === 1) {
 						Notify({ type: 'primary', message: '密码错误' })
-					} else if(resState == 0) {
+					} else if(resState === 0) {
 						Notify({ type: 'primary', message: '登录成功' })
 						this.$router.push("/")
 					}
@@ -112,9 +112,9 @@ export default {
 			}
 		},
 		loginEmail: function() {
-			if(this.loginEmailData.useremail == '') {
+			if(this.loginEmailData.useremail === '') {
 				Notify({ type: 'primary', message: '请输入邮箱' })
-			} else if(this.loginEmailData.password == '') {
+			} else if(this.loginEmailData.password === '') {
 				Notify({ type: 'primary', message: '请输入密码' })
 			} else {
 				axios({
@@ -143,7 +143,3 @@ export default {
 	}
 }
 </script>
-
-<style scoped>
-
-</style>

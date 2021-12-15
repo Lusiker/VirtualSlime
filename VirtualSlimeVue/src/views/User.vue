@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- <van-image width="100" height="100" :src="userPic" style="display: inline-block; width: 100%; max-width: 100%; height: auto;position: absolute;"/> -->
     <van-row gutter="25" style="position: relative; padding: 25% 20px 10px 20px">
       <van-col span="6">
         <van-image
@@ -15,8 +14,7 @@
           {{ userInfo.name }}
         </div>
         <div class="van-ellipsis" style="margin-top: 5%;color: var(--van-grid-item-text-color)">
-          <b>{{ userInfo.followers }}</b>&nbsp;粉丝
-          &nbsp;&nbsp;
+          <b>{{ userInfo.followers }}</b>&nbsp;粉丝&nbsp;&nbsp;
           <b>{{ userInfo.following }}</b>&nbsp;关注
         </div>
       </van-col>
