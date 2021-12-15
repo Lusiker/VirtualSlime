@@ -48,6 +48,8 @@
 
 <script>
 import BottomNav from '@/components/BottomNav.vue'
+import axios from 'axios'
+import Qs from 'qs'
 export default {
   components: { 
     BottomNav
@@ -64,10 +66,32 @@ export default {
         coupon: 35
       } 
     }
+  },
+  mounted: function () {
+    console.log("LOADING")
+    this.loadProfile()
+  },
+  methods: {
+    loadProfile: function () {
+      let uid1 = sessionStorage.getItem("uid")
+      let uid2 = uid1
+      axios({
+        url: '/api/user/' + uid1 + ':'+ uid2 +'',
+        method: 'post',
+        transformRequest: [function (data) {
+          return Qs.stringify(data)
+        }]
+      }).then(res =>{
+        let info = res.data.returnObject
+        this.userInfo.name = info.userName
+        this.userInfo.followers = info.followerCount
+        this.userInfo.following = info.followingCount
+        this.userInfo.money = info.userCurrency
+        this.userInfo.point = info.userPoint
+        this.userInfo.coupon = info.couponCount
+      })
+    }
   }
 }
 </script>
 
-<style>
-
-</style>

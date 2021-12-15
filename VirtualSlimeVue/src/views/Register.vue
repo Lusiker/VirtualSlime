@@ -54,13 +54,13 @@ export default {
 	},
 	methods: {
 		register: function() {
-			if(this.useremail == '') {
+			if(this.useremail === '') {
 				Notify({ type: 'primary', message: '请输入邮箱' })
-			} else if(this.password1 == '') {
+			} else if(this.password1 === '') {
 				Notify({ type: 'primary', message: '请输入密码' })
-			} else if(this.password2 == '') {
+			} else if(this.password2 === '') {
 				Notify({ type: 'primary', message: '请重复密码' })
-			} else if(this.password1 != this.password2){
+			} else if(this.password1 !== this.password2){
 				Notify({ type: 'primary', message: '密码不一致' })
 			} else {
 				axios({

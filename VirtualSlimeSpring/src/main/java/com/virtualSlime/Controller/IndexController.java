@@ -28,10 +28,10 @@ public class IndexController {
     @Resource
     private GlobalCategoryCache categoryCache;
 
-    @RequestMapping("/")
+    @RequestMapping("/home")
     public String index() throws JsonProcessingException {
         List<Item> items = itemRepository.selectAllAvailableItems();
-        List<ItemInfoWrapper> processedItems = new ArrayList<ItemInfoWrapper>();
+        List<ItemInfoWrapper> processedItems = new ArrayList<>();
 
         for(Item i : items){
             User user = userRepository.selectUserByUid(i.getUid());
