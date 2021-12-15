@@ -5,7 +5,6 @@ import com.virtualSlime.Entity.User;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.security.core.parameters.P;
 
 import java.math.BigDecimal;
 
@@ -22,6 +21,7 @@ public class ItemInfoWrapper {
     private Boolean isDiscounting;
     private BigDecimal itemPriceDiscounted;
     private String categoryName;
+    private String boughtTime;
 
     public ItemInfoWrapper(Item item,User user, GlobalCategoryCache categoryCache){
         this.iid = item.getIid();
