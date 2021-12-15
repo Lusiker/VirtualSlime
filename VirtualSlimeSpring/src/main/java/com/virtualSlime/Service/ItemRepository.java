@@ -2,7 +2,6 @@ package com.virtualSlime.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import com.virtualSlime.Entity.Item;
 import com.virtualSlime.Entity.Relation.UserBought;
 import com.virtualSlime.Entity.Relation.UserCart;

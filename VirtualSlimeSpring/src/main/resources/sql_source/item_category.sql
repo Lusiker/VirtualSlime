@@ -1,7 +1,7 @@
 drop table if exists item_category;
 create table item_category(
     cid smallint auto_increment primary key,
-    cid_upper smallint default null,
-    cat_name varchar(20),
-    cat_brief varchar(50)
+    belongs_to smallint default null,
+    name varchar(20),
+    brief varchar(50)
 );

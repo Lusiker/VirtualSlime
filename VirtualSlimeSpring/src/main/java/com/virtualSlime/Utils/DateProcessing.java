@@ -13,9 +13,7 @@ public class DateProcessing {
     private static final Calendar calendar = Calendar.getInstance();
 
     public static Date getInitialTime(){
-        /**
-         * return date-typed value of 1970-1-1
-         * */
+        //return date-typed value of 1970-1-1
         calendar.set(1970, Calendar.JANUARY,1);//Note that month starts from 0 in Calendar
 
         return calendar.getTime();
@@ -38,5 +36,9 @@ public class DateProcessing {
         calendar.setTime(newDate);
 
         return (Calendar)calendar.clone();
+    }
+
+    public static String getDateStringFromTimestamp(Date date){
+        return dateFormat.format(date);
     }
 }

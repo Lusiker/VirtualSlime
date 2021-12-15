@@ -3,6 +3,7 @@ package com.virtualSlime.Controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virtualSlime.Entity.Item;
+import com.virtualSlime.Entity.Relation.UserBought;
 import com.virtualSlime.Entity.User;
 import com.virtualSlime.Enum.ProfilePageState;
 import com.virtualSlime.Enum.UserSex;
@@ -18,6 +19,7 @@ import javax.annotation.Resource;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -140,11 +142,16 @@ public class ProfileController {
             return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
         }
 
-        List<Item> list = itemRepository.selectUserBoughtAsItemList(user);
+        List<UserBought> list = itemRepository.selectUserBought(user);
+        list.sort(Comparator.comparing(UserBought::getCreatedTime));
+
         List<ItemInfoWrapper> result = new ArrayList<ItemInfoWrapper>();
-        for(Item i : list){
-            User newUser = userRepository.selectUserByUid(i.getUid());
-            ItemInfoWrapper infoWrapper = new ItemInfoWrapper(i,newUser,categoryCache);
+        for(UserBought b : list){
+            Item newItem = itemRepository.selectItemByIid(b.getIid());
+            User newUser = userRepository.selectUserByUid(b.getUid());
+            ItemInfoWrapper infoWrapper = new ItemInfoWrapper(newItem,newUser,categoryCache);
+            infoWrapper.setBoughtTime(DateProcessing.getDateStringFromTimestamp(b.getCreatedTime()));
+
             result.add(infoWrapper);
         }
 

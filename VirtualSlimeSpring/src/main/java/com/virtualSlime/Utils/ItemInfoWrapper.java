@@ -5,9 +5,18 @@ import com.virtualSlime.Entity.User;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.security.core.parameters.P;
 
 import java.math.BigDecimal;
+
+
+/**
+ * ItemInfoWrapper
+ * Difference between Item
+ *  - category id will be replaced with category name
+ *  - username added
+ *  - for most of the time bought time is null, in /user/n/bought it will be replaced by
+ *      the bought time in String
+ */
 
 @Getter
 @Setter
@@ -22,6 +31,7 @@ public class ItemInfoWrapper {
     private Boolean isDiscounting;
     private BigDecimal itemPriceDiscounted;
     private String categoryName;
+    private String boughtTime;
 
     public ItemInfoWrapper(Item item,User user, GlobalCategoryCache categoryCache){
         this.iid = item.getIid();
