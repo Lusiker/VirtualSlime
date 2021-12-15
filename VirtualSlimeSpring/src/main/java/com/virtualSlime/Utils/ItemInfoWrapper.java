@@ -8,6 +8,16 @@ import lombok.ToString;
 
 import java.math.BigDecimal;
 
+
+/**
+ * ItemInfoWrapper
+ * Difference between Item
+ *  - category id will be replaced with category name
+ *  - username added
+ *  - for most of the time bought time is null, in /user/n/bought it will be replaced by
+ *      the bought time in String
+ */
+
 @Getter
 @Setter
 @ToString
