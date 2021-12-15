@@ -2,8 +2,9 @@ package com.virtualSlime.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.virtualSlime.Entity.Item;
 import com.virtualSlime.Entity.User;
-import com.virtualSlime.Entity.UserCoupon;
+import com.virtualSlime.Entity.Relation.UserCoupon;
 import com.virtualSlime.Enum.UserSex;
 import com.virtualSlime.Enum.UserState;
 import com.virtualSlime.Mapper.UserCouponMapper;
@@ -11,6 +12,7 @@ import com.virtualSlime.Mapper.UserMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
@@ -39,23 +41,26 @@ public class UserRepository {
     public User selectUserByEmail(String userEmail){
         //select a user by given email
         QueryWrapper<User> wrapper = new QueryWrapper<User>().eq("user_email", userEmail);
+
         return userMapper.selectOne(wrapper);
     }
 
     public User selectUserByUid(int uid){
         //select a user by given uid
         QueryWrapper<User> wrapper = new QueryWrapper<User>().eq("uid", uid);
+
         return userMapper.selectOne(wrapper);
     }
 
     public User selectUserByUserName(String userName){
         //select a user by given username
         QueryWrapper<User> wrapper = new QueryWrapper<User>().eq("user_name", userName);
+
         return userMapper.selectOne(wrapper);
     }
 
-    public int selectUserCouponCount(int uid){
-        QueryWrapper<UserCoupon> wrapper = new QueryWrapper<UserCoupon>().eq("uid",uid);
+    public int selectUserCouponCount(User user){
+        QueryWrapper<UserCoupon> wrapper = new QueryWrapper<UserCoupon>().eq("uid",user.getUid());
 
         Long newCount = userCouponMapper.selectCount(wrapper);
         int couponCount = 0;
@@ -66,9 +71,9 @@ public class UserRepository {
         }
     }
 
-    public int selectUserFollowerCount(int uid){
+    public int selectUserFollowerCount(User user){
         QueryWrapper<User> wrapper = new QueryWrapper<User>().inSql("uid",
-                "select uid_from from virtual_slime.r_user_follow where uid_to = " + uid);
+                "select uid_from from virtual_slime.r_user_follow where uid_to = " + user.getUid());
 
         List<User> list = userMapper.selectList(wrapper);
         int followerCount = 0;
@@ -77,9 +82,9 @@ public class UserRepository {
         return followerCount;
     }
 
-    public int selectUserFollowingCount(int uid){
+    public int selectUserFollowingCount(User user){
         QueryWrapper<User> wrapper = new QueryWrapper<User>().inSql("uid",
-                "select uid_to from virtual_slime.r_user_follow where uid_from = " + uid);
+                "select uid_to from virtual_slime.r_user_follow where uid_from = " + user.getUid());
 
         List<User> list = userMapper.selectList(wrapper);
         int followingCount = 0;
@@ -160,6 +165,28 @@ public class UserRepository {
         user.setUserPassword(password);
 
         return updateUser(user);
+    }
+
+    public int updateUserCurrency(User user, Item item){
+        BigDecimal userCurrency = user.getUserCurrency();
+        userCurrency = userCurrency.subtract(item.getItemPrice());
+        if(item.getIsDiscounting()){
+            userCurrency = userCurrency.add(item.getItemPriceDiscounted());
+        }
+
+        if(userCurrency.compareTo(new BigDecimal(0)) < 0){
+            //not enough currency
+            return -1;
+        }
+
+        user.setUserCurrency(userCurrency);
+        if(updateUser(user)){
+            //successfully update user
+            return 1;
+        }
+
+        //failed to update user
+        return 0;
     }
 
     public boolean updateUserHasActivatedTrue(User user){
