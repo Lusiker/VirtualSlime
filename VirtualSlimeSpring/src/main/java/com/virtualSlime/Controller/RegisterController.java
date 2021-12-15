@@ -3,7 +3,7 @@ package com.virtualSlime.Controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virtualSlime.Entity.User;
-import com.virtualSlime.Enum.RegisterState;
+import com.virtualSlime.Enum.RegisterPageState;
 import com.virtualSlime.Service.PasswordSimplicityChecker;
 import com.virtualSlime.Service.UserRepository;
 import com.virtualSlime.Utils.Result;
@@ -44,11 +44,11 @@ public class RegisterController {
         if(newUserEmail.length() != 0 && newUserPassword.length() != 0) {
             if(PasswordSimplicityChecker.checkPasswordSimplicity(newUserPassword)){
                 //password too simple
-                return objectMapper.writeValueAsString(new Result(RegisterState.PASSWORD_TOO_SIMPLE,null));
+                return objectMapper.writeValueAsString(new Result(RegisterPageState.PASSWORD_TOO_SIMPLE,null));
             }
             if(checkEmailDuplicate(newUserEmail)){
                 //duplicate email address detected
-                return objectMapper.writeValueAsString(new Result(RegisterState.EMAIL_DUPLICATE,null));
+                return objectMapper.writeValueAsString(new Result(RegisterPageState.EMAIL_DUPLICATE,null));
             }
 
             //now is used for salting the password and generating user's initial username
@@ -72,13 +72,13 @@ public class RegisterController {
             User registeringUser = new User(newUserName, newUserEmail, encodedUserPassword);
             //return value success or failure
             if(userRepository.insertUser(registeringUser)){
-                return objectMapper.writeValueAsString(new Result(RegisterState.SUCCESSFUL,null));
+                return objectMapper.writeValueAsString(new Result(RegisterPageState.SUCCESSFUL,null));
             } else {
-                return objectMapper.writeValueAsString(new Result(RegisterState.INTERNAL_ERROR,null));
+                return objectMapper.writeValueAsString(new Result(RegisterPageState.INTERNAL_ERROR,null));
             }
         } else {
             //any empty parameter will cause input_error
-            return objectMapper.writeValueAsString(new Result(RegisterState.INPUT_ERROR, null));
+            return objectMapper.writeValueAsString(new Result(RegisterPageState.INPUT_ERROR, null));
         }
     }
 }
