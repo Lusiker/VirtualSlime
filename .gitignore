@@ -5,4 +5,4 @@ VirtualSlimeVue/node_modules/
 VirtualSlimeVue/vue.config.js
 .idea/dataSources.xml
 *.xml
-*.xml
+VirtualSlimeVue/.idea
