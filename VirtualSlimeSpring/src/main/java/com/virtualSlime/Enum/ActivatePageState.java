@@ -1,6 +1,6 @@
 package com.virtualSlime.Enum;
 
-public enum ActivateState implements ControllerStateEnum{
+public enum ActivatePageState implements ControllerStateEnum{
     SUCCESSFUL(0,"activate_successful"),
     NOT_LOGIN(-1,"not_login"),
     FAILED(-2,"failed"),
@@ -15,7 +15,7 @@ public enum ActivateState implements ControllerStateEnum{
     private final Integer stateCode;
     private final String value;
 
-    ActivateState(Integer stateCode,String value) {
+    ActivatePageState(Integer stateCode, String value) {
         this.stateCode = stateCode;
         this.value = value;
     }

@@ -1,4 +1,4 @@
-package com.virtualSlime.Entity;
+package com.virtualSlime.Entity.Relation;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
