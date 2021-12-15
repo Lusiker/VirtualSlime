@@ -2,14 +2,14 @@ package com.virtualSlime.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.virtualSlime.Entity.Item;
 import com.virtualSlime.Entity.User;
-import com.virtualSlime.Enum.ProfileState;
+import com.virtualSlime.Enum.ProfilePageState;
 import com.virtualSlime.Enum.UserSex;
+import com.virtualSlime.Service.ItemRepository;
 import com.virtualSlime.Service.PasswordSimplicityChecker;
 import com.virtualSlime.Service.UserRepository;
-import com.virtualSlime.Utils.Result;
-import com.virtualSlime.Utils.StringEncoder;
-import com.virtualSlime.Utils.UserInfoWrapper;
+import com.virtualSlime.Utils.*;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,12 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 public class ProfileController {
     @Resource
     UserRepository userRepository;
+    @Resource
+    ItemRepository itemRepository;
+    @Resource
+    GlobalCategoryCache categoryCache;
     @Resource
     ObjectMapper objectMapper;
 
@@ -41,29 +47,29 @@ public class ProfileController {
 
     private String asGuest(User fromUser, User targetUser) throws JsonProcessingException {
         if(fromUser == null){
-            return objectMapper.writeValueAsString(new Result(ProfileState.INTERNAL_ERROR,null));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
         }
 
         if(targetUser == null){
-            return objectMapper.writeValueAsString(new Result(ProfileState.FAILED,"Target Not Exist"));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Target Not Exist"));
         }
 
         if(fromUser.getUid().equals(targetUser.getUid())){
             //trying to access user' own homepage, return AS_MASTER
             UserInfoWrapper infoWrapper = new UserInfoWrapper(targetUser,0);
-            infoWrapper.setFollowerCount(userRepository.selectUserFollowerCount(targetUser.getUid()));
-            infoWrapper.setFollowingCount(userRepository.selectUserFollowingCount(targetUser.getUid()));
-            infoWrapper.setCouponCount(userRepository.selectUserCouponCount(targetUser.getUid()));
+            infoWrapper.setFollowerCount(userRepository.selectUserFollowerCount(targetUser));
+            infoWrapper.setFollowingCount(userRepository.selectUserFollowingCount(targetUser));
+            infoWrapper.setCouponCount(userRepository.selectUserCouponCount(targetUser));
 
-            return objectMapper.writeValueAsString(new Result(ProfileState.AS_MASTER,infoWrapper));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.AS_MASTER,infoWrapper));
         }else{
             //entering other's homepage, return AS_GUEST
             UserInfoWrapper infoWrapper = new UserInfoWrapper(targetUser,1);
-            infoWrapper.setFollowerCount(userRepository.selectUserFollowerCount(targetUser.getUid()));
-            infoWrapper.setFollowingCount(userRepository.selectUserFollowingCount(targetUser.getUid()));
+            infoWrapper.setFollowerCount(userRepository.selectUserFollowerCount(targetUser));
+            infoWrapper.setFollowingCount(userRepository.selectUserFollowingCount(targetUser));
             infoWrapper.setCouponCount(null);
 
-            return objectMapper.writeValueAsString(new Result(ProfileState.AS_GUEST,infoWrapper));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.AS_GUEST,infoWrapper));
         }
     }
 
@@ -72,7 +78,7 @@ public class ProfileController {
                                         @PathVariable(value = "uid2")String newUid2) throws JsonProcessingException {
         int uid2 = checkUidValid(newUid2);
         if(uid2 == -1){
-            return objectMapper.writeValueAsString(new Result(ProfileState.FAILED,"Wrong info:" + uid2));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong info:" + uid2));
         }
         User fromUser = userRepository.selectUserByUid(uid2);
         User targetUser = userRepository.selectUserByUserName(newUserName1);
@@ -85,17 +91,65 @@ public class ProfileController {
                                    @PathVariable(value = "uid2")String newUid2) throws JsonProcessingException {
         int uid1 = checkUidValid(newUid1);
         if(uid1 == -1) {
-            return objectMapper.writeValueAsString(new Result(ProfileState.FAILED,"Wrong info:" + newUid1));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong info:" + newUid1));
         }
         User targetUser = userRepository.selectUserByUid(uid1);
 
         int uid2 = checkUidValid(newUid2);
         if(uid2 == -1){
-            return objectMapper.writeValueAsString(new Result(ProfileState.FAILED,"Wrong info:" + newUid2));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong info:" + newUid2));
         }
         User fromUser = userRepository.selectUserByUid(uid2);
 
         return asGuest(fromUser,targetUser);
+    }
+
+    @RequestMapping("/user/{uid}/cart")
+    public String userProfileShowCart(@PathVariable(value = "uid")String newUid) throws JsonProcessingException {
+        int uid = checkUidValid(newUid);
+        if(uid == -1) {
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong info:" + newUid));
+        }
+
+        User user = userRepository.selectUserByUid(uid);
+        if(user == null){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
+        }
+
+        List<Item> list = itemRepository.selectUserCartAsItemList(user);
+        List<ItemInfoWrapper> result = new ArrayList<ItemInfoWrapper>();
+        for(Item i : list){
+            User newUser = userRepository.selectUserByUid(i.getUid());
+            ItemInfoWrapper infoWrapper = new ItemInfoWrapper(i,newUser,categoryCache);
+            result.add(infoWrapper);
+        }
+
+        //return (3,show_cart),list of item in cart
+        return objectMapper.writeValueAsString(new Result(ProfilePageState.SHOW_CART,result));
+    }
+
+    @RequestMapping("user/{uid}/bought")
+    public String userProfileShowAllBought(@PathVariable(value = "uid")String newUid) throws JsonProcessingException{
+        int uid = checkUidValid(newUid);
+        if(uid == -1) {
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong info:" + newUid));
+        }
+
+        User user = userRepository.selectUserByUid(uid);
+        if(user == null){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
+        }
+
+        List<Item> list = itemRepository.selectUserBoughtAsItemList(user);
+        List<ItemInfoWrapper> result = new ArrayList<ItemInfoWrapper>();
+        for(Item i : list){
+            User newUser = userRepository.selectUserByUid(i.getUid());
+            ItemInfoWrapper infoWrapper = new ItemInfoWrapper(i,newUser,categoryCache);
+            result.add(infoWrapper);
+        }
+
+        //return (4,show_bought),list of item in cart
+        return objectMapper.writeValueAsString(new Result(ProfilePageState.SHOW_BOUGHT,result));
     }
 
     @RequestMapping("/user/{uid}/update/name={newName}")
@@ -103,23 +157,27 @@ public class ProfileController {
                                         @PathVariable(value = "newName")String newName) throws JsonProcessingException{
         int uid = checkUidValid(newUid);
         if(uid == -1) {
-            return objectMapper.writeValueAsString(new Result(ProfileState.FAILED,"Wrong info:" + newUid));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong info:" + newUid));
         }
 
         if(newName.length() == 0){
-            return objectMapper.writeValueAsString(new Result(ProfileState.FAILED,"Wrong input"));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong input"));
         }
 
         User user = userRepository.selectUserByUid(uid);
         if(user == null){
-            return objectMapper.writeValueAsString(new Result(ProfileState.INTERNAL_ERROR,null));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
+        }
+
+        if(newName.equals(user.getUserName())){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_FAILED,"Not Changed:" + newName));
         }
 
         if(!userRepository.updateUserName(user,newName)){
-            return objectMapper.writeValueAsString(new Result(ProfileState.UPDATE_FAILED,"duplicated:" + newName));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_FAILED,"Duplicated:" + newName));
         }
 
-        return objectMapper.writeValueAsString(new Result(ProfileState.UPDATE_SUCCESSFUL,newName));
+        return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_SUCCESSFUL,newName));
     }
 
     @RequestMapping("user/{uid}/update/intro={newIntro}")
@@ -127,19 +185,19 @@ public class ProfileController {
                                                 @PathVariable(value = "newIntro")String newIntro) throws JsonProcessingException{
         int uid = checkUidValid(newUid);
         if(uid == -1) {
-            return objectMapper.writeValueAsString(new Result(ProfileState.FAILED,"Wrong info:" + newUid));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong info:" + newUid));
         }
 
         User user = userRepository.selectUserByUid(uid);
         if(user == null){
-            return objectMapper.writeValueAsString(new Result(ProfileState.INTERNAL_ERROR,null));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
         }
 
         if(!userRepository.updateUserIntroduction(user,newIntro)){
-            return objectMapper.writeValueAsString(new Result(ProfileState.UPDATE_FAILED,newIntro));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_FAILED,newIntro));
         }
 
-        return objectMapper.writeValueAsString(new Result(ProfileState.UPDATE_SUCCESSFUL,newIntro));
+        return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_SUCCESSFUL,newIntro));
     }
 
     /**
@@ -152,14 +210,14 @@ public class ProfileController {
                                        @PathVariable(value = "newSex")String newSex) throws JsonProcessingException{
         int uid = checkUidValid(newUid);
         if(uid == -1) {
-            return objectMapper.writeValueAsString(new Result(ProfileState.FAILED, newUid));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED, newUid));
         }
 
         int newUserSexInt;
         try{
             newUserSexInt = Integer.parseInt(newSex);
         }catch (Exception e){
-            return objectMapper.writeValueAsString(new Result(ProfileState.FAILED,newSex));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,newSex));
         }
 
         UserSex userSex;
@@ -172,41 +230,48 @@ public class ProfileController {
 
         User user = userRepository.selectUserByUid(uid);
         if(user == null){
-            return objectMapper.writeValueAsString(new Result(ProfileState.INTERNAL_ERROR,null));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
         }
 
         if(!userRepository.updateUserSex(user,userSex)){
-            return objectMapper.writeValueAsString(new Result(ProfileState.INTERNAL_ERROR,null));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
         }
 
-        return objectMapper.writeValueAsString(new Result(ProfileState.UPDATE_SUCCESSFUL,userSex.getValue()));
+        return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_SUCCESSFUL,userSex.getValue()));
     }
 
+    /**
+     *
+     * @param newUid uid
+     * @param newBirthday yyyy-MM-dd. Notice, input like 2000-13-99 will NOT cause crash, instead, a wrong result will
+     *                    be calculated.
+     * @return result
+     */
     @RequestMapping("/user/{uid}/update/birthday={newBirthday}")
     public String userProfileUpdateBirthday(@PathVariable(value = "uid")String newUid,
-                                        @PathVariable(value = "newBirthday")String newBirthday) throws JsonProcessingException, ParseException {
+                                        @PathVariable(value = "newBirthday")String newBirthday) throws JsonProcessingException{
         int uid = checkUidValid(newUid);
         if(uid == -1) {
-            return objectMapper.writeValueAsString(new Result(ProfileState.FAILED,"Wrong info:" + newUid));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong info:" + newUid));
         }
 
         User user = userRepository.selectUserByUid(uid);
         if(user == null){
-            return objectMapper.writeValueAsString(new Result(ProfileState.INTERNAL_ERROR,null));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
         }
 
         Date birthday;
         try {
             birthday = format.parse(newBirthday);
         }catch (ParseException e){
-            return objectMapper.writeValueAsString(new Result(ProfileState.FAILED,"Wrong info:" + newBirthday));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong info:" + newBirthday));
         }
 
         if(!userRepository.updateUserBirthday(user,birthday)){
-            return objectMapper.writeValueAsString(new Result(ProfileState.UPDATE_FAILED,null));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_FAILED,null));
         }
 
-        return objectMapper.writeValueAsString(new Result(ProfileState.UPDATE_SUCCESSFUL,newBirthday));
+        return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_SUCCESSFUL,newBirthday));
     }
 
 
@@ -220,14 +285,14 @@ public class ProfileController {
                                                 @PathVariable(value = "state")String newState) throws JsonProcessingException{
         int uid = checkUidValid(newUid);
         if(uid == -1) {
-            return objectMapper.writeValueAsString(new Result(ProfileState.FAILED,"Wrong info:" + newUid));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong info:" + newUid));
         }
 
         int showBirthday;
         try{
             showBirthday = Integer.parseInt(newState);
         }catch (Exception e){
-            return objectMapper.writeValueAsString(new Result(ProfileState.FAILED,"Wrong info:" + newState));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong info:" + newState));
         }
 
         boolean state;
@@ -235,14 +300,14 @@ public class ProfileController {
 
         User user = userRepository.selectUserByUid(uid);
         if(user == null){
-            return objectMapper.writeValueAsString(new Result(ProfileState.INTERNAL_ERROR,null));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
         }
 
         if(!userRepository.updateUserShowBirthday(user,state)){
-            return objectMapper.writeValueAsString(new Result(ProfileState.UPDATE_FAILED,newState));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_FAILED,newState));
         }
 
-        return objectMapper.writeValueAsString(new Result(ProfileState.UPDATE_SUCCESSFUL,newState));
+        return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_SUCCESSFUL,newState));
     }
 
     /**
@@ -255,14 +320,14 @@ public class ProfileController {
                                                @PathVariable(value = "state")String newState) throws JsonProcessingException{
         int uid = checkUidValid(newUid);
         if(uid == -1) {
-            return objectMapper.writeValueAsString(new Result(ProfileState.FAILED,"Wrong info:" + newUid));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong info:" + newUid));
         }
 
         int showDynamic;
         try{
             showDynamic = Integer.parseInt(newState);
         }catch (Exception e){
-            return objectMapper.writeValueAsString(new Result(ProfileState.FAILED,"Wrong info:" + newState));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong info:" + newState));
         }
 
         boolean state;
@@ -270,14 +335,14 @@ public class ProfileController {
 
         User user = userRepository.selectUserByUid(uid);
         if(user == null){
-            return objectMapper.writeValueAsString(new Result(ProfileState.INTERNAL_ERROR,null));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
         }
 
         if(!userRepository.updateUserShowDynamic(user,state)){
-            return objectMapper.writeValueAsString(new Result(ProfileState.UPDATE_FAILED,newState));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_FAILED,newState));
         }
 
-        return objectMapper.writeValueAsString(new Result(ProfileState.UPDATE_SUCCESSFUL,newState));
+        return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_SUCCESSFUL,newState));
     }
 
     @RequestMapping("user/{uid}/update/password={newPassword}")
@@ -285,27 +350,27 @@ public class ProfileController {
                                             @PathVariable(value = "newPassword")String newPassword) throws JsonProcessingException{
         int uid = checkUidValid(newUid);
         if(uid == -1) {
-            return objectMapper.writeValueAsString(new Result(ProfileState.FAILED, newUid));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED, newUid));
         }
 
         User user = userRepository.selectUserByUid(uid);
         if(user == null){
-            return objectMapper.writeValueAsString(new Result(ProfileState.INTERNAL_ERROR,null));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
         }
 
         if(newPassword.length() != 0){
             if(PasswordSimplicityChecker.checkPasswordSimplicity(newPassword)){
-                return objectMapper.writeValueAsString(new Result(ProfileState.FAILED,"New Password Too Simple"));
+                return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"New Password Too Simple"));
             }
 
             String encodedUserPassword = StringEncoder.userPasswordEncode(newPassword);
             if(!userRepository.updateUserPassword(user,encodedUserPassword)){
-                return objectMapper.writeValueAsString(new Result(ProfileState.UPDATE_FAILED,null));
+                return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_FAILED,null));
             }
 
-            return objectMapper.writeValueAsString(new Result(ProfileState.UPDATE_SUCCESSFUL,null));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_SUCCESSFUL,null));
         }else{
-            return objectMapper.writeValueAsString(new Result(ProfileState.FAILED,"Empty Input"));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Empty Input"));
         }
     }
 }
