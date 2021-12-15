@@ -3,7 +3,7 @@ package com.virtualSlime.Enum;
 /**
  * LoginState manage states of login
  */
-public enum LoginState implements ControllerStateEnum{
+public enum LoginPageState implements ControllerStateEnum{
     SUCCESSFUL(0,"login_success"),
     INPUT_ERROR(-1,"input_error"),
     WRONG_INFO(1,"wrong_info"),
@@ -14,7 +14,7 @@ public enum LoginState implements ControllerStateEnum{
     private final Integer stateCode;
     private final String value;
 
-    LoginState(Integer stateCode,String value) {
+    LoginPageState(Integer stateCode, String value) {
         this.stateCode = stateCode;
         this.value = value;
     }
