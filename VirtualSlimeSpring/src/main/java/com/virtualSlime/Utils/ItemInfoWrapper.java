@@ -1,9 +1,11 @@
 package com.virtualSlime.Utils;
 
 import com.virtualSlime.Entity.Item;
+import com.virtualSlime.Entity.User;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.security.core.parameters.P;
 
 import java.math.BigDecimal;
 
@@ -13,14 +15,15 @@ import java.math.BigDecimal;
 public class ItemInfoWrapper {
     private Integer iid;
     private Integer uid;
-    private String itemName;//<= 50
+    private String userName;
+    private String itemName;
     private String itemBrief;
-    private BigDecimal itemPrice;//decimal(12,2):parse needed
+    private BigDecimal itemPrice;
     private Boolean isDiscounting;
-    private BigDecimal itemPriceDiscounted;//decimal(12,2):parse needed
+    private BigDecimal itemPriceDiscounted;
     private String categoryName;
 
-    public ItemInfoWrapper(Item item,GlobalCategoryCache categoryCache){
+    public ItemInfoWrapper(Item item,User user, GlobalCategoryCache categoryCache){
         this.iid = item.getIid();
         this.uid = item.getUid();
         this.itemName = item.getItemName();
@@ -34,5 +37,11 @@ public class ItemInfoWrapper {
         }
 
         this.categoryName = categoryCache.getCategoryNameFromCid(item.getCid());
+
+        if(user == null){
+            this.userName = "undefined";
+        }else {
+            this.userName = user.getUserName();
+        }
     }
 }
