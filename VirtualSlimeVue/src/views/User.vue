@@ -40,7 +40,7 @@
     <van-cell value="更多服务"/>
     <van-cell-group>
       <van-cell title="&nbsp;&nbsp;联系客服" icon="service-o" is-link to="/"/>
-      <van-cell title="&nbsp;&nbsp;设置" icon="setting-o" is-link to="/"/>
+      <van-cell title="&nbsp;&nbsp;账号资料" icon="setting-o" is-link to="/"/>
     </van-cell-group>
     <BottomNav/>
   </div>
@@ -57,13 +57,13 @@ export default {
   data() {
     return {
       userInfo: {
-        uid: 1,
-        name: '大東亜共栄圏帝国海軍',
-        followers: 1140,
-        following: 5140,
-        money: '648.55',
-        point: 3280,
-        coupon: 35
+        uid: 0,
+        name: 'Virtual Slime',
+        followers: 0,
+        following: 0,
+        money: '0',
+        point: 0,
+        coupon: 0
       } 
     }
   },
