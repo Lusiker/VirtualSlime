@@ -3,7 +3,7 @@ package com.virtualSlime.Controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virtualSlime.Entity.User;
-import com.virtualSlime.Enum.LoginState;
+import com.virtualSlime.Enum.LoginPageState;
 import com.virtualSlime.Enum.UserState;
 import com.virtualSlime.Service.UserRepository;
 import com.virtualSlime.Utils.Result;
@@ -26,12 +26,12 @@ public class LoginController {
         //if user is null, return WRONG_INFO
         //which means the user does not exist
         if(user == null){
-            return objectMapper.writeValueAsString(new Result(LoginState.WRONG_INFO,null));
+            return objectMapper.writeValueAsString(new Result(LoginPageState.WRONG_INFO,null));
         }
 
         if(user.getUserState() == UserState.LOGOFF){
             //return UserState.LOGOFF to logged off user
-            return objectMapper.writeValueAsString(new Result(LoginState.ACCESS_DENIED,null));
+            return objectMapper.writeValueAsString(new Result(LoginPageState.ACCESS_DENIED,null));
         }
 
         return null;
@@ -45,7 +45,7 @@ public class LoginController {
                 Date now = new Date();
                 if(!userRepository.updateUserLogin(user, now)){
                     //if the update process fails, return INTERNAL_ERROR
-                    return objectMapper.writeValueAsString(new Result(LoginState.INTERNAL_ERROR,null));
+                    return objectMapper.writeValueAsString(new Result(LoginPageState.INTERNAL_ERROR,null));
                 }
 
                 //return SUCCESSFUL json↓
@@ -60,10 +60,10 @@ public class LoginController {
                 //      "userCurrency" : ...
                 //  }
                 //}
-                return objectMapper.writeValueAsString(new Result(LoginState.SUCCESSFUL,user.getUid()));
+                return objectMapper.writeValueAsString(new Result(LoginPageState.SUCCESSFUL,user.getUid()));
             }else{
                 //password wrong, return WRONG_INFO
-                return objectMapper.writeValueAsString(new Result(LoginState.WRONG_INFO,null));
+                return objectMapper.writeValueAsString(new Result(LoginPageState.WRONG_INFO,null));
             }
     }
 
@@ -83,7 +83,7 @@ public class LoginController {
             return login(userPassword, user);
         }else{
             //any empty input will cause INPUT_ERROR
-            return objectMapper.writeValueAsString(new Result(LoginState.INPUT_ERROR,null));
+            return objectMapper.writeValueAsString(new Result(LoginPageState.INPUT_ERROR,null));
         }
     }
 
@@ -102,7 +102,7 @@ public class LoginController {
             return login(userPassword, user);
         }else{
             //any empty input will cause INPUT_ERROR
-            return objectMapper.writeValueAsString(new Result(LoginState.INPUT_ERROR,null));
+            return objectMapper.writeValueAsString(new Result(LoginPageState.INPUT_ERROR,null));
         }
     }
 }
