@@ -6,3 +6,4 @@ VirtualSlimeVue/vue.config.js
 .idea/dataSources.xml
 *.xml
 VirtualSlimeVue/.idea
+*.meta
