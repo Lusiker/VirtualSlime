@@ -3,7 +3,7 @@ package com.virtualSlime.Controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virtualSlime.Entity.User;
-import com.virtualSlime.Enum.ActivateState;
+import com.virtualSlime.Enum.ActivatePageState;
 import com.virtualSlime.Service.CommonMailSender;
 import com.virtualSlime.Service.UserRepository;
 import com.virtualSlime.Utils.Result;
@@ -38,12 +38,12 @@ public class ActivateController {
     private String checkInvalidAccess(User user) throws JsonProcessingException {
         if(user == null){
             //user may not exist
-            return objectMapper.writeValueAsString(new Result(ActivateState.FAILED,null));
+            return objectMapper.writeValueAsString(new Result(ActivatePageState.FAILED,null));
         }
 
         if(user.getUserHasActivated()){
             //user that has activated cannot access activate process
-            return objectMapper.writeValueAsString(new Result(ActivateState.HAS_ACTIVATED,null));
+            return objectMapper.writeValueAsString(new Result(ActivatePageState.HAS_ACTIVATED,null));
         }
 
         return null;
@@ -62,7 +62,7 @@ public class ActivateController {
         try{
             uid = Integer.parseInt(newUid);
         }catch (Exception e){
-            return objectMapper.writeValueAsString(new Result(ActivateState.FAILED,newUid));
+            return objectMapper.writeValueAsString(new Result(ActivatePageState.FAILED,newUid));
         }
 
         User user = userRepository.selectUserByUid(uid);
@@ -84,7 +84,7 @@ public class ActivateController {
         }
 
         //return START
-        return objectMapper.writeValueAsString(new Result(ActivateState.START,null));
+        return objectMapper.writeValueAsString(new Result(ActivatePageState.START,null));
     }
 
     @RequestMapping("/user/{uid}/activate/checkCode={checkCode}")
@@ -94,7 +94,7 @@ public class ActivateController {
         try{
             uid = Integer.parseInt(newUid);
         }catch (Exception e){
-            return objectMapper.writeValueAsString(new Result(ActivateState.FAILED,newUid));
+            return objectMapper.writeValueAsString(new Result(ActivatePageState.FAILED,newUid));
         }
 
         User user = userRepository.selectUserByUid(uid);
@@ -106,18 +106,18 @@ public class ActivateController {
         int checkResult = collector.checkAvailability(uid,checkCode);
         if(checkResult == -1){
             //verification failed due to time expiration or there is no wrapper submitted before verification
-            return objectMapper.writeValueAsString(new Result(ActivateState.FAILED,null));
+            return objectMapper.writeValueAsString(new Result(ActivatePageState.FAILED,null));
         }else if(checkResult == 1){
             //wrong code provided, return WRONG_CODE
-            return objectMapper.writeValueAsString(new Result(ActivateState.WRONG_CODE,null));
+            return objectMapper.writeValueAsString(new Result(ActivatePageState.WRONG_CODE,null));
         }else{
             //checkResult == 0
             //update loginUser's info
             if(!userRepository.updateUserHasActivatedTrue(user)){
-                return objectMapper.writeValueAsString(new Result(ActivateState.FAILED,null));
+                return objectMapper.writeValueAsString(new Result(ActivatePageState.FAILED,null));
             }
             //return SUCCESSFUL with updated loginUser
-            return objectMapper.writeValueAsString(new Result(ActivateState.SUCCESSFUL,user));
+            return objectMapper.writeValueAsString(new Result(ActivatePageState.SUCCESSFUL,user));
         }
     }
 }
