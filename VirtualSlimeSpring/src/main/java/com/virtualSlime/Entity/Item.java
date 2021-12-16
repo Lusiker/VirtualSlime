@@ -26,4 +26,17 @@ public class Item {
     private Short cid;
     private Integer visitCount;
     private ItemState itemState;
+
+    public Item(int iid,int uid,String itemName,String itemBrief,BigDecimal itemPrice,short cid){
+        this.iid = iid;
+        this.uid = uid;
+        this.itemName = itemName;
+        this.itemBrief = itemBrief;
+        this.itemPrice = itemPrice;
+        this.isDiscounting = false;
+        this.itemPriceDiscounted = new BigDecimal("0.0");
+        this.cid = cid;
+        this.visitCount = 0;
+        this.itemState = ItemState.NORMAL;
+    }
 }
