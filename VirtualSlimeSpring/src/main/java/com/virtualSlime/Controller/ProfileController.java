@@ -394,7 +394,6 @@ public class ProfileController {
         return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_SUCCESSFUL,newBirthday));
     }
 
-
     /**
      * @param newUid uid
      * @param newState 0/1 -> true/false
