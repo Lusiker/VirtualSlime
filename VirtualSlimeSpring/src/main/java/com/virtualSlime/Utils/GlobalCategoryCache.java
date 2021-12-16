@@ -8,6 +8,10 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * This class is a cache that stores all "category id - category name" entries
+ * to avoid accessing the DB too often.
+ */
 @Component
 public class GlobalCategoryCache {
     private final HashMap<Short, Category> map = new HashMap<Short,Category>();
