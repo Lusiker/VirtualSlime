@@ -3,15 +3,13 @@ package com.virtualSlime.Controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virtualSlime.Entity.Item;
-import com.virtualSlime.Entity.Relation.UserCart;
 import com.virtualSlime.Entity.User;
-import com.virtualSlime.Enum.ItemPageState;
-import com.virtualSlime.Enum.ItemState;
+import com.virtualSlime.Enum.PageState.ItemPageState;
 import com.virtualSlime.Service.ItemRepository;
 import com.virtualSlime.Service.UserRepository;
 import com.virtualSlime.Utils.GlobalCategoryCache;
-import com.virtualSlime.Utils.ItemInfoWrapper;
-import com.virtualSlime.Utils.Result;
+import com.virtualSlime.Utils.InfoWrapper.ItemInfoWrapper;
+import com.virtualSlime.Utils.InfoWrapper.Result;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 @RestController
 public class ItemController {
@@ -131,6 +128,11 @@ public class ItemController {
         User user = userRepository.selectUserByUid(uid);
         if(user == null){
             return objectMapper.writeValueAsString(new Result(ItemPageState.INTERNAL_ERROR,null));
+        }
+
+        if(!user.getUserHasActivated()){
+            //not activated
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Not Activated"));
         }
 
         if(itemRepository.checkHasBoughtItem(user,item)){

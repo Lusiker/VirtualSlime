@@ -4,12 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virtualSlime.Entity.Item;
 import com.virtualSlime.Entity.User;
-import com.virtualSlime.Enum.IndexPageState;
+import com.virtualSlime.Enum.PageState.IndexPageState;
 import com.virtualSlime.Service.ItemRepository;
 import com.virtualSlime.Service.UserRepository;
 import com.virtualSlime.Utils.GlobalCategoryCache;
-import com.virtualSlime.Utils.ItemInfoWrapper;
-import com.virtualSlime.Utils.Result;
+import com.virtualSlime.Utils.InfoWrapper.ItemInfoWrapper;
+import com.virtualSlime.Utils.InfoWrapper.Result;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

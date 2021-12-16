@@ -1,5 +1,6 @@
 package com.virtualSlime.Utils;
 
+import com.virtualSlime.Utils.InfoWrapper.UserVerificationWrapper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 

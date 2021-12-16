@@ -1,7 +1,7 @@
 package com.virtualSlime.Entity;
 
 import com.virtualSlime.Enum.MessageState;
-import com.virtualSlime.Enum.MessageType;
+import com.virtualSlime.Enum.EntityType.MessageType;
 
 public class Message {
     private Integer mid;

@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.virtualSlime.Enum.UserSex;
+import com.virtualSlime.Enum.EntityType.UserSex;
 import com.virtualSlime.Enum.UserState;
 import lombok.*;
 

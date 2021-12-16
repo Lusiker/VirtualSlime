@@ -5,12 +5,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virtualSlime.Entity.Item;
 import com.virtualSlime.Entity.Relation.UserBought;
 import com.virtualSlime.Entity.User;
-import com.virtualSlime.Enum.ProfilePageState;
-import com.virtualSlime.Enum.UserSex;
+import com.virtualSlime.Enum.PageState.ProfilePageState;
+import com.virtualSlime.Enum.EntityType.UserSex;
 import com.virtualSlime.Service.ItemRepository;
-import com.virtualSlime.Service.PasswordSimplicityChecker;
+import com.virtualSlime.Utils.InfoWrapper.FollowerInfoWrapper;
+import com.virtualSlime.Utils.PasswordSimplicityChecker;
 import com.virtualSlime.Service.UserRepository;
 import com.virtualSlime.Utils.*;
+import com.virtualSlime.Utils.InfoWrapper.ItemInfoWrapper;
+import com.virtualSlime.Utils.InfoWrapper.Result;
+import com.virtualSlime.Utils.InfoWrapper.UserInfoWrapper;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -75,6 +79,14 @@ public class ProfileController {
         }
     }
 
+    //access profile api
+
+    /**
+     * uid2 trying to access userName1
+     * @param newUserName1 target username
+     * @param newUid2 requesting user id
+     * @return result
+     */
     @RequestMapping("/user/name/{userName1}:{uid2}")
     public String userProfileByUserName(@PathVariable(value = "userName1")String newUserName1,
                                         @PathVariable(value = "uid2")String newUid2) throws JsonProcessingException {
@@ -88,6 +100,12 @@ public class ProfileController {
         return asGuest(fromUser,targetUser);
     }
 
+    /**
+     * uid2 trying to access uid1
+     * @param newUid1 target user id
+     * @param newUid2 requesting user id
+     * @return result
+     */
     @RequestMapping("/user/{uid1}:{uid2}")
     public String userProfileByUid(@PathVariable(value = "uid1")String newUid1,
                                    @PathVariable(value = "uid2")String newUid2) throws JsonProcessingException {
@@ -106,6 +124,7 @@ public class ProfileController {
         return asGuest(fromUser,targetUser);
     }
 
+    //check complex info
     @RequestMapping("/user/{uid}/cart")
     public String userProfileShowCart(@PathVariable(value = "uid")String newUid) throws JsonProcessingException {
         int uid = checkUidValid(newUid);
@@ -150,7 +169,7 @@ public class ProfileController {
             Item newItem = itemRepository.selectItemByIid(b.getIid());
             User newUser = userRepository.selectUserByUid(b.getUid());
             ItemInfoWrapper infoWrapper = new ItemInfoWrapper(newItem,newUser,categoryCache);
-            infoWrapper.setBoughtTime(DateProcessing.getDateStringFromTimestamp(b.getCreatedTime()));
+            infoWrapper.setBoughtTime(DateProcessor.getDateStringFromTimestamp(b.getCreatedTime()));
 
             result.add(infoWrapper);
         }
@@ -159,16 +178,72 @@ public class ProfileController {
         return objectMapper.writeValueAsString(new Result(ProfilePageState.SHOW_BOUGHT,result));
     }
 
+    @RequestMapping("/user/{uid}/follower")
+    public String userProfileShowFollowers(@PathVariable(value = "uid")String newUid) throws JsonProcessingException{
+        int uid = checkUidValid(newUid);
+        if(uid == -1) {
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong Info:" + newUid));
+        }
+
+        User user = userRepository.selectUserByUid(uid);
+        if(user == null){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
+        }
+
+        List<User> followers = userRepository.selectUserFollowers(user);
+        List<FollowerInfoWrapper> result = new ArrayList<FollowerInfoWrapper>();
+        for(User f : followers){
+            FollowerInfoWrapper wrapper = new FollowerInfoWrapper(f);
+            result.add(wrapper);
+        }
+
+        //return (5,show_bought),list of item in followers
+        return objectMapper.writeValueAsString(new Result(ProfilePageState.SHOW_FOLLOWER,result));
+    }
+
+    @RequestMapping("/user/{uid}/following")
+    public String userProfileShowFollowings(@PathVariable(value = "uid")String newUid) throws JsonProcessingException{
+        int uid = checkUidValid(newUid);
+        if(uid == -1) {
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong Info:" + newUid));
+        }
+
+        User user = userRepository.selectUserByUid(uid);
+        if(user == null){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
+        }
+
+        List<User> followers = userRepository.selectUserFollowings(user);
+        List<FollowerInfoWrapper> result = new ArrayList<FollowerInfoWrapper>();
+        for(User f : followers){
+            FollowerInfoWrapper wrapper = new FollowerInfoWrapper(f);
+            result.add(wrapper);
+        }
+
+        //return (6,show_bought),list of item in followings
+        return objectMapper.writeValueAsString(new Result(ProfilePageState.SHOW_FOLLOWER,result));
+    }
+
+    //update api
+    /**
+     * @param newUid uid
+     * @param newName a String no longer than 20
+     * @return update result
+     */
     @RequestMapping("/user/{uid}/update/name={newName}")
     public String userProfileUpdateName(@PathVariable(value = "uid")String newUid,
                                         @PathVariable(value = "newName")String newName) throws JsonProcessingException{
         int uid = checkUidValid(newUid);
         if(uid == -1) {
-            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong info:" + newUid));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong Info:" + newUid));
         }
 
         if(newName.length() == 0){
-            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong input"));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong Input"));
+        }
+
+        if(newName.length() > 20){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Input Too Long"));
         }
 
         User user = userRepository.selectUserByUid(uid);
@@ -187,12 +262,21 @@ public class ProfileController {
         return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_SUCCESSFUL,newName));
     }
 
+    /**
+     * @param newUid uid
+     * @param newIntro a String no longer than 50
+     * @return update result
+     */
     @RequestMapping("user/{uid}/update/intro={newIntro}")
     public String userProfileUpdateIntroduction(@PathVariable(value = "uid")String newUid,
                                                 @PathVariable(value = "newIntro")String newIntro) throws JsonProcessingException{
         int uid = checkUidValid(newUid);
         if(uid == -1) {
-            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong info:" + newUid));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong Info:" + newUid));
+        }
+
+        if(newIntro.length() > 50){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Input Too Long"));
         }
 
         User user = userRepository.selectUserByUid(uid);
@@ -210,7 +294,7 @@ public class ProfileController {
     /**
      * @param newUid uid
      * @param newSex 0/1/2/3 -> undefined/male/female/secret
-     * @return result
+     * @return update result
      */
     @RequestMapping("user/{uid}/update/sex={newSex}")
     public String userProfileUpdateSex(@PathVariable(value = "uid")String newUid,
@@ -252,7 +336,7 @@ public class ProfileController {
      * @param newUid uid
      * @param newBirthday yyyy-MM-dd. Notice, input like 2000-13-99 will NOT cause crash, instead, a wrong result will
      *                    be calculated.
-     * @return result
+     * @return update result
      */
     @RequestMapping("/user/{uid}/update/birthday={newBirthday}")
     public String userProfileUpdateBirthday(@PathVariable(value = "uid")String newUid,
@@ -352,6 +436,11 @@ public class ProfileController {
         return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_SUCCESSFUL,newState));
     }
 
+    /**
+     * @param newUid uid
+     * @param newPassword new password - this will also receive a simplicity check
+     * @return result
+     */
     @RequestMapping("user/{uid}/update/password={newPassword}")
     public String userProfileUpdatePassword(@PathVariable(value = "uid")String newUid,
                                             @PathVariable(value = "newPassword")String newPassword) throws JsonProcessingException{

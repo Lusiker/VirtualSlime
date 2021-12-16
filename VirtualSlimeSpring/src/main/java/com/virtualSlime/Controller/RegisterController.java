@@ -3,10 +3,10 @@ package com.virtualSlime.Controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virtualSlime.Entity.User;
-import com.virtualSlime.Enum.RegisterPageState;
-import com.virtualSlime.Service.PasswordSimplicityChecker;
+import com.virtualSlime.Enum.PageState.RegisterPageState;
+import com.virtualSlime.Utils.PasswordSimplicityChecker;
 import com.virtualSlime.Service.UserRepository;
-import com.virtualSlime.Utils.Result;
+import com.virtualSlime.Utils.InfoWrapper.Result;
 import com.virtualSlime.Utils.StringEncoder;
 import org.springframework.web.bind.annotation.*;
 

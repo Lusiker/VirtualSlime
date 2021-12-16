@@ -3,13 +3,13 @@ package com.virtualSlime.Controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virtualSlime.Entity.User;
-import com.virtualSlime.Enum.ActivatePageState;
-import com.virtualSlime.Service.CommonMailSender;
+import com.virtualSlime.Enum.PageState.ActivatePageState;
+import com.virtualSlime.Utils.CommonMailSender;
 import com.virtualSlime.Service.UserRepository;
-import com.virtualSlime.Utils.Result;
+import com.virtualSlime.Utils.InfoWrapper.Result;
 import com.virtualSlime.Utils.GlobalMailCollector;
-import com.virtualSlime.Utils.NumberProcessing;
-import com.virtualSlime.Utils.UserVerificationWrapper;
+import com.virtualSlime.Utils.NumberProcessor;
+import com.virtualSlime.Utils.InfoWrapper.UserVerificationWrapper;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,7 +51,7 @@ public class ActivateController {
 
     private UserVerificationWrapper getVerificationWrapper(User user){
         Date now = new Date();
-        String code = NumberProcessing.getRandomFourDigitNumber(now.getTime());
+        String code = NumberProcessor.getRandomFourDigitNumber(now.getTime());
 
         return new UserVerificationWrapper(user,now,code,false,false);
     }
