@@ -178,6 +178,13 @@ public class UserRepository {
         return updateUser(user);
     }
 
+    public boolean updateUserIsMerchant(User user){
+        //update user's merchant state
+        user.setUserIsMerchant(true);
+
+        return updateUser(user);
+    }
+
     public boolean updateUserPassword(User user,String password){
         //update user's password
         user.setUserPassword(password);

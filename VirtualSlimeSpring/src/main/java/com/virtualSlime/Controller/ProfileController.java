@@ -227,6 +227,34 @@ public class ProfileController {
 
     //update api
     /**
+     * Make given user a merchant
+     * @param newUid uid
+     * @return update result
+     */
+    @RequestMapping("user/{uid}/toMerchant")
+    public String userProfileToMerchant(@PathVariable(value = "uid")String newUid) throws JsonProcessingException{
+        int uid = checkUidValid(newUid);
+        if(uid == -1) {
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong Info:" + newUid));
+        }
+
+        User user = userRepository.selectUserByUid(uid);
+        if(user == null){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
+        }
+
+        if(user.getUserIsMerchant()){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Already Merchant"));
+        }
+
+        if(!userRepository.updateUserIsMerchant(user)){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
+        }
+
+        return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_SUCCESSFUL,null));
+    }
+
+    /**
      * @param newUid uid
      * @param newName a String no longer than 20
      * @return update result
