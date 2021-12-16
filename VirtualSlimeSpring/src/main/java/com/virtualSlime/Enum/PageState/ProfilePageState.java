@@ -1,6 +1,6 @@
-package com.virtualSlime.Enum;
+package com.virtualSlime.Enum.PageState;
 
-public enum ProfilePageState implements ControllerStateEnum{
+public enum ProfilePageState implements ControllerStateEnum {
     FAILED(-1,"failed"),
     INTERNAL_ERROR(-2,"internal_error"),
     ACCESS_DENIED(-3,"access_denied"),
@@ -9,7 +9,9 @@ public enum ProfilePageState implements ControllerStateEnum{
     AS_GUEST(1,"as_guest"),
     UPDATE_SUCCESSFUL(2,"update_successful"),
     SHOW_CART(3,"show_cart"),
-    SHOW_BOUGHT(4,"show_bought");
+    SHOW_BOUGHT(4,"show_bought"),
+    SHOW_FOLLOWER(5,"show_follower"),
+    SHOW_FOLLOWING(6,"show_following");
 
     private final int stateCode;
     private final String value;

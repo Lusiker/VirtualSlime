@@ -1,7 +1,8 @@
-package com.virtualSlime.Utils;
+package com.virtualSlime.Utils.InfoWrapper;
 
 import com.virtualSlime.Entity.Item;
 import com.virtualSlime.Entity.User;
+import com.virtualSlime.Utils.GlobalCategoryCache;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

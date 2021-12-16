@@ -1,4 +1,4 @@
-package com.virtualSlime.Utils;
+package com.virtualSlime.Utils.InfoWrapper;
 
 import com.virtualSlime.Entity.User;
 import lombok.*;

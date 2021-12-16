@@ -1,17 +1,17 @@
-package com.virtualSlime.Enum;
+package com.virtualSlime.Enum.EntityType;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.baomidou.mybatisplus.annotation.IEnum;
 
-public enum CouponType implements IEnum<Byte> {
-    NOT_DEFINED(0),
-    MINUS(1),
-    MULTIPLE(2);
+public enum CommentType implements IEnum<Byte> {
+    UNDEFINED(0),
+    RATING(1),
+    REPLY(2);
 
     @EnumValue
     private final Byte value;
 
-    CouponType(int value) {
+    CommentType(int value) {
         this.value = (byte)value;
     }
 

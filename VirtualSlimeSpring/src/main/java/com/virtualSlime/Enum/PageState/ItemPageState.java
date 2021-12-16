@@ -1,6 +1,6 @@
-package com.virtualSlime.Enum;
+package com.virtualSlime.Enum.PageState;
 
-public enum ItemPageState implements ControllerStateEnum{
+public enum ItemPageState implements ControllerStateEnum {
     ITEM_NOT_EXIST(-1,"item_not_exist"),
     FAIL(-2,"fail"),
     NOT_ENOUGH_CURRENCY(-3,"not_enough_currency"),

@@ -1,6 +1,6 @@
-package com.virtualSlime.Enum;
+package com.virtualSlime.Enum.PageState;
 
-public enum ActivatePageState implements ControllerStateEnum{
+public enum ActivatePageState implements ControllerStateEnum {
     SUCCESSFUL(0,"activate_successful"),
     NOT_LOGIN(-1,"not_login"),
     FAILED(-2,"failed"),

@@ -1,4 +1,4 @@
-package com.virtualSlime.Service;
+package com.virtualSlime.Utils;
 
 public class PasswordSimplicityChecker {
     private static final char[] ascChar = {

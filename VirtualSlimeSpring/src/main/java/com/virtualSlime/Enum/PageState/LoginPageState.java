@@ -1,9 +1,9 @@
-package com.virtualSlime.Enum;
+package com.virtualSlime.Enum.PageState;
 
 /**
  * LoginState manage states of login
  */
-public enum LoginPageState implements ControllerStateEnum{
+public enum LoginPageState implements ControllerStateEnum {
     SUCCESSFUL(0,"login_success"),
     INPUT_ERROR(-1,"input_error"),
     WRONG_INFO(1,"wrong_info"),

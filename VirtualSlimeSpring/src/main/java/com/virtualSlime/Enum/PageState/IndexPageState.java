@@ -1,6 +1,6 @@
-package com.virtualSlime.Enum;
+package com.virtualSlime.Enum.PageState;
 
-public enum IndexPageState implements ControllerStateEnum{
+public enum IndexPageState implements ControllerStateEnum {
     SUCCESSFUL(0,"hello from virtual slime");
 
     private final Integer stateCode;

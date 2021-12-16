@@ -1,6 +1,6 @@
-package com.virtualSlime.Enum;
+package com.virtualSlime.Enum.PageState;
 
-public enum RegisterPageState implements ControllerStateEnum{
+public enum RegisterPageState implements ControllerStateEnum {
     //states for register controller
     SUCCESSFUL(0,"register_success"),
     INPUT_ERROR(-1,"input_error"),

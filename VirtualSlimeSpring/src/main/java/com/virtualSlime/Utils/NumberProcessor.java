@@ -2,7 +2,7 @@ package com.virtualSlime.Utils;
 
 import java.util.Random;
 
-public class NumberProcessing {
+public class NumberProcessor {
     private static final Random random = new Random();
 
     /**

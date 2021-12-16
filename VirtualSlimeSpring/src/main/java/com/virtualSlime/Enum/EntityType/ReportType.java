@@ -1,17 +1,18 @@
-package com.virtualSlime.Enum;
+package com.virtualSlime.Enum.EntityType;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.baomidou.mybatisplus.annotation.IEnum;
 
-public enum MessageType implements IEnum<Byte> {
+public enum ReportType implements IEnum<Byte> {
     UNDEFINED(0),
-    TEXT(1),
-    PICTURE(2);
+    ITEM(1),
+    USER(2),
+    COMMENT(3);
 
     @EnumValue
     private final Byte value;
 
-    MessageType(int value) {
+    ReportType(int value) {
         this.value = (byte)value;
     }
 

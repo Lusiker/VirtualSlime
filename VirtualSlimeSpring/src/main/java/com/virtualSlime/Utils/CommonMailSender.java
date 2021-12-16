@@ -1,6 +1,6 @@
-package com.virtualSlime.Service;
+package com.virtualSlime.Utils;
 
-import com.virtualSlime.Utils.UserVerificationWrapper;
+import com.virtualSlime.Utils.InfoWrapper.UserVerificationWrapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.SimpleMailMessage;

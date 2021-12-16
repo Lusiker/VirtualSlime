@@ -1,4 +1,4 @@
-package com.virtualSlime.Enum;
+package com.virtualSlime.Enum.EntityType;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.baomidou.mybatisplus.annotation.IEnum;

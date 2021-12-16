@@ -1,4 +1,4 @@
-package com.virtualSlime.Enum;
+package com.virtualSlime.Enum.PageState;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 

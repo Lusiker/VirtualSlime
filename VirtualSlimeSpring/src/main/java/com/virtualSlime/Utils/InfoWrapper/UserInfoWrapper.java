@@ -1,7 +1,7 @@
-package com.virtualSlime.Utils;
+package com.virtualSlime.Utils.InfoWrapper;
 
 import com.virtualSlime.Entity.User;
-import com.virtualSlime.Enum.UserSex;
+import com.virtualSlime.Enum.EntityType.UserSex;
 import com.virtualSlime.Enum.UserState;
 import lombok.Getter;
 import lombok.Setter;

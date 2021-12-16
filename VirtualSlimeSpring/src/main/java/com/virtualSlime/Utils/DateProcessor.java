@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Calendar;
 
-public class DateProcessing {
+public class DateProcessor {
     /**
      * Contains methods processing data of Date, Calendar or long
      */
