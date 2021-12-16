@@ -20,11 +20,11 @@ import java.util.List;
 @Service
 public class ItemRepository {
     @Resource
-    ItemMapper itemMapper;
+    private ItemMapper itemMapper;
     @Resource
-    UserCartMapper userCartMapper;
+    private UserCartMapper userCartMapper;
     @Resource
-    UserBoughtMapper userBoughtMapper;
+    private UserBoughtMapper userBoughtMapper;
 
     //basic insert
     public boolean insertItem(Item item){
@@ -180,5 +180,20 @@ public class ItemRepository {
         item.setVisitCount(previous_visit + 1);
 
         return updateItem(item);
+    }
+
+    //delete methods
+    public boolean removeItem(Item item){
+        //this item will only make item Hidden instead of deleting it
+        item.setItemState(ItemState.HIDDEN);
+
+        return updateItem(item);
+    }
+
+    public boolean removeFromCart(User user,Item item){
+        QueryWrapper<UserCart> wrapper = new QueryWrapper<UserCart>().eq("uid",user.getUid())
+                .and(w -> w.eq("iid",item.getIid()));
+
+        return userCartMapper.delete(wrapper) == 1;
     }
 }
