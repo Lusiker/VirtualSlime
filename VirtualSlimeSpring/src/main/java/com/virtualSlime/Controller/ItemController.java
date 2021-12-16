@@ -12,11 +12,13 @@ import com.virtualSlime.Utils.InfoWrapper.ItemInfoWrapper;
 import com.virtualSlime.Utils.InfoWrapper.Result;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Objects;
 
 @RestController
 public class ItemController {
@@ -49,6 +51,68 @@ public class ItemController {
         ItemInfoWrapper itemInfoWrapper = new ItemInfoWrapper(item,user,categoryCache);
 
         return objectMapper.writeValueAsString(new Result(ItemPageState.SUCCESSFUL,itemInfoWrapper));
+    }
+
+    /**
+     * @param newUid uid
+     * @param newItemName String no longer than 50
+     * @param newItemBrief String no longer than 200
+     * @param newItemPrice String of Decimal(12,2)
+     * @param newCid cid of an existing category
+     * @return create result
+     */
+    @RequestMapping("/item/create")
+    public String createItem(@RequestParam(value = "uid",defaultValue = "")String newUid,
+                             @RequestParam(value = "itemName",defaultValue = "")String newItemName,
+                             @RequestParam(value = "itemBrief",defaultValue = "")String newItemBrief,
+                             @RequestParam(value = "itemPrice",defaultValue = "0.0")String newItemPrice,
+                             @RequestParam(value = "cid",defaultValue = "1")String newCid) throws JsonProcessingException{
+        int uid;
+        try{
+            uid = Integer.parseInt(newUid);
+        }catch (Exception e){
+            //uid bad input
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Wrong Info:" + newUid));
+        }
+
+        short cid;
+        try{
+            cid = Short.parseShort(newCid);
+        }catch (Exception e){
+            //cid bad input
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Wrong Info:" + newCid));
+        }
+
+        if(categoryCache.getCategoryNameFromCid(cid).equals("undefined")){
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Category Not Exist:" + newCid));
+        }
+
+        if(newItemName.length() > 50){
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Item Name Too Long"));
+        }
+
+        if(newItemBrief.length() > 200){
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Item Brief Too Long"));
+        }
+
+        BigDecimal itemPrice;
+        try{
+            itemPrice = new BigDecimal(newItemPrice);
+        }catch (Exception e){
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Wrong Info:" + newItemPrice));
+        }
+
+        User user = userRepository.selectUserByUid(uid);
+        if(user == null){
+            return objectMapper.writeValueAsString(new Result(ItemPageState.INTERNAL_ERROR,null));
+        }
+
+        Item newItem = new Item(user.getUid(),newItemName,newItemBrief,itemPrice,cid);
+        if(!itemRepository.insertItem(newItem)){
+            return objectMapper.writeValueAsString(new Result(ItemPageState.INTERNAL_ERROR,null));
+        }
+
+        return objectMapper.writeValueAsString(new Result(ItemPageState.CREATE_SUCCESSFUL,newItem.getIid()));
     }
 
     /**

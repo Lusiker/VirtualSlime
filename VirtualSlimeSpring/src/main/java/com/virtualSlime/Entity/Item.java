@@ -27,8 +27,7 @@ public class Item {
     private Integer visitCount;
     private ItemState itemState;
 
-    public Item(int iid,int uid,String itemName,String itemBrief,BigDecimal itemPrice,short cid){
-        this.iid = iid;
+    public Item(int uid,String itemName,String itemBrief,BigDecimal itemPrice,short cid){
         this.uid = uid;
         this.itemName = itemName;
         this.itemBrief = itemBrief;

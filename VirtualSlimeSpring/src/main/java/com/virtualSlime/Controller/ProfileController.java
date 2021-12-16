@@ -82,7 +82,6 @@ public class ProfileController {
     }
 
     //access profile api
-
     /**
      * uid2 trying to access userName1
      * @param newUserName1 target username
