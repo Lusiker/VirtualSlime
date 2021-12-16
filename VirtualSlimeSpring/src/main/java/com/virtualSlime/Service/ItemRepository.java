@@ -13,6 +13,7 @@ import com.virtualSlime.Mapper.UserCartMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -122,15 +123,7 @@ public class ItemRepository {
         //select a particular item
         QueryWrapper<Item> wrapper = new QueryWrapper<Item>().eq("iid",iid);
 
-        Item item = itemMapper.selectOne(wrapper);
-
-        if(item == null){
-            return null;
-        }else if(item.getItemState() != ItemState.HIDDEN){
-            return item;
-        }else {
-            return null;
-        }
+        return itemMapper.selectOne(wrapper);
     }
 
     public int getCartSize(int uid){
@@ -174,6 +167,42 @@ public class ItemRepository {
     }
 
     //update methods
+    public boolean updateItemName(Item item,String newName){
+        item.setItemName(newName);
+
+        return updateItem(item);
+    }
+
+    public boolean updateItemBrief(Item item,String newBrief){
+        item.setItemBrief(newBrief);
+
+        return updateItem(item);
+    }
+
+    public boolean updateItemPrice(Item item, BigDecimal newPrice){
+        item.setItemPrice(newPrice);
+
+        return updateItem(item);
+    }
+
+    public boolean updateItemIsDiscounting(Item item,boolean isDiscounting,BigDecimal discount){
+        item.setIsDiscounting(isDiscounting);
+
+        if(isDiscounting){
+            item.setItemPriceDiscounted(discount);
+        }else{
+            item.setItemPriceDiscounted(new BigDecimal("0.0"));
+        }
+
+        return updateItem(item);
+    }
+
+    public boolean updateItemCategory(Item item,short cid){
+        item.setCid(cid);
+
+        return updateItem(item);
+    }
+
     public boolean updateItemVisit(Item item){
         //+1 to item visit count
         int previous_visit = item.getVisitCount();
