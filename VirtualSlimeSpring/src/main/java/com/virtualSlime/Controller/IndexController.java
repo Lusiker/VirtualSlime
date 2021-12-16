@@ -2,6 +2,7 @@ package com.virtualSlime.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.virtualSlime.Entity.Category;
 import com.virtualSlime.Entity.Item;
 import com.virtualSlime.Entity.User;
 import com.virtualSlime.Enum.PageState.IndexPageState;
@@ -40,5 +41,12 @@ public class IndexController {
         }
 
         return objectMapper.writeValueAsString(new Result(IndexPageState.SUCCESSFUL,processedItems));
+    }
+
+    @RequestMapping("/categories")
+    public String categories() throws JsonProcessingException{
+        List<Category> categories = categoryCache.getAllCategoryInfo();
+
+        return objectMapper.writeValueAsString(new Result(IndexPageState.SUCCESSFUL,categories));
     }
 }
