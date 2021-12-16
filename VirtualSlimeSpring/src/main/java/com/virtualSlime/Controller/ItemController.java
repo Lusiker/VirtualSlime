@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virtualSlime.Entity.Item;
 import com.virtualSlime.Entity.User;
+import com.virtualSlime.Enum.ItemState;
 import com.virtualSlime.Enum.PageState.ItemPageState;
 import com.virtualSlime.Service.ItemRepository;
 import com.virtualSlime.Service.UserRepository;
@@ -42,7 +43,7 @@ public class ItemController {
         }
 
         Item item = itemRepository.selectItemByIid(iid);
-        if(item == null){
+        if(item == null || item.getItemState() == ItemState.HIDDEN){
             //item not exist or hidden
             return objectMapper.writeValueAsString(new Result(ItemPageState.ITEM_NOT_EXIST,newIid));
         }
@@ -132,7 +133,7 @@ public class ItemController {
         }
 
         Item item = itemRepository.selectItemByIid(iid);
-        if(item == null){
+        if(item == null || item.getItemState() == ItemState.HIDDEN){
             //item not exist or hidden
             return objectMapper.writeValueAsString(new Result(ItemPageState.ITEM_NOT_EXIST,newIid));
         }
@@ -186,7 +187,7 @@ public class ItemController {
         }
 
         Item item = itemRepository.selectItemByIid(iid);
-        if(item == null){
+        if(item == null || item.getItemState() == ItemState.HIDDEN){
             //item not exist or hidden
             return objectMapper.writeValueAsString(new Result(ItemPageState.ITEM_NOT_EXIST,newIid));
         }
@@ -231,5 +232,38 @@ public class ItemController {
                 return objectMapper.writeValueAsString(new Result(ItemPageState.INTERNAL_ERROR,null));
             }
         }
+    }
+
+    /**
+     * @param newIid uid
+     * @param newName string no longer than 50
+     * @return update result
+     */
+    @RequestMapping("/item/{iid}/update/name={newName}")
+    public String itemUpdateName(@PathVariable(value = "iid")String newIid,
+                                 @PathVariable(value = "newName")String newName) throws JsonProcessingException{
+        int iid;
+        try{
+            iid = Integer.parseInt(newIid);
+        }catch (Exception e){
+            //iid bad input
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Wrong Info:" + newIid));
+        }
+
+        if(newName.length() > 50){
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"New Name Too Long"));
+        }
+
+        Item item = itemRepository.selectItemByIid(iid);
+        if(item == null){
+            //item not exist
+            return objectMapper.writeValueAsString(new Result(ItemPageState.ITEM_NOT_EXIST,newIid));
+        }
+
+        if(!itemRepository.updateItemName(item,newName)){
+            return objectMapper.writeValueAsString(new Result(ItemPageState.INTERNAL_ERROR,null));
+        }
+
+        return objectMapper.writeValueAsString(new Result(ItemPageState.UPDATE_SUCCESSFUL,null));
     }
 }
