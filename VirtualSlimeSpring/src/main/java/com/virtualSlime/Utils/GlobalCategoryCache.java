@@ -5,8 +5,10 @@ import com.virtualSlime.Mapper.CategoryMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class is a cache that stores all "category id - category name" entries
@@ -30,5 +32,14 @@ public class GlobalCategoryCache {
         }
 
         return cat.getName();
+    }
+
+    public List<Category> getAllCategoryInfo(){
+        List<Category> result = new ArrayList<Category>();
+        for(Map.Entry<Short, Category> e : map.entrySet()){
+            result.add(e.getValue());
+        }
+
+        return result;
     }
 }
