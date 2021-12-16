@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.virtualSlime.Entity.Item;
 import com.virtualSlime.Entity.User;
 import com.virtualSlime.Entity.Relation.UserCoupon;
-import com.virtualSlime.Enum.UserSex;
+import com.virtualSlime.Enum.EntityType.UserSex;
 import com.virtualSlime.Enum.UserState;
 import com.virtualSlime.Mapper.UserCouponMapper;
 import com.virtualSlime.Mapper.UserMapper;
@@ -20,9 +20,9 @@ import java.util.List;
 @Service
 public class UserRepository {
     @Resource
-    UserMapper userMapper;
+    private UserMapper userMapper;
     @Resource
-    UserCouponMapper userCouponMapper;
+    private UserCouponMapper userCouponMapper;
 
     //basic insert
     public boolean insertUser(User user){
@@ -75,22 +75,40 @@ public class UserRepository {
         QueryWrapper<User> wrapper = new QueryWrapper<User>().inSql("uid",
                 "select uid_from from virtual_slime.r_user_follow where uid_to = " + user.getUid());
 
-        List<User> list = userMapper.selectList(wrapper);
+        Long listSize = userMapper.selectCount(wrapper);
         int followerCount = 0;
-        followerCount += list.size();
+        if(listSize == null){
+            return 0;
+        }
 
-        return followerCount;
+        return (int) (followerCount + listSize);
+    }
+
+    public List<User> selectUserFollowers(User user){
+        QueryWrapper<User> wrapper = new QueryWrapper<User>().inSql("uid",
+                "select uid_from from virtual_slime.r_user_follow where uid_to = " + user.getUid());
+
+        return userMapper.selectList(wrapper);
     }
 
     public int selectUserFollowingCount(User user){
         QueryWrapper<User> wrapper = new QueryWrapper<User>().inSql("uid",
                 "select uid_to from virtual_slime.r_user_follow where uid_from = " + user.getUid());
 
-        List<User> list = userMapper.selectList(wrapper);
+        Long listSize = userMapper.selectCount(wrapper);
         int followingCount = 0;
-        followingCount += list.size();
+        if(listSize == null){
+            return 0;
+        }
 
-        return followingCount;
+        return (int) (followingCount + listSize);
+    }
+
+    public List<User> selectUserFollowings(User user){
+        QueryWrapper<User> wrapper = new QueryWrapper<User>().inSql("uid",
+                "select uid_to from virtual_slime.r_user_follow where uid_from = " + user.getUid());
+
+        return userMapper.selectList(wrapper);
     }
 
     //update queries
