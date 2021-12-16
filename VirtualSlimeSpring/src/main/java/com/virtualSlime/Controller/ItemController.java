@@ -117,12 +117,12 @@ public class ItemController {
 
     /**
      * @param newIid iid
-     * @param newUid uid of target cart
+     * @param newUid uid of target cart owner
      * @return result
      */
-    @RequestMapping("item/{iid}/toCart={uid}")
+    @RequestMapping("item/{iid}/toCart")
     public String addItemToUserCart(@PathVariable(value = "iid")String newIid,
-                                    @PathVariable(value = "uid")String newUid) throws JsonProcessingException {
+                                    @RequestParam(value = "uid",defaultValue = "")String newUid) throws JsonProcessingException {
         int iid;
         try{
             iid = Integer.parseInt(newIid);
@@ -150,6 +150,11 @@ public class ItemController {
             return objectMapper.writeValueAsString(new Result(ItemPageState.INTERNAL_ERROR,null));
         }
 
+        if(!user.getUserHasActivated()){
+            //not activated
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Not Activated"));
+        }
+
         if(itemRepository.checkHasInCart(user,item)){
             return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Has Added"));
         }
@@ -164,9 +169,14 @@ public class ItemController {
         }
     }
 
-    @RequestMapping("/item/{iid}/buy={uid}")
+    /**
+     * @param newIid iid
+     * @param newUid uid of the buyer
+     * @return buy result
+     */
+    @RequestMapping("/item/{iid}/buy")
     public String userBuyItem(@PathVariable(value = "iid")String newIid,
-                              @PathVariable(value = "uid")String newUid) throws JsonProcessingException{
+                              @RequestParam(value = "uid",defaultValue = "")String newUid) throws JsonProcessingException{
         int iid;
         try{
             iid = Integer.parseInt(newIid);
