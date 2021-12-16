@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.virtualSlime.Enum.ItemState;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -13,6 +14,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor//this is necessary in order to avoid mybatis error
 @TableName(schema = "virtual_slime", value = "item_info")
 public class Item {
     @TableId(type = IdType.AUTO)
