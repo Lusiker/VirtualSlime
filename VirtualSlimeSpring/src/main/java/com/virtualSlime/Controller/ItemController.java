@@ -139,7 +139,7 @@ public class ItemController {
             return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Has Bought"));
         }
 
-        int buyResult = userRepository.updateUserCurrency(user,item);
+        int buyResult = userRepository.updateUserCurrencyBuy(user,item);
         switch (buyResult){
             case -1 -> {
                 BigDecimal gap = item.getItemPrice().add(item.getItemPriceDiscounted()).subtract(user.getUserCurrency());

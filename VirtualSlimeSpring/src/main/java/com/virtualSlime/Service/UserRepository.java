@@ -185,7 +185,7 @@ public class UserRepository {
         return updateUser(user);
     }
 
-    public int updateUserCurrency(User user, Item item){
+    public int updateUserCurrencyBuy(User user, Item item){
         BigDecimal userCurrency = user.getUserCurrency();
         userCurrency = userCurrency.subtract(item.getItemPrice());
         if(item.getIsDiscounting()){
@@ -205,6 +205,15 @@ public class UserRepository {
 
         //failed to update user
         return 0;
+    }
+
+    public boolean updateUserCurrencyAdd(User user, BigDecimal count){
+        //add count to user's currency
+        BigDecimal userCurrency = user.getUserCurrency();
+        BigDecimal newCount = userCurrency.add(count);
+        user.setUserCurrency(newCount);
+
+        return updateUser(user);
     }
 
     public boolean updateUserHasActivatedTrue(User user){

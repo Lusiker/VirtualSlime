@@ -15,11 +15,13 @@ import com.virtualSlime.Utils.*;
 import com.virtualSlime.Utils.InfoWrapper.ItemInfoWrapper;
 import com.virtualSlime.Utils.InfoWrapper.Result;
 import com.virtualSlime.Utils.InfoWrapper.UserInfoWrapper;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -162,7 +164,7 @@ public class ProfileController {
         }
 
         List<UserBought> list = itemRepository.selectUserBought(user);
-        list.sort(Comparator.comparing(UserBought::getCreatedTime));
+        list.sort(Comparator.comparing(UserBought::getCreatedTime).reversed());
 
         List<ItemInfoWrapper> result = new ArrayList<ItemInfoWrapper>();
         for(UserBought b : list){
@@ -468,5 +470,38 @@ public class ProfileController {
         }else{
             return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Empty Input"));
         }
+    }
+
+    /**
+     * @param newUid uid
+     * @param newAddCount a String-styled float number with length <= 12 and precision = 2
+     * @return updated user currency or errors
+     */
+    @RequestMapping("user/{uid}/update/addCurrency={addCount}")
+    public String userProfileAddCurrency(@PathVariable(value = "uid")String newUid,
+                                         @PathVariable(value = "addCount")String newAddCount) throws JsonProcessingException{
+        int uid = checkUidValid(newUid);
+        if(uid == -1) {
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED, newUid));
+        }
+
+        User user = userRepository.selectUserByUid(uid);
+        if(user == null){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
+        }
+
+        BigDecimal addCount;
+        try{
+            double addCountLiteral = Double.parseDouble(newAddCount);
+            addCount = BigDecimal.valueOf(addCountLiteral);
+        }catch (Exception e){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED, newAddCount));
+        }
+
+        if(!userRepository.updateUserCurrencyAdd(user,addCount)){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_FAILED,null));
+        }
+
+        return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_SUCCESSFUL,user.getUserCurrency()));
     }
 }
