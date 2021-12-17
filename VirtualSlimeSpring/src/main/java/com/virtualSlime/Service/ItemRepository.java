@@ -49,7 +49,7 @@ public class ItemRepository {
 
     //basic update
     public boolean updateItem(Item item){
-        UpdateWrapper<Item> wrapper = new UpdateWrapper<Item>();
+        UpdateWrapper<Item> wrapper = new UpdateWrapper<>();
         wrapper.eq("iid",item.getUid());
 
         return itemMapper.update(item, wrapper) == 1;
@@ -91,7 +91,7 @@ public class ItemRepository {
     public List<Item> selectUserCartAsItemList(User user){
         List<UserCart> cart = selectUserCart(user);
 
-        List<Item> result = new ArrayList<Item>();
+        List<Item> result = new ArrayList<>();
         for(UserCart i : cart){
             Item newItem = selectItemByIid(i.getIid());
             result.add(newItem);
@@ -110,7 +110,7 @@ public class ItemRepository {
     public List<Item> selectUserBoughtAsItemList(User user){
         List<UserBought> bought = selectUserBought(user);
 
-        List<Item> result = new ArrayList<Item>();
+        List<Item> result = new ArrayList<>();
         for(UserBought b : bought){
             Item newItem = selectItemByIid(b.getIid());
             result.add(newItem);
@@ -225,9 +225,9 @@ public class ItemRepository {
         return updateItem(item);
     }
 
-    public boolean removeFromCart(User user,Item item){
+    public boolean removeFromCart(User user,int iid){
         QueryWrapper<UserCart> wrapper = new QueryWrapper<UserCart>().eq("uid",user.getUid())
-                .and(w -> w.eq("iid",item.getIid()));
+                .and(w -> w.eq("iid",iid));
 
         return userCartMapper.delete(wrapper) == 1;
     }
