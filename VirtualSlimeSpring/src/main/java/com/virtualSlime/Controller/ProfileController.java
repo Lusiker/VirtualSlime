@@ -2,19 +2,18 @@ package com.virtualSlime.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.virtualSlime.Entity.Comment;
 import com.virtualSlime.Entity.Item;
 import com.virtualSlime.Entity.Relation.UserBought;
 import com.virtualSlime.Entity.User;
 import com.virtualSlime.Enum.PageState.ProfilePageState;
 import com.virtualSlime.Enum.EntityType.UserSex;
+import com.virtualSlime.Service.CommentRepository;
 import com.virtualSlime.Service.ItemRepository;
-import com.virtualSlime.Utils.InfoWrapper.FollowerInfoWrapper;
+import com.virtualSlime.Utils.InfoWrapper.*;
 import com.virtualSlime.Utils.PasswordSimplicityChecker;
 import com.virtualSlime.Service.UserRepository;
 import com.virtualSlime.Utils.*;
-import com.virtualSlime.Utils.InfoWrapper.ItemInfoWrapper;
-import com.virtualSlime.Utils.InfoWrapper.Result;
-import com.virtualSlime.Utils.InfoWrapper.UserInfoWrapper;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +34,8 @@ public class ProfileController {
     UserRepository userRepository;
     @Resource
     ItemRepository itemRepository;
+    @Resource
+    CommentRepository commentRepository;
     @Resource
     GlobalCategoryCache categoryCache;
     @Resource
@@ -126,6 +127,47 @@ public class ProfileController {
     }
 
     //check complex info
+    @RequestMapping("/user/{uid}/comments")
+    public String userProfileShowComments(@PathVariable(value = "uid")String newUid) throws JsonProcessingException{
+        int uid = checkUidValid(newUid);
+        if(uid == -1) {
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong info:" + newUid));
+        }
+
+        User user = userRepository.selectUserByUid(uid);
+        if(user == null){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
+        }
+
+        List<Comment> comments = commentRepository.selectCommentsByUid(user);
+        List<CommentInfoWrapper> result = new ArrayList<CommentInfoWrapper>();
+        for(Comment c : comments){
+            CommentInfoWrapper wrapper = new CommentInfoWrapper.CommentInfoWrapperBuilder()
+                    .setComment(c)
+                    .build();
+
+            result.add(wrapper);
+        }
+
+        return objectMapper.writeValueAsString(new Result(ProfilePageState.SHOW_COMMENTS,result));
+    }
+
+    @RequestMapping("user/{uid}/items")
+    public String userProfileShowItems(@PathVariable(value = "uid")String newUid) throws JsonProcessingException {
+        int uid = checkUidValid(newUid);
+        if(uid == -1) {
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong info:" + newUid));
+        }
+
+        User user = userRepository.selectUserByUid(uid);
+        if(user == null){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
+        }
+
+        List<Item> list = itemRepository.selectItemsByUid(user);
+        return objectMapper.writeValueAsString(new Result(ProfilePageState.SHOW_ITEMS,list));
+    }
+
     @RequestMapping("/user/{uid}/cart")
     public String userProfileShowCart(@PathVariable(value = "uid")String newUid) throws JsonProcessingException {
         int uid = checkUidValid(newUid);
