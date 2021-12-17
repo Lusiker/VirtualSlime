@@ -14,6 +14,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 @TableName(schema = "virtual_slime", value = "user_info")
 public class User {
     @TableId(type = IdType.AUTO)
