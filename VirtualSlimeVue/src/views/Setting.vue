@@ -5,14 +5,57 @@
         left-arrow
         @click-left="onClickLeft"
     />
-    <van-cell-group style="margin-top: 5%">
+    <van-cell-group style="margin-top: 10%">
       <van-cell title="头像" value="内容" />
-      <van-cell title="昵称" :value="info.name" />
-      <van-cell title="性别" :value="info.sex" />
-      <van-cell title="出生年月" :value="info.birthday" />
-      <van-cell title="个性签名" :value="info.introduction" />
+
+      <van-cell title="昵称" :value="info.name" is-link @click="updateNameShow = true"/>
+      <van-popup v-model:show="updateNameShow" position="bottom" :style="{ height: '30%' }" round>
+        <van-cell-group inset style="margin-top: 10%">
+          <van-field v-model="update.name" label="修改昵称" placeholder="请输入新昵称" />
+          <div style="margin-top: 10%; margin-left: 18px; margin-right: 18px">
+            <van-button type="primary" block @click="updateNameConfirm">保存</van-button>
+          </div>
+        </van-cell-group>
+      </van-popup>
+
+      <van-cell title="性别" :value="info.sex" is-link @click="updateSexShow = true"/>
+      <van-popup v-model:show="updateSexShow" position="bottom" round>
+        <van-picker
+          :columns="sexColumns"
+          @cancel="updateSexShow = false"
+          @confirm="updateSexConfirm"
+        />
+      </van-popup>
+
+      <van-cell title="出生年月" :value="info.birthday" is-link @click="updateBirthdayShow = true"/>
+      <van-calendar
+        v-model:show="updateBirthdayShow"
+        color="#FB7299"
+        @confirm="updateBirthdayConfirm"
+        first-day-of-week="1"
+        :default-date="new Date(2000,0,1)"
+        :min-date="new Date(1980,0,1)"
+        :max-date="new Date()"
+      />
+
+      <van-cell title="个性签名" :value="info.introduction" is-link @click="updateIntroShow = true"/>
+      <van-popup v-model:show="updateIntroShow" position="bottom" :style="{ height: '40%' }" round>
+        <van-cell-group inset style="margin-top: 10%">
+          <van-field
+           v-model="update.introduction"
+           label="修改个性签名"
+           rows="3"
+           type="textarea"
+           maxlength="50"
+           show-word-limit
+          />
+          <div style="margin-top: 10%; margin-left: 18px; margin-right: 18px">
+            <van-button type="primary" block @click="updateIntroConfirm">保存</van-button>
+          </div>
+        </van-cell-group>
+      </van-popup>
     </van-cell-group>
-    <van-cell-group style="margin-top: 5%">
+    <van-cell-group style="margin-top: 10%">
       <van-cell title="UID" :value="info.uid" />
       <van-cell title="商家认证" :value="info.isMerchant" />
       <van-cell title="账号状态" :value="info.state" />
@@ -22,36 +65,107 @@
 
 <script>
 import axios from 'axios'
-import Qs from 'qs'
+import { Notify } from 'vant';
 export default {
   data() {
     return {
       onClickLeft: () => history.back(),
+      updateNameShow: false,
+      updateBirthdayShow: false,
+      updateIntroShow: false,
+      updateSexShow: false,
+      sexColumns: ['未选择', '男', '女', '保密'],
       info: {
-        uid: 0,
+        uid: sessionStorage.getItem("uid"),
         name: sessionStorage.getItem("username"),
-        sex: 0,
-        birthday: 0,
-        introduction: '---',
-        isMerchant: false,
-        state: '---'
+        sex: this.returnSex(),
+        birthday: sessionStorage.getItem("birthday") !== "null" ? sessionStorage.getItem("birthday") : '未选择',
+        introduction: sessionStorage.getItem("introduction"),
+        isMerchant: sessionStorage.getItem("isMerchant") === true ? '已认证' : '未认证',
+        state: this.returnState()
+      },
+      update: {
+        name: sessionStorage.getItem("username"),
+        sex: '',
+        birthday: '',
+        introduction: sessionStorage.getItem("introduction"),
       }
     }
   },
   methods: {
-    register: function() {
+    returnState: function () {
+      let state = sessionStorage.getItem("state")
+      if(state === 'RESTRICTED') {
+        return '受限制'
+      } else if(state === 'NORMAL') {
+        return '正常'
+      } else if(state === 'BANNED') {
+        return '封禁中'
+      }
+    },
+    returnSex: function () {
+      let sex = sessionStorage.getItem("sex")
+      if(sex === 'UNDEFINED') {
+        return '未选择'
+      } else if(sex === 'MALE') {
+        return '男'
+      } else if(sex === 'FEMALE') {
+        return '女'
+      } else {
+        return '保密'
+      }
+    },
+    updateNameConfirm: function () {
+      this.updateNameShow = false
       axios({
-        url: '/api/register',
+        url: '/api/user/' + this.info.uid + '/update/name=' + this.update.name,
         method: 'post',
-        transformRequest: [function (data) {
-          return Qs.stringify(data)
-        }],
-        data: {
-
-        }
       }).then(res =>{
-
-
+        if(res.data.stateEnum.state === 2) {
+          sessionStorage.setItem("username", res.data.returnObject)
+          this.info.name = sessionStorage.getItem("username")
+          Notify({type: 'primary', message: '修改成功'})
+        }
+      })
+    },
+    updateSexConfirm: function (value) {
+      this.updateSexShow = false
+      axios({
+        url: '/api/user/' + this.info.uid + '/update/sex=' + this.sexColumns.indexOf(value),
+        method: 'post',
+      }).then(res =>{
+        if(res.data.stateEnum.state === 2) {
+          sessionStorage.setItem("sex", res.data.returnObject)
+          this.info.sex = this.returnSex()
+          Notify({type: 'primary', message: '修改成功'})
+        }
+      })
+    },
+    updateBirthdayConfirm: function (value) {
+      this.updateBirthdayShow = false
+      let bir = `${value.getFullYear()}-${value.getMonth() + 1}-${value.getDate()}`;
+      axios({
+        url: '/api/user/' + this.info.uid + '/update/birthday=' + bir,
+        method: 'post',
+      }).then(res =>{
+        if(res.data.stateEnum.state === 2) {
+          sessionStorage.setItem("birthday", res.data.returnObject)
+          this.info.birthday = sessionStorage.getItem("birthday")
+          Notify({type: 'primary', message: '修改成功'})
+        }
+      })
+    },
+    updateIntroConfirm: function () {
+      this.updateIntroShow = false
+      axios({
+        url: '/api/user/' + this.info.uid + '/update/intro=' + this.update.introduction,
+        method: 'post',
+      }).then(res =>{
+        if(res.data.stateEnum.state === 2) {
+          sessionStorage.setItem("introduction", res.data.returnObject)
+          this.info.introduction = sessionStorage.getItem("introduction")
+          Notify({type: 'primary', message: '修改成功'})
+        }
       })
     }
   }

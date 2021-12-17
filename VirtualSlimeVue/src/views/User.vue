@@ -58,37 +58,27 @@ export default {
     return {
       userInfo: {
         uid: 0,
-        name: '---/ Virtual Slime /---',
+        name: '',
         followers: 0,
         following: 0,
-        money: '0',
+        money: '',
         point: 0,
         coupon: 0
       } 
     }
   },
-  mounted: function () {
+  mounted() {
     this.loadProfile()
   },
   methods: {
     loadProfile: function () {
-      let uid1 = sessionStorage.getItem("uid")
-      let uid2 = uid1
-      axios({
-        url: '/api/user/' + uid1 + ':'+ uid2 +'',
-        method: 'post',
-        transformRequest: [function (data) {
-          return Qs.stringify(data)
-        }]
-      }).then(res =>{
-        let info = res.data.returnObject
-        this.userInfo.name = info.userName
-        this.userInfo.followers = info.followerCount
-        this.userInfo.following = info.followingCount
-        this.userInfo.money = info.userCurrency
-        this.userInfo.point = info.userPoint
-        this.userInfo.coupon = info.couponCount
-      })
+      this.userInfo.uid = sessionStorage.getItem("uid")
+      this.userInfo.name = sessionStorage.getItem("username")
+      this.userInfo.followers = sessionStorage.getItem("followers")
+      this.userInfo.following = sessionStorage.getItem("following")
+      this.userInfo.money = sessionStorage.getItem("money")
+      this.userInfo.point = sessionStorage.getItem("point")
+      this.userInfo.coupon = sessionStorage.getItem("coupon")
     }
   }
 }
