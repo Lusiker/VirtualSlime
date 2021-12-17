@@ -3,7 +3,7 @@ package com.virtualSlime.Entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.virtualSlime.Enum.EntityType.CommentState;
+import com.virtualSlime.Enum.CommentState;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
