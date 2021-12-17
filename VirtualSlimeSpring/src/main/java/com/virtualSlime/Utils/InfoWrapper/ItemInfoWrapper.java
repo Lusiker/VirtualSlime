@@ -21,8 +21,9 @@ import java.util.List;
  *  - username added
  *  - for most of the time bought time is null, in /user/n/bought it will be replaced by
  *      the bought time in String
+ *
+ * use Builder to build a wrapper!
  */
-
 @Getter
 @Setter
 @ToString
