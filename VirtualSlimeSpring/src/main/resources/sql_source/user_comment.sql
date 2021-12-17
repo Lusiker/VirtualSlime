@@ -5,6 +5,6 @@ create table user_comment(
     iid int unsigned,
     created_at timestamp,
     comment_content varchar(200),
-    comment_rate tinyint unsigned,
+    comment_rating tinyint unsigned,
     comment_state tinyint unsigned default 0
 );
