@@ -57,6 +57,4 @@ public class CommentRepository {
 
         return comment != null;
     }
-
-
 }
