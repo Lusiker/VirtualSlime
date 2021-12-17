@@ -11,6 +11,7 @@ import com.virtualSlime.Service.CommentRepository;
 import com.virtualSlime.Service.ItemRepository;
 import com.virtualSlime.Service.UserRepository;
 import com.virtualSlime.Utils.GlobalCategoryCache;
+import com.virtualSlime.Utils.InfoWrapper.CommentInfoWrapper;
 import com.virtualSlime.Utils.InfoWrapper.ItemInfoWrapper;
 import com.virtualSlime.Utils.InfoWrapper.Result;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,10 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @RestController
 public class ItemController {
@@ -59,8 +57,20 @@ public class ItemController {
             return objectMapper.writeValueAsString(new Result(ItemPageState.INTERNAL_ERROR,null));
         }
 
-        List<Comment> list = commentRepository.selectCommentsByIid(iid);
-        list.sort(Comparator.comparing(Comment::getCreatedAt).reversed());
+        List<Comment> comments = commentRepository.selectCommentsByIid(iid);
+        comments.sort(Comparator.comparing(Comment::getCreatedAt).reversed());
+
+        List<CommentInfoWrapper> list = new ArrayList<CommentInfoWrapper>();
+        for(Comment c : comments){
+            User u = userRepository.selectUserByUid(c.getUid());
+            CommentInfoWrapper wrapper = new CommentInfoWrapper.CommentInfoWrapperBuilder()
+                    .setComment(c)
+                    .setUser(u)
+                    .build();
+
+            list.add(wrapper);
+        }
+
         ItemInfoWrapper itemInfoWrapper = new ItemInfoWrapper.ItemInfoWrapperBuilder()
                 .setItem(item,categoryCache)
                 .setSeller(user)
