@@ -11,7 +11,9 @@ public enum ProfilePageState implements ControllerStateEnum {
     SHOW_CART(3,"show_cart"),
     SHOW_BOUGHT(4,"show_bought"),
     SHOW_FOLLOWER(5,"show_follower"),
-    SHOW_FOLLOWING(6,"show_following");
+    SHOW_FOLLOWING(6,"show_following"),
+    SHOW_COMMENTS(7,"show_comments"),
+    SHOW_ITEMS(8,"show_items");
 
     private final int stateCode;
     private final String value;
