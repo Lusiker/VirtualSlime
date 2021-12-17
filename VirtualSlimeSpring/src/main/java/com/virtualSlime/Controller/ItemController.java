@@ -43,7 +43,7 @@ public class ItemController {
         try{
             iid = Integer.parseInt(newIid);
         }catch (Exception e){
-            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Wrong Info:" + newIid));
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAILED,"Wrong Info:" + newIid));
         }
 
         Item item = itemRepository.selectItemByIid(iid);
@@ -92,14 +92,14 @@ public class ItemController {
             uid = Integer.parseInt(newUid);
         }catch (Exception e){
             //uid bad input
-            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Wrong Info:" + newUid));
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAILED,"Wrong Info:" + newUid));
         }
 
         int iid;
         try{
             iid = Integer.parseInt(newIid);
         }catch (Exception e){
-            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Wrong Info:" + newIid));
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAILED,"Wrong Info:" + newIid));
         }
 
         User user = userRepository.selectUserByUid(uid);
@@ -115,23 +115,23 @@ public class ItemController {
 
         if(!itemRepository.checkHasBoughtItem(user,item)){
             //only user who has bought the item is allowed to comment
-            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"No Buy Record"));
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAILED,"No Buy Record"));
         }
 
         if(commentRepository.checkCommentHasExist(user,item)){
             //only 1 comment allowed
-            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Has Commented"));
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAILED,"Has Commented"));
         }
 
         if(newContent.length() > 200){
-            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Content Too Long"));
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAILED,"Content Too Long"));
         }
 
         byte rating;
         try{
             rating = Byte.parseByte(newRating);
         }catch (Exception e){
-            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,newRating));
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAILED,newRating));
         }
 
         Date now = new Date();
@@ -162,7 +162,7 @@ public class ItemController {
             uid = Integer.parseInt(newUid);
         }catch (Exception e){
             //uid bad input
-            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Wrong Info:" + newUid));
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAILED,"Wrong Info:" + newUid));
         }
 
         short cid;
@@ -170,26 +170,26 @@ public class ItemController {
             cid = Short.parseShort(newCid);
         }catch (Exception e){
             //cid bad input
-            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Wrong Info:" + newCid));
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAILED,"Wrong Info:" + newCid));
         }
 
         if(categoryCache.getCategoryNameFromCid(cid).equals("undefined")){
-            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Category Not Exist:" + newCid));
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAILED,"Category Not Exist:" + newCid));
         }
 
         if(newItemName.length() > 50){
-            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Item Name Too Long"));
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAILED,"Item Name Too Long"));
         }
 
         if(newItemBrief.length() > 200){
-            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Item Brief Too Long"));
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAILED,"Item Brief Too Long"));
         }
 
         BigDecimal itemPrice;
         try{
             itemPrice = new BigDecimal(newItemPrice);
         }catch (Exception e){
-            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Wrong Info:" + newItemPrice));
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAILED,"Wrong Info:" + newItemPrice));
         }
 
         User user = userRepository.selectUserByUid(uid);
@@ -218,7 +218,7 @@ public class ItemController {
             iid = Integer.parseInt(newIid);
         }catch (Exception e){
             //iid bad input
-            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Wrong Info:" + newIid));
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAILED,"Wrong Info:" + newIid));
         }
 
         Item item = itemRepository.selectItemByIid(iid);
@@ -232,7 +232,7 @@ public class ItemController {
             uid = Integer.parseInt(newUid);
         }catch (Exception e){
             //uid bad input
-            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Wrong Info:" + newUid));
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAILED,"Wrong Info:" + newUid));
         }
 
         User user = userRepository.selectUserByUid(uid);
@@ -242,11 +242,11 @@ public class ItemController {
 
         if(!user.getUserHasActivated()){
             //not activated
-            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Not Activated"));
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAILED,"Not Activated"));
         }
 
         if(itemRepository.checkHasInCart(user,item)){
-            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Has Added"));
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAILED,"Has Added"));
         }
 
         if(itemRepository.insertItemToCart(user,item)){
@@ -272,7 +272,7 @@ public class ItemController {
             iid = Integer.parseInt(newIid);
         }catch (Exception e){
             //iid bad input
-            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Wrong Info:" + newIid));
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAILED,"Wrong Info:" + newIid));
         }
 
         Item item = itemRepository.selectItemByIid(iid);
@@ -286,7 +286,7 @@ public class ItemController {
             uid = Integer.parseInt(newUid);
         }catch (Exception e){
             //uid bad input
-            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Wrong Info:" + newUid));
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAILED,"Wrong Info:" + newUid));
         }
 
         User user = userRepository.selectUserByUid(uid);
@@ -296,11 +296,11 @@ public class ItemController {
 
         if(!user.getUserHasActivated()){
             //not activated
-            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Not Activated"));
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAILED,"Not Activated"));
         }
 
         if(itemRepository.checkHasBoughtItem(user,item)){
-            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Has Bought"));
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAILED,"Has Bought"));
         }
 
         int buyResult = userRepository.updateUserCurrencyBuy(user,item);
@@ -336,11 +336,11 @@ public class ItemController {
             iid = Integer.parseInt(newIid);
         }catch (Exception e){
             //iid bad input
-            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Wrong Info:" + newIid));
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAILED,"Wrong Info:" + newIid));
         }
 
         if(newName.length() > 50){
-            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"New Name Too Long"));
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAILED,"New Name Too Long"));
         }
 
         Item item = itemRepository.selectItemByIid(iid);
@@ -364,7 +364,7 @@ public class ItemController {
             iid = Integer.parseInt(newIid);
         }catch (Exception e){
             //iid bad input
-            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Wrong Info:" + newIid));
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAILED,"Wrong Info:" + newIid));
         }
         Item item = itemRepository.selectItemByIid(iid);
         if(item == null){
@@ -376,7 +376,7 @@ public class ItemController {
         try{
             stateCode = Integer.parseInt(newState);
         }catch (Exception e){
-            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Wrong Info:" + newState));
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAILED,"Wrong Info:" + newState));
         }
 
         ItemState state;
