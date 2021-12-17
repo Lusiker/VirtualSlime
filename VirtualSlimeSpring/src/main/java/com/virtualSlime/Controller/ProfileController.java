@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virtualSlime.Entity.Comment;
 import com.virtualSlime.Entity.Item;
 import com.virtualSlime.Entity.Relation.UserBought;
+import com.virtualSlime.Entity.Relation.UserCart;
 import com.virtualSlime.Entity.User;
+import com.virtualSlime.Enum.PageState.ItemPageState;
 import com.virtualSlime.Enum.PageState.ProfilePageState;
 import com.virtualSlime.Enum.EntityType.UserSex;
 import com.virtualSlime.Service.CommentRepository;
@@ -17,6 +19,7 @@ import com.virtualSlime.Utils.*;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -181,7 +184,7 @@ public class ProfileController {
         }
 
         List<Item> list = itemRepository.selectUserCartAsItemList(user);
-        List<ItemInfoWrapper> result = new ArrayList<ItemInfoWrapper>();
+        List<ItemInfoWrapper> result = new ArrayList<>();
         for(Item i : list){
             User newUser = userRepository.selectUserByUid(i.getUid());
             ItemInfoWrapper infoWrapper = new ItemInfoWrapper.ItemInfoWrapperBuilder()
@@ -193,6 +196,46 @@ public class ProfileController {
 
         //return (3,show_cart),list of item in cart
         return objectMapper.writeValueAsString(new Result(ProfilePageState.SHOW_CART,result));
+    }
+
+    @RequestMapping("/user/{uid}/cart/remove")
+    public String userProfileRemoveFromCart(@PathVariable(value = "uid")String newUid,
+                                            @RequestParam(value = "iid")String newIid) throws JsonProcessingException{
+        int uid = checkUidValid(newUid);
+        if(uid == -1) {
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong info:" + newUid));
+        }
+
+        int iid;
+        try{
+            iid = Integer.parseInt(newIid);
+        }catch (Exception e){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong Info:" + newIid));
+        }
+
+        User user = userRepository.selectUserByUid(uid);
+        if(user == null){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
+        }
+
+        List<UserCart> cart = itemRepository.selectUserCart(user);
+        boolean found = false;
+        for(UserCart i : cart){
+            if(i.getIid().equals(iid)){
+                found = true;
+                break;
+            }
+        }
+
+        if(found){
+            if(!itemRepository.removeFromCart(user,iid)){
+                return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
+            }
+
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_SUCCESSFUL,null));
+        }
+
+        return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"No Such Record"));
     }
 
     @RequestMapping("user/{uid}/bought")
@@ -516,9 +559,10 @@ public class ProfileController {
      * @param newPassword new password - this will also receive a simplicity check
      * @return result
      */
-    @RequestMapping("user/{uid}/update/password={newPassword}")
+    @RequestMapping("user/{uid}/update/password")
     public String userProfileUpdatePassword(@PathVariable(value = "uid")String newUid,
-                                            @PathVariable(value = "newPassword")String newPassword) throws JsonProcessingException{
+                                            @RequestParam(value = "oldPassword",defaultValue = "")String oldPassword,
+                                            @RequestParam(value = "newPassword",defaultValue = "")String newPassword) throws JsonProcessingException{
         int uid = checkUidValid(newUid);
         if(uid == -1) {
             return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED, newUid));
@@ -527,6 +571,14 @@ public class ProfileController {
         User user = userRepository.selectUserByUid(uid);
         if(user == null){
             return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
+        }
+
+        if(oldPassword.length() != 0){
+            if(!StringEncoder.matchPassword(oldPassword,user.getUserPassword())){
+                return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED, "Wrong Password"));
+            }
+        }else{
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Empty Input"));
         }
 
         if(newPassword.length() != 0){
