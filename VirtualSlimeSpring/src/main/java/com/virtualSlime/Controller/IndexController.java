@@ -36,7 +36,10 @@ public class IndexController {
 
         for(Item i : items){
             User user = userRepository.selectUserByUid(i.getUid());
-            ItemInfoWrapper wrapper = new ItemInfoWrapper(i,user,categoryCache);
+            ItemInfoWrapper wrapper = new ItemInfoWrapper.ItemInfoWrapperBuilder()
+                    .setItem(i,categoryCache)
+                    .setSeller(user)
+                    .build();
             processedItems.add(wrapper);
         }
 

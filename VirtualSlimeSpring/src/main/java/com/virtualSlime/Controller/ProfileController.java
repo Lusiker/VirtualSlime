@@ -142,7 +142,10 @@ public class ProfileController {
         List<ItemInfoWrapper> result = new ArrayList<ItemInfoWrapper>();
         for(Item i : list){
             User newUser = userRepository.selectUserByUid(i.getUid());
-            ItemInfoWrapper infoWrapper = new ItemInfoWrapper(i,newUser,categoryCache);
+            ItemInfoWrapper infoWrapper = new ItemInfoWrapper.ItemInfoWrapperBuilder()
+                    .setItem(i,categoryCache)
+                    .setSeller(newUser)
+                    .build();
             result.add(infoWrapper);
         }
 
@@ -169,9 +172,11 @@ public class ProfileController {
         for(UserBought b : list){
             Item newItem = itemRepository.selectItemByIid(b.getIid());
             User newUser = userRepository.selectUserByUid(b.getUid());
-            ItemInfoWrapper infoWrapper = new ItemInfoWrapper(newItem,newUser,categoryCache);
-            infoWrapper.setBoughtTime(DateProcessor.getDateStringFromTimestamp(b.getCreatedTime()));
-
+            ItemInfoWrapper infoWrapper = new ItemInfoWrapper.ItemInfoWrapperBuilder()
+                    .setItem(newItem,categoryCache)
+                    .setSeller(newUser)
+                    .setBoughtTime(b)
+                    .build();
             result.add(infoWrapper);
         }
 

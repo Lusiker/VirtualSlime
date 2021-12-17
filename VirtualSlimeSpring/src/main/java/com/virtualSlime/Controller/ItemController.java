@@ -2,10 +2,12 @@ package com.virtualSlime.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.virtualSlime.Entity.Comment;
 import com.virtualSlime.Entity.Item;
 import com.virtualSlime.Entity.User;
 import com.virtualSlime.Enum.ItemState;
 import com.virtualSlime.Enum.PageState.ItemPageState;
+import com.virtualSlime.Service.CommentRepository;
 import com.virtualSlime.Service.ItemRepository;
 import com.virtualSlime.Service.UserRepository;
 import com.virtualSlime.Utils.GlobalCategoryCache;
@@ -18,7 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -27,6 +31,8 @@ public class ItemController {
     private UserRepository userRepository;
     @Resource
     private ItemRepository itemRepository;
+    @Resource
+    private CommentRepository commentRepository;
     @Resource
     private ObjectMapper objectMapper;
     @Resource
@@ -49,9 +55,82 @@ public class ItemController {
         }
 
         User user = userRepository.selectUserByUid(item.getUid());
-        ItemInfoWrapper itemInfoWrapper = new ItemInfoWrapper(item,user,categoryCache);
+        if(user == null){
+            return objectMapper.writeValueAsString(new Result(ItemPageState.INTERNAL_ERROR,null));
+        }
+
+        List<Comment> list = commentRepository.selectCommentsByIid(iid);
+        list.sort(Comparator.comparing(Comment::getCreatedAt).reversed());
+        ItemInfoWrapper itemInfoWrapper = new ItemInfoWrapper.ItemInfoWrapperBuilder()
+                .setItem(item,categoryCache)
+                .setSeller(user)
+                .setCommentList(list)
+                .setRating()
+                .setRatingString()
+                .build();
 
         return objectMapper.writeValueAsString(new Result(ItemPageState.SUCCESSFUL,itemInfoWrapper));
+    }
+
+    @RequestMapping("/item/{iid}/addComment")
+    public String itemAddComment(@PathVariable(value = "iid")String newIid,
+                                 @RequestParam(value = "uid",defaultValue = "")String newUid,
+                                 @RequestParam(value = "content",defaultValue = "")String newContent,
+                                 @RequestParam(value = "rating",defaultValue = "")String newRating) throws JsonProcessingException{
+        int uid;
+        try{
+            uid = Integer.parseInt(newUid);
+        }catch (Exception e){
+            //uid bad input
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Wrong Info:" + newUid));
+        }
+
+        int iid;
+        try{
+            iid = Integer.parseInt(newIid);
+        }catch (Exception e){
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Wrong Info:" + newIid));
+        }
+
+        User user = userRepository.selectUserByUid(uid);
+        if(user == null){
+            return objectMapper.writeValueAsString(new Result(ItemPageState.INTERNAL_ERROR,null));
+        }
+
+        Item item = itemRepository.selectItemByIid(iid);
+        if(item == null || item.getItemState() == ItemState.HIDDEN){
+            //item not exist or hidden
+            return objectMapper.writeValueAsString(new Result(ItemPageState.ITEM_NOT_EXIST,newIid));
+        }
+
+        if(!itemRepository.checkHasBoughtItem(user,item)){
+            //only user who has bought the item is allowed to comment
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"No Buy Record"));
+        }
+
+        if(commentRepository.checkCommentHasExist(user,item)){
+            //only 1 comment allowed
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Has Commented"));
+        }
+
+        if(newContent.length() > 200){
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Content Too Long"));
+        }
+
+        byte rating;
+        try{
+            rating = Byte.parseByte(newRating);
+        }catch (Exception e){
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,newRating));
+        }
+
+        Date now = new Date();
+        Comment newComment = new Comment(uid,iid,now,newContent,rating);
+        if(!commentRepository.insertComment(newComment)){
+            return objectMapper.writeValueAsString(new Result(ItemPageState.INTERNAL_ERROR,null));
+        }
+
+        return objectMapper.writeValueAsString(new Result(ItemPageState.CREATE_SUCCESSFUL,"Create Comment Successful"));
     }
 
     /**
