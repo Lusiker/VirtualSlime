@@ -355,4 +355,42 @@ public class ItemController {
 
         return objectMapper.writeValueAsString(new Result(ItemPageState.UPDATE_SUCCESSFUL,null));
     }
+
+    @RequestMapping("/item/{iid}/update/state={newState}")
+    public String itemUpdateItemState(@PathVariable(value = "iid")String newIid,
+                                      @PathVariable(value = "newState")String newState) throws JsonProcessingException{
+        int iid;
+        try{
+            iid = Integer.parseInt(newIid);
+        }catch (Exception e){
+            //iid bad input
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Wrong Info:" + newIid));
+        }
+        Item item = itemRepository.selectItemByIid(iid);
+        if(item == null){
+            //item not exist
+            return objectMapper.writeValueAsString(new Result(ItemPageState.ITEM_NOT_EXIST,newIid));
+        }
+
+        int stateCode;
+        try{
+            stateCode = Integer.parseInt(newState);
+        }catch (Exception e){
+            return objectMapper.writeValueAsString(new Result(ItemPageState.FAIL,"Wrong Info:" + newState));
+        }
+
+        ItemState state;
+        switch (stateCode){
+            case 0 -> state = ItemState.NORMAL;
+            case 1 -> state =  ItemState.PROMOTED;
+            case 2 -> state = ItemState.HIDDEN;
+            default -> state = ItemState.UNDEFINED;
+        }
+
+        if(!itemRepository.updateItemState(item,state)){
+            return objectMapper.writeValueAsString(new Result(ItemPageState.INTERNAL_ERROR,null));
+        }
+
+        return objectMapper.writeValueAsString(new Result(ItemPageState.UPDATE_SUCCESSFUL,null));
+    }
 }

@@ -203,6 +203,12 @@ public class ItemRepository {
         return updateItem(item);
     }
 
+    public boolean updateItemState(Item item,ItemState state){
+        item.setItemState(state);
+
+        return updateItem(item);
+    }
+
     public boolean updateItemVisit(Item item){
         //+1 to item visit count
         int previous_visit = item.getVisitCount();

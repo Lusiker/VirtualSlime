@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.baomidou.mybatisplus.annotation.IEnum;
 
 public enum ItemState implements IEnum<Byte> {
+    UNDEFINED(-1),
     NORMAL(0),
     PROMOTED(1),
     HIDDEN(2);
