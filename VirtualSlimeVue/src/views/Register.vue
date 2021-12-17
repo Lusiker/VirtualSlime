@@ -75,11 +75,11 @@ export default {
 					}
       	}).then(res =>{
 					let resState = res.data.stateEnum.state				
-					if(resState == 1) {
+					if(resState === 1) {
 						Notify({ type: 'primary', message: '密码太简单了，不可以' })
-					} else if(resState == 2) {
+					} else if(resState === 2) {
 						Notify({ type: 'primary', message: '这个邮箱已经被用过了' })
-					} else if(resState == 0) {
+					} else if(resState === 0) {
 						Notify({ type: 'primary', message: '注册成功' })
 						axios({
 							url: '/api/login/email',

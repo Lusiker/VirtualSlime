@@ -25,22 +25,22 @@
       <van-grid-item icon="coupon-o" :text="'优惠券：' + userInfo.coupon + '张'" />
     </van-grid>
     <van-grid>
-      <van-grid-item icon="orders-o" icon-color="#1989fa" text="我的订单" to="/"/>
+      <van-grid-item icon="orders-o" icon-color="#1989fa" text="我的评价" to="/"/>
       <van-grid-item icon="clock-o" icon-color="#1989fa" text="历史记录" to="/"/>
       <van-grid-item icon="star-o" icon-color="#1989fa" text="我的收藏" to="/"/>
       <van-grid-item icon="balance-list-o" icon-color="#1989fa" text="已购商品" to="/"/>
     </van-grid>
-    <van-cell value="相关部门"/>
+    <van-cell value="购买相关"/>
     <van-grid>
       <van-grid-item icon="shop-o" icon-color="#ff8917" text="我的发布" to="/"/>
       <van-grid-item icon="paid" icon-color="#ff8917" text="我的钱包" to="/"/>
       <van-grid-item icon="balance-o" icon-color="#ff8917" text="积分兑换" to="/"/>
-      <van-grid-item icon="balance-list-o" icon-color="#ff8917" text="不知道了" to="/"/>
+      <van-grid-item icon="balance-list-o" icon-color="#ff8917" text="我的订单" to="/"/>
     </van-grid>
     <van-cell value="更多服务"/>
     <van-cell-group>
       <van-cell title="&nbsp;&nbsp;联系客服" icon="service-o" is-link to="/"/>
-      <van-cell title="&nbsp;&nbsp;账号资料" icon="setting-o" is-link to="/"/>
+      <van-cell title="&nbsp;&nbsp;账号资料" icon="setting-o" is-link to="/setting"/>
     </van-cell-group>
     <BottomNav/>
   </div>
@@ -58,7 +58,7 @@ export default {
     return {
       userInfo: {
         uid: 0,
-        name: 'Virtual Slime',
+        name: '---/ Virtual Slime /---',
         followers: 0,
         following: 0,
         money: '0',
@@ -68,7 +68,6 @@ export default {
     }
   },
   mounted: function () {
-    console.log("LOADING")
     this.loadProfile()
   },
   methods: {

@@ -60,8 +60,38 @@ export default {
       ]
     }
   },
-  method: {
-
+  methods: {
+    nextTick: function () {
+      this.loadProfile()
+    },
+    loadProfile: function () {
+      let uid1 = sessionStorage.getItem("uid")
+      let uid2 = uid1
+      axios({
+        url: '/api/user/' + uid1 + ':'+ uid2 +'',
+        method: 'post',
+        transformRequest: [function (data) {
+          return Qs.stringify(data)
+        }]
+      }).then(res =>{
+        let info = res.data.returnObject
+        sessionStorage.setItem("username", info.userName)
+        sessionStorage.setItem("followers", info.userName)
+        sessionStorage.setItem("following", info.followingCount)
+        sessionStorage.setItem("money", info.info.userCurrency)
+        sessionStorage.setItem("point", info.userPoint)
+        sessionStorage.setItem("coupon", info.couponCount)
+        sessionStorage.setItem("birthday", info.userBirthday)
+        sessionStorage.setItem("hasActivated", info.userHasActivated)
+        sessionStorage.setItem("isMerchant", info.userIsMerchant)
+        sessionStorage.setItem("introduction", info.userIntroduction)
+        sessionStorage.setItem("sex", info.userSex)
+        sessionStorage.setItem("state", info.userState)
+        // lastLogin: "2021-12-15T15:15:41.000+00:00"
+        // userShowBirthday: true
+        // userShowDynamic: true
+      })
+    }
   }
 }
 </script>
