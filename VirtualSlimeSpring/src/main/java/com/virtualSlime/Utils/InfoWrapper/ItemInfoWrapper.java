@@ -38,7 +38,7 @@ public class ItemInfoWrapper {
     private BigDecimal itemPriceDiscounted;
     private String categoryName;
     private String boughtTime;
-    private List<Comment> comments;
+    private List<CommentInfoWrapper> comments;
     private Double rating;
     private String ratingSting;
 
@@ -71,7 +71,7 @@ public class ItemInfoWrapper {
         private BigDecimal bItemPriceDiscounted;
         private String bCategoryName;
         private String bBoughtTime;
-        private List<Comment> bComments;
+        private List<CommentInfoWrapper> bComments;
         private Double bRating;
         private String bRatingString;
 
@@ -103,7 +103,7 @@ public class ItemInfoWrapper {
             return this;
         }
 
-        public ItemInfoWrapperBuilder setCommentList(List<Comment> list){
+        public ItemInfoWrapperBuilder setCommentList(List<CommentInfoWrapper> list){
             this.bComments = list;
 
             return this;
@@ -113,8 +113,8 @@ public class ItemInfoWrapper {
             if(this.bComments != null){
                 double rating = 0.0;
 
-                for (Comment c : this.bComments){
-                    rating += c.getCommentRating();
+                for (CommentInfoWrapper c : this.bComments){
+                    rating += c.getRating();
                 }
 
                 this.bRating = rating / this.bComments.size();
