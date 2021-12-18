@@ -6,7 +6,7 @@
           round
           width="5rem"
           height="5rem"
-          :src="require('@/assets/user/' + userInfo.uid + '/avator.jpg')"
+          :src="require('@/assets/user/' + userInfo.uid + '/avatar.jpg')"
         />
       </van-col>
       <van-col span="18" style="padding-top: 3%;">
@@ -41,6 +41,7 @@
     <van-cell-group>
       <van-cell title="&nbsp;&nbsp;联系客服" icon="service-o" is-link to="/"/>
       <van-cell title="&nbsp;&nbsp;账号资料" icon="setting-o" is-link to="/setting"/>
+      <van-cell title="&nbsp;&nbsp;安全中心" icon="shield-o" is-link to="/secure"/>
     </van-cell-group>
     <BottomNav/>
   </div>
@@ -57,29 +58,18 @@ export default {
   data() {
     return {
       userInfo: {
-        uid: 0,
-        name: '',
-        followers: 0,
-        following: 0,
-        money: '',
-        point: 0,
-        coupon: 0
+        uid: sessionStorage.getItem("uid"),
+        name: sessionStorage.getItem("username"),
+        followers: sessionStorage.getItem("followers"),
+        following: sessionStorage.getItem("following"),
+        money: sessionStorage.getItem("money"),
+        point: sessionStorage.getItem("point"),
+        coupon: sessionStorage.getItem("coupon")
       } 
     }
   },
-  mounted() {
-    this.loadProfile()
-  },
   methods: {
-    loadProfile: function () {
-      this.userInfo.uid = sessionStorage.getItem("uid")
-      this.userInfo.name = sessionStorage.getItem("username")
-      this.userInfo.followers = sessionStorage.getItem("followers")
-      this.userInfo.following = sessionStorage.getItem("following")
-      this.userInfo.money = sessionStorage.getItem("money")
-      this.userInfo.point = sessionStorage.getItem("point")
-      this.userInfo.coupon = sessionStorage.getItem("coupon")
-    }
+
   }
 }
 </script>

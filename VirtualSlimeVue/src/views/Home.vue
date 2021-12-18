@@ -14,7 +14,7 @@
           </van-swipe-item>
         </van-swipe>
 
-        <van-grid :column-num="2" border="false">
+        <van-grid :column-num="2" :border=false >
           <van-grid-item border="false">
             <van-image :src="require('@/assets/item/1/item.jpg')" />
             <div class="van-multi-ellipsis--l2" style="font-size: smaller;">
@@ -76,6 +76,7 @@ export default {
         method: 'post',
       }).then(res =>{
         let info = res.data.returnObject
+        // console.log(info)
         sessionStorage.setItem("username", info.userName)
         sessionStorage.setItem("useremail", info.userEmail)
         sessionStorage.setItem("followers", info.followerCount)
@@ -89,6 +90,7 @@ export default {
         sessionStorage.setItem("introduction", info.userIntroduction)
         sessionStorage.setItem("sex", info.userSex)
         sessionStorage.setItem("state", info.userState)
+        sessionStorage.setItem("lastLogin", info.lastLoginString)
       })
     }
   }

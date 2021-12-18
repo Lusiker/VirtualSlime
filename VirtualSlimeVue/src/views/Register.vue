@@ -5,7 +5,7 @@
 			left-arrow
 			@click-left="onClickLeft"
 		/>
-		<van-image width="100" height="100" :src="loginRegisterPic" style="display: inline-block; width: 100%; max-width: 100%; height: auto;"/>
+		<van-image width="100" height="100" :src="require('@/assets/images/registerBanner.jpg')" style="display: inline-block; width: 100%; max-width: 100%; height: auto;"/>
 		<van-tabs animated>
 			<van-tab title="注册账号">
 				<van-cell-group>
@@ -41,12 +41,10 @@
 import axios from 'axios'
 import Qs from 'qs'
 import { Notify } from 'vant';
-import loginRegisterPic from '@/assets/images/swipe3.jpeg'
 export default {
 	data() {
 		return {
 			onClickLeft: () => history.back(),
-			loginRegisterPic: loginRegisterPic,
 			useremail: '',
 			password1: '',
 			password2: ''	

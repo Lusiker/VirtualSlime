@@ -383,9 +383,7 @@ public class ProfileController {
 
         String imgPath = "../VirtualSlimeVue/src/assets/user/" + newUid + "/avatar.jpg";
         File f = new File("../VirtualSlimeVue/src/assets/user/" + newUid);
-        if(!f.mkdirs()){
-            return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
-        }
+        f.mkdirs();
         FileOutputStream out = new FileOutputStream(imgPath);
         out.write(imageBytes);
         out.close();
