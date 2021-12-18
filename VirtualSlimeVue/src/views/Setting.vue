@@ -10,7 +10,14 @@
       <van-cell title="头像" is-link @click="updateAvatarShow = true"/>
       <van-popup v-model:show="updateAvatarShow" position="bottom" :style="{ height: '30%' }" round>
         <div style="margin: 5%; text-align: center;">
-          <van-uploader multiple :max-count="1" v-model="update.uploadAvatar" :after-read="afterLoad" />
+          <van-uploader
+              multiple
+              :max-count="1"
+              v-model="update.uploadAvatar"
+              :after-read="afterLoad"
+              :max-size="1024 * 1024"
+              @oversize="onOversize"
+          />
           <div style="margin-top: 10%; margin-left: 18px; margin-right: 18px">
             <van-button type="primary" block @click="updateAvatarConfirm">保存</van-button>
           </div>
@@ -133,7 +140,11 @@ export default {
       console.log(file.content)
       this.update.avatarBase64 = file.content
     },
+    onOversize: function () {
+      Notify({type: 'primary', message: '图片大小不能超过1MB'})
+    },
     updateAvatarConfirm: function () {
+      this.update.uploadAvatar[0].status = 'uploading'
       axios({
         url: '/api/user/' + this.info.uid + '/saveAvatar',
         method: 'post',
@@ -143,7 +154,8 @@ export default {
         data: {
           data: this.update.avatarBase64
         }
-      }).then(res =>{
+      }).then(() =>{
+        this.updateAvatarShow = false
         Notify({type: 'primary', message: '修改成功'})
       })
     },

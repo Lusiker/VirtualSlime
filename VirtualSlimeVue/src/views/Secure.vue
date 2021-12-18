@@ -34,6 +34,7 @@
 
     <van-cell-group style="margin-top: 10%">
       <van-cell title="上次登录" :value="info.lastLogin" />
+      <van-cell title="退出登录" is-link @click="logout"/>
     </van-cell-group>
   </div>
 </template>
@@ -107,6 +108,13 @@ export default {
           }
         })
       }
+    },
+    logout: function () {
+      sessionStorage.clear()
+      this.$store.state.userState.isLogin = false
+      this.$store.state.userState.myUid = null
+      Notify({type: 'primary', message: '退出成功'})
+      this.$router.push("/")
     }
   }
 }
