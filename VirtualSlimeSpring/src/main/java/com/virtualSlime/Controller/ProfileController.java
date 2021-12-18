@@ -709,14 +709,16 @@ public class ProfileController {
             if(!userRepository.unfollowUser(userFrom,userTo)){
                 return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
             }
+
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_SUCCESSFUL,"unfollow"));
         }else{
             //else follow
             Date now = new Date();
             if(!userRepository.insertFollow(userFrom,userTo,now)){
                 return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
             }
-        }
 
-        return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_SUCCESSFUL,null));
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_SUCCESSFUL,"follow"));
+        }
     }
 }
