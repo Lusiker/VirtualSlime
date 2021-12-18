@@ -1,6 +1,5 @@
 package com.virtualSlime.Utils.InfoWrapper;
 
-import com.virtualSlime.Entity.Comment;
 import com.virtualSlime.Entity.Item;
 import com.virtualSlime.Entity.Relation.UserBought;
 import com.virtualSlime.Entity.User;
