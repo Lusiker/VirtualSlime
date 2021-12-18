@@ -78,6 +78,16 @@ public class ItemRepository {
         return page.getRecords();
     }
 
+    public List<Item> selectAvailableItemsLikeKeywordByPage(String keyword,int currentPage,int itemCount){
+        QueryWrapper<Item> wrapper = new QueryWrapper<Item>().like("item_name",keyword)
+                .and(w -> w.ne("item_state", ItemState.HIDDEN));
+
+        Page<Item> pageInfo = new Page<>(currentPage,itemCount,false);
+        IPage<Item> page = itemMapper.selectPage(pageInfo,wrapper);
+
+        return page.getRecords();
+    }
+
     public List<Item> selectAvailableItemsByPageWithCid(int currentPage,int itemCount,int cid){
         QueryWrapper<Item> wrapper = new QueryWrapper<Item>().ne("item_state", ItemState.HIDDEN)
                 .and(w -> w.eq("cid",cid));
