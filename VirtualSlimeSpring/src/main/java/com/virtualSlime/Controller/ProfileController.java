@@ -7,7 +7,6 @@ import com.virtualSlime.Entity.Item;
 import com.virtualSlime.Entity.Relation.UserBought;
 import com.virtualSlime.Entity.Relation.UserCart;
 import com.virtualSlime.Entity.User;
-import com.virtualSlime.Enum.PageState.ItemPageState;
 import com.virtualSlime.Enum.PageState.ProfilePageState;
 import com.virtualSlime.Enum.EntityType.UserSex;
 import com.virtualSlime.Service.CommentRepository;
@@ -16,7 +15,6 @@ import com.virtualSlime.Utils.InfoWrapper.*;
 import com.virtualSlime.Utils.PasswordSimplicityChecker;
 import com.virtualSlime.Service.UserRepository;
 import com.virtualSlime.Utils.*;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -68,18 +66,26 @@ public class ProfileController {
 
         if(fromUser.getUid().equals(targetUser.getUid())){
             //trying to access user' own homepage, return AS_MASTER
-            UserInfoWrapper infoWrapper = new UserInfoWrapper(targetUser,0);
-            infoWrapper.setFollowerCount(userRepository.selectUserFollowerCount(targetUser));
-            infoWrapper.setFollowingCount(userRepository.selectUserFollowingCount(targetUser));
-            infoWrapper.setCouponCount(userRepository.selectUserCouponCount(targetUser));
+            UserInfoWrapper infoWrapper = new UserInfoWrapper.UserInfoWrapperBuilder()
+                    .setUserCommonInfo(targetUser)
+                    .setUserInfoAsMaster(targetUser)
+                    .setUserFollowerInfo(userRepository.selectUserFollowerCount(targetUser))
+                    .setUserFollowingInfo(userRepository.selectUserFollowingCount(targetUser))
+                    .setUserCouponInfo(userRepository.selectUserCouponCount(targetUser))
+                    .build();
 
             return objectMapper.writeValueAsString(new Result(ProfilePageState.AS_MASTER,infoWrapper));
         }else{
             //entering other's homepage, return AS_GUEST
-            UserInfoWrapper infoWrapper = new UserInfoWrapper(targetUser,1);
-            infoWrapper.setFollowerCount(userRepository.selectUserFollowerCount(targetUser));
-            infoWrapper.setFollowingCount(userRepository.selectUserFollowingCount(targetUser));
-            infoWrapper.setCouponCount(null);
+
+
+            UserInfoWrapper infoWrapper = new UserInfoWrapper.UserInfoWrapperBuilder()
+                    .setUserCommonInfo(targetUser)
+                    .setUserInfoAsGuest(targetUser)
+                    .setUserFollowerInfo(userRepository.selectUserFollowerCount(targetUser))
+                    .setUserFollowingInfo(userRepository.selectUserFollowingCount(targetUser))
+                    .setUserHasFollowed(userRepository.checkUserHasFollowed(fromUser,targetUser))
+                    .build();
 
             return objectMapper.writeValueAsString(new Result(ProfilePageState.AS_GUEST,infoWrapper));
         }
@@ -143,7 +149,7 @@ public class ProfileController {
         }
 
         List<Comment> comments = commentRepository.selectCommentsByUid(user);
-        List<CommentInfoWrapper> result = new ArrayList<CommentInfoWrapper>();
+        List<CommentInfoWrapper> result = new ArrayList<>();
         for(Comment c : comments){
             CommentInfoWrapper wrapper = new CommentInfoWrapper.CommentInfoWrapperBuilder()
                     .setComment(c)
@@ -253,7 +259,7 @@ public class ProfileController {
         List<UserBought> list = itemRepository.selectUserBought(user);
         list.sort(Comparator.comparing(UserBought::getCreatedTime).reversed());
 
-        List<ItemInfoWrapper> result = new ArrayList<ItemInfoWrapper>();
+        List<ItemInfoWrapper> result = new ArrayList<>();
         for(UserBought b : list){
             Item newItem = itemRepository.selectItemByIid(b.getIid());
             User newUser = userRepository.selectUserByUid(b.getUid());
@@ -282,9 +288,11 @@ public class ProfileController {
         }
 
         List<User> followers = userRepository.selectUserFollowers(user);
-        List<FollowerInfoWrapper> result = new ArrayList<FollowerInfoWrapper>();
+        List<UserInfoWrapper> result = new ArrayList<>();
         for(User f : followers){
-            FollowerInfoWrapper wrapper = new FollowerInfoWrapper(f);
+            UserInfoWrapper wrapper = new UserInfoWrapper.UserInfoWrapperBuilder()
+                    .setLesserInfo(f)
+                    .build();
             result.add(wrapper);
         }
 
@@ -305,14 +313,18 @@ public class ProfileController {
         }
 
         List<User> followers = userRepository.selectUserFollowings(user);
-        List<FollowerInfoWrapper> result = new ArrayList<FollowerInfoWrapper>();
+        List<UserInfoWrapper> result = new ArrayList<>();
         for(User f : followers){
-            FollowerInfoWrapper wrapper = new FollowerInfoWrapper(f);
+            UserInfoWrapper wrapper = new UserInfoWrapper.UserInfoWrapperBuilder()
+                    .setLesserInfo(f)
+                    .setUserHasFollowed(userRepository.checkUserHasFollowed(user,f))
+                    .build();
+
             result.add(wrapper);
         }
 
-        //return (6,show_bought),list of item in followings
-        return objectMapper.writeValueAsString(new Result(ProfilePageState.SHOW_FOLLOWER,result));
+        //return (6,show_following),list of item in followings
+        return objectMapper.writeValueAsString(new Result(ProfilePageState.SHOW_FOLLOWING,result));
     }
 
     //update api
@@ -379,6 +391,40 @@ public class ProfileController {
         }
 
         return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_SUCCESSFUL,newName));
+    }
+
+    @RequestMapping("/user/{uid}/update/email={newEmail}")
+    public String userProfileUpdateEmail(@PathVariable(value = "uid")String newUid,
+                                         @PathVariable(value = "newEmail")String newEmail) throws JsonProcessingException{
+        int uid = checkUidValid(newUid);
+        if(uid == -1) {
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong Info:" + newUid));
+        }
+
+        User user = userRepository.selectUserByUid(uid);
+        if(user == null){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
+        }
+
+        if(newEmail.length() == 0){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong Input"));
+        }
+
+        if(newEmail.length() > 50){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"New Email Too Long"));
+        }
+
+        switch (userRepository.updateUserResetEmail(user,newEmail)){
+            case -1 -> {
+                return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_FAILED,"Duplicated:" + newEmail));
+            }
+            case 1 -> {
+                return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_SUCCESSFUL,newEmail));
+            }
+            default -> {
+                return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
+            }
+        }
     }
 
     /**
@@ -617,8 +663,7 @@ public class ProfileController {
 
         BigDecimal addCount;
         try{
-            double addCountLiteral = Double.parseDouble(newAddCount);
-            addCount = BigDecimal.valueOf(addCountLiteral);
+            addCount = new BigDecimal(newAddCount);
         }catch (Exception e){
             return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED, newAddCount));
         }
@@ -628,5 +673,50 @@ public class ProfileController {
         }
 
         return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_SUCCESSFUL,user.getUserCurrency()));
+    }
+
+    /**
+     * Follow operation. If uidFrom has not followed uidTo, then follow; else, unfollow.
+     * @param newUidTo uidTo
+     * @param newUidFrom uidFrom
+     * @return result
+     */
+    @RequestMapping("/user/{uid1}:{uid2}/follow")
+    public String userProfileFollowUser(@PathVariable(value = "uid1")String newUidTo,
+                                        @PathVariable(value = "uid2")String newUidFrom) throws JsonProcessingException{
+        int uidFrom = checkUidValid(newUidFrom);
+        if(uidFrom == -1) {
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED, newUidFrom));
+        }
+
+        User userFrom = userRepository.selectUserByUid(uidFrom);
+        if(userFrom == null){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
+        }
+
+        int uidTo = checkUidValid(newUidTo);
+        if(uidTo == -1) {
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED, uidTo));
+        }
+
+        User userTo = userRepository.selectUserByUid(uidTo);
+        if(userTo == null){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
+        }
+
+        if(userRepository.checkUserHasFollowed(userFrom,userTo)){
+            //If userFrom has followed userTo, unfollow
+            if(!userRepository.unfollowUser(userFrom,userTo)){
+                return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
+            }
+        }else{
+            //else follow
+            Date now = new Date();
+            if(!userRepository.insertFollow(userFrom,userTo,now)){
+                return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
+            }
+        }
+
+        return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_SUCCESSFUL,null));
     }
 }
