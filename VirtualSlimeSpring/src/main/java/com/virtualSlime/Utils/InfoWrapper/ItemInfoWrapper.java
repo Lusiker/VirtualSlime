@@ -12,7 +12,6 @@ import lombok.ToString;
 import java.math.BigDecimal;
 import java.util.List;
 
-
 /**
  * ItemInfoWrapper
  * Difference between Item
