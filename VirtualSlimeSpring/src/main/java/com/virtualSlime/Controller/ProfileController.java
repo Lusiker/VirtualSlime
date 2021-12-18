@@ -629,7 +629,7 @@ public class ProfileController {
 
         if(newPassword.length() != 0){
             if(PasswordSimplicityChecker.checkPasswordSimplicity(newPassword)){
-                return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"New Password Too Simple"));
+                return objectMapper.writeValueAsString(new Result(ProfilePageState.PASSWORD_TOO_SIMPLE,"New Password Too Simple"));
             }
 
             String encodedUserPassword = StringEncoder.userPasswordEncode(newPassword);

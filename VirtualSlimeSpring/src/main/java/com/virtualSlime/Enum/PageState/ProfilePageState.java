@@ -5,6 +5,7 @@ public enum ProfilePageState implements ControllerStateEnum {
     INTERNAL_ERROR(-2,"internal_error"),
     ACCESS_DENIED(-3,"access_denied"),
     UPDATE_FAILED(-4,"update_failed"),
+    PASSWORD_TOO_SIMPLE(-5,"password_too_simple"),
     AS_MASTER(0,"as_master"),
     AS_GUEST(1,"as_guest"),
     UPDATE_SUCCESSFUL(2,"update_successful"),
