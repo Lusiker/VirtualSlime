@@ -2,11 +2,14 @@ package com.virtualSlime.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.virtualSlime.Entity.Item;
 import com.virtualSlime.Entity.Relation.UserFollow;
 import com.virtualSlime.Entity.User;
 import com.virtualSlime.Entity.Relation.UserCoupon;
 import com.virtualSlime.Enum.EntityType.UserSex;
+import com.virtualSlime.Enum.ItemState;
 import com.virtualSlime.Enum.UserState;
 import com.virtualSlime.Mapper.UserCouponMapper;
 import com.virtualSlime.Mapper.UserFollowMapper;
@@ -76,6 +79,16 @@ public class UserRepository {
         QueryWrapper<User> wrapper = new QueryWrapper<User>().eq("user_name", userName);
 
         return userMapper.selectOne(wrapper);
+    }
+
+    public List<User> selectAvailableUsersLikeKeywordByPage(String keyword,int currentPage,int itemCount){
+        QueryWrapper<User> wrapper = new QueryWrapper<User>().like("user_name",keyword)
+                .and(w -> w.eq("user_state", UserState.NORMAL));
+
+        Page<User> pageInfo = new Page<>(currentPage,itemCount,false);
+        IPage<User> page = userMapper.selectPage(pageInfo,wrapper);
+
+        return page.getRecords();
     }
 
     public int selectUserCouponCount(User user){
