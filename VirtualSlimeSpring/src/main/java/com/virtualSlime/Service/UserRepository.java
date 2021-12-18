@@ -3,17 +3,21 @@ package com.virtualSlime.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.virtualSlime.Entity.Item;
+import com.virtualSlime.Entity.Relation.UserFollow;
 import com.virtualSlime.Entity.User;
 import com.virtualSlime.Entity.Relation.UserCoupon;
 import com.virtualSlime.Enum.EntityType.UserSex;
 import com.virtualSlime.Enum.UserState;
 import com.virtualSlime.Mapper.UserCouponMapper;
+import com.virtualSlime.Mapper.UserFollowMapper;
 import com.virtualSlime.Mapper.UserMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.sql.Wrapper;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -23,18 +27,33 @@ public class UserRepository {
     private UserMapper userMapper;
     @Resource
     private UserCouponMapper userCouponMapper;
+    @Resource
+    private UserFollowMapper userFollowMapper;
 
     //basic insert
     public boolean insertUser(User user){
         return userMapper.insert(user) == 1;
     }
 
+    public boolean insertFollow(User userFrom,User userTo,Date now){
+        UserFollow follow = new UserFollow(userFrom.getUid(),userTo.getUid(),false,now);
+
+        return userFollowMapper.insert(follow) == 1;
+    }
+
     //basic update
     public boolean updateUser(User user){
-        UpdateWrapper<User> wrapper = new UpdateWrapper<User>();
+        UpdateWrapper<User> wrapper = new UpdateWrapper<>();
         wrapper.eq("uid",user.getUid());
 
         return userMapper.update(user, wrapper) == 1;
+    }
+
+    public boolean updateFollow(UserFollow record){
+        UpdateWrapper<UserFollow> wrapper = new UpdateWrapper<UserFollow>().eq("uid_from",record.getUidFrom())
+                .and(w -> w.eq("uid_to",record.getUidTo()));
+
+        return userFollowMapper.update(record,wrapper) == 1;
     }
 
     //select queries
@@ -71,11 +90,23 @@ public class UserRepository {
         }
     }
 
-    public int selectUserFollowerCount(User user){
-        QueryWrapper<User> wrapper = new QueryWrapper<User>().inSql("uid",
-                "select uid_from from virtual_slime.r_user_follow where uid_to = " + user.getUid());
+    public UserFollow selectUserFollow(User userFrom,User userTo){
+        QueryWrapper<UserFollow> wrapper = new QueryWrapper<UserFollow>().eq("uid_from",userFrom.getUid())
+                .and(w -> w.eq("uid_to",userTo.getUid()));
 
-        Long listSize = userMapper.selectCount(wrapper);
+        return userFollowMapper.selectOne(wrapper);
+    }
+
+    public boolean checkUserHasFollowed(User userFrom,User userTo){
+        UserFollow result = selectUserFollow(userFrom,userTo);
+
+        return result != null;
+    }
+
+    public int selectUserFollowerCount(User user){
+        QueryWrapper<UserFollow> wrapper = new QueryWrapper<UserFollow>().eq("uid_to",user.getUid());
+
+        Long listSize = userFollowMapper.selectCount(wrapper);
         int followerCount = 0;
         if(listSize == null){
             return 0;
@@ -85,36 +116,53 @@ public class UserRepository {
     }
 
     public List<User> selectUserFollowers(User user){
-        QueryWrapper<User> wrapper = new QueryWrapper<User>().inSql("uid",
-                "select uid_from from virtual_slime.r_user_follow where uid_to = " + user.getUid());
+        QueryWrapper<UserFollow> wrapper = new QueryWrapper<UserFollow>().eq("uid_to",user.getUid());
+        List<UserFollow> list = userFollowMapper.selectList(wrapper);
 
-        return userMapper.selectList(wrapper);
+        List<User> result = new ArrayList<>();
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        for(UserFollow i : list){
+            userQueryWrapper.eq("uid",i.getUidFrom());
+            User newFollower = userMapper.selectOne(userQueryWrapper);
+            result.add(newFollower);
+            userQueryWrapper.clear();
+        }
+
+        return result;
     }
 
     public int selectUserFollowingCount(User user){
-        QueryWrapper<User> wrapper = new QueryWrapper<User>().inSql("uid",
-                "select uid_to from virtual_slime.r_user_follow where uid_from = " + user.getUid());
+        QueryWrapper<UserFollow> wrapper = new QueryWrapper<UserFollow>().eq("uid_from",user.getUid());
 
-        Long listSize = userMapper.selectCount(wrapper);
-        int followingCount = 0;
+        Long listSize = userFollowMapper.selectCount(wrapper);
+        int followerCount = 0;
         if(listSize == null){
             return 0;
         }
 
-        return (int) (followingCount + listSize);
+        return (int) (followerCount + listSize);
     }
 
     public List<User> selectUserFollowings(User user){
-        QueryWrapper<User> wrapper = new QueryWrapper<User>().inSql("uid",
-                "select uid_to from virtual_slime.r_user_follow where uid_from = " + user.getUid());
+        QueryWrapper<UserFollow> wrapper = new QueryWrapper<UserFollow>().eq("uid_from",user.getUid());
+        List<UserFollow> list = userFollowMapper.selectList(wrapper);
 
-        return userMapper.selectList(wrapper);
+        List<User> result = new ArrayList<>();
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        for(UserFollow i : list){
+            userQueryWrapper.eq("uid",i.getUidFrom());
+            User newFollower = userMapper.selectOne(userQueryWrapper);
+            result.add(newFollower);
+            userQueryWrapper.clear();
+        }
+
+        return result;
     }
 
     //update queries
     public boolean updateUserLogin(User user, Date now){
         //update user's lastLogin and totalLogin
-        UpdateWrapper<User> wrapper = new UpdateWrapper<User>();
+        UpdateWrapper<User> wrapper = new UpdateWrapper<>();
         wrapper.eq("uid",user.getUid());
 
         user.setLastLogin(new Timestamp(now.getTime()));
@@ -231,19 +279,43 @@ public class UserRepository {
         return updateUser(user);
     }
 
-    public boolean updateUserResetEmail(User user, String newEmail){
+    public int updateUserResetEmail(User user, String newEmail){
         //set user's email to new email, state to restricted and hasActivated to false
+        //if email has not changed, return -1
+        if(user.getUserEmail().equals(newEmail)) {
+            return -1;
+        }
+
         user.setUserEmail(newEmail);
         user.setUserHasActivated(false);
         user.setUserState(UserState.RESTRICTED);
 
-        return updateUser(user);
+        boolean state = updateUser(user);
+        if(state){
+            return 1;
+        }
+
+        return 0;
     }
+
+    public boolean updateFollowSpecialized(UserFollow record){
+        record.setIsSpecialized(!record.getIsSpecialized());
+
+        return updateFollow(record);
+    }
+
 
     public boolean deleteUser(User user){
         //set's user's state to UserState.LOGOFF
         user.setUserState(UserState.LOGOFF);
 
         return updateUser(user);
+    }
+
+    public boolean unfollowUser(User userFrom,User userTo){
+        QueryWrapper<UserFollow> wrapper = new QueryWrapper<UserFollow>().eq("uid_from",userFrom.getUid())
+                .and(w -> w.eq("uid_to",userTo.getUid()));
+
+        return userFollowMapper.delete(wrapper) == 1;
     }
 }
