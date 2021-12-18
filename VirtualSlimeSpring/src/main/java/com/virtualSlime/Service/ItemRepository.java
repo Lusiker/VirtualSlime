@@ -2,6 +2,8 @@ package com.virtualSlime.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.virtualSlime.Entity.Item;
 import com.virtualSlime.Entity.Relation.UserBought;
 import com.virtualSlime.Entity.Relation.UserCart;
@@ -65,6 +67,25 @@ public class ItemRepository {
         QueryWrapper<Item> wrapper = new QueryWrapper<Item>().ne("item_state", ItemState.HIDDEN);
 
         return itemMapper.selectList(wrapper);
+    }
+
+    public List<Item> selectAvailableItemsByPage(int currentPage,int itemCount){
+        QueryWrapper<Item> wrapper = new QueryWrapper<Item>().ne("item_state", ItemState.HIDDEN);
+
+        Page<Item> pageInfo = new Page<>(currentPage,itemCount,false);
+        IPage<Item> page = itemMapper.selectPage(pageInfo,wrapper);
+
+        return page.getRecords();
+    }
+
+    public List<Item> selectAvailableItemsByPageWithCid(int currentPage,int itemCount,int cid){
+        QueryWrapper<Item> wrapper = new QueryWrapper<Item>().ne("item_state", ItemState.HIDDEN)
+                .and(w -> w.eq("cid",cid));
+
+        Page<Item> pageInfo = new Page<>(currentPage,itemCount,false);
+        IPage<Item> page = itemMapper.selectPage(pageInfo,wrapper);
+
+        return page.getRecords();
     }
 
     public List<Item> selectItemsByUid(User user){
