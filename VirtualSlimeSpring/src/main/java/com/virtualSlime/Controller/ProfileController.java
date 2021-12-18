@@ -21,13 +21,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.io.*;
 import java.math.BigDecimal;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @RestController
 public class ProfileController {
@@ -354,6 +355,42 @@ public class ProfileController {
         }
 
         return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_SUCCESSFUL,null));
+    }
+
+    /**
+     * @param newUid uid
+     * @param newData a base64 encoded jpg string
+     * @return result
+     */
+    @RequestMapping("/user/{uid}/saveAvatar")
+    public String userProfileSaveAvatar(@PathVariable(value = "uid")String newUid,
+                                        @RequestParam(value = "data")String newData) throws IOException {
+        int uid = checkUidValid(newUid);
+        if(uid == -1) {
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Wrong Info:" + newUid));
+        }
+
+        User user = userRepository.selectUserByUid(uid);
+        if(user == null){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
+        }
+
+        String base64Image = newData.split(",")[1];
+        String base64ImageProcessed = base64Image.replaceAll(" ", "+").trim();
+
+        Base64.Decoder decoder = Base64.getMimeDecoder();
+        byte[] imageBytes = decoder.decode(base64ImageProcessed);
+
+        String imgPath = "../VirtualSlimeVue/src/assets/user/" + newUid + "/avatar.jpg";
+        File f = new File("../VirtualSlimeVue/src/assets/user/" + newUid);
+        if(!f.mkdirs()){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
+        }
+        FileOutputStream out = new FileOutputStream(imgPath);
+        out.write(imageBytes);
+        out.close();
+
+        return objectMapper.writeValueAsString(new Result(ProfilePageState.AVATAR_SAVED,null));
     }
 
     /**
