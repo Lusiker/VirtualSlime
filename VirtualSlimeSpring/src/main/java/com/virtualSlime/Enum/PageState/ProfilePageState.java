@@ -14,7 +14,8 @@ public enum ProfilePageState implements ControllerStateEnum {
     SHOW_FOLLOWER(5,"show_follower"),
     SHOW_FOLLOWING(6,"show_following"),
     SHOW_COMMENTS(7,"show_comments"),
-    SHOW_ITEMS(8,"show_items");
+    SHOW_ITEMS(8,"show_items"),
+    AVATAR_SAVED(9,"avatar_saved");
 
     private final int stateCode;
     private final String value;
