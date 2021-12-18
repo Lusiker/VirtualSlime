@@ -1,7 +1,9 @@
 package com.virtualSlime.Enum.PageState;
 
 public enum IndexPageState implements ControllerStateEnum {
-    SUCCESSFUL(0,"hello from virtual slime");
+    HELLO(0,"hello from virtual slime"),
+    SUCCESSFUL(1,"successful"),
+    FAILED(-1,"failed");
 
     private final Integer stateCode;
     private final String value;
