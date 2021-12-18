@@ -42,7 +42,7 @@ public class ItemInfoWrapper {
 
     public ItemInfoWrapper(ItemInfoWrapperBuilder builder){
         this.iid = builder.getBIid();
-        this.uid = builder.getBIid();
+        this.uid = builder.getBUid();
         this.userName = builder.getBUserName();
         this.itemName = builder.getBItemName();
         this.itemBrief = builder.getBItemBrief();
