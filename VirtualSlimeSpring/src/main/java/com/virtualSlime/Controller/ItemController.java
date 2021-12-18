@@ -60,7 +60,7 @@ public class ItemController {
         List<Comment> comments = commentRepository.selectCommentsByIid(iid);
         comments.sort(Comparator.comparing(Comment::getCreatedAt).reversed());
 
-        List<CommentInfoWrapper> list = new ArrayList<CommentInfoWrapper>();
+        List<CommentInfoWrapper> list = new ArrayList<>();
         for(Comment c : comments){
             User u = userRepository.selectUserByUid(c.getUid());
             CommentInfoWrapper wrapper = new CommentInfoWrapper.CommentInfoWrapperBuilder()
