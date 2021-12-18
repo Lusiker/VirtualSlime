@@ -45,6 +45,8 @@ import swipe2 from '@/assets/images/swipe2.jpeg'
 import swipe3 from '@/assets/images/swipe3.jpeg'
 import swipe4 from '@/assets/images/swipe4.jpeg'
 import BottomNav from '@/components/BottomNav.vue'
+import axios from 'axios'
+import Qs from 'qs'
 export default {
   components: {
     BottomNav
@@ -60,25 +62,25 @@ export default {
       ]
     }
   },
-  methods: {
-    nextTick: function () {
+  mounted() {
+    let isLogin = sessionStorage.getItem("isLogin")
+    if(isLogin != null){
       this.loadProfile()
-    },
+    }
+  },
+  methods: {
     loadProfile: function () {
-      let uid1 = sessionStorage.getItem("uid")
-      let uid2 = uid1
+      let uid = sessionStorage.getItem("uid")
       axios({
-        url: '/api/user/' + uid1 + ':'+ uid2 +'',
+        url: '/api/user/' + uid + ':'+ uid +'',
         method: 'post',
-        transformRequest: [function (data) {
-          return Qs.stringify(data)
-        }]
       }).then(res =>{
         let info = res.data.returnObject
         sessionStorage.setItem("username", info.userName)
-        sessionStorage.setItem("followers", info.userName)
+        sessionStorage.setItem("useremail", info.userEmail)
+        sessionStorage.setItem("followers", info.followerCount)
         sessionStorage.setItem("following", info.followingCount)
-        sessionStorage.setItem("money", info.info.userCurrency)
+        sessionStorage.setItem("money", info.userCurrency)
         sessionStorage.setItem("point", info.userPoint)
         sessionStorage.setItem("coupon", info.couponCount)
         sessionStorage.setItem("birthday", info.userBirthday)
@@ -87,9 +89,6 @@ export default {
         sessionStorage.setItem("introduction", info.userIntroduction)
         sessionStorage.setItem("sex", info.userSex)
         sessionStorage.setItem("state", info.userState)
-        // lastLogin: "2021-12-15T15:15:41.000+00:00"
-        // userShowBirthday: true
-        // userShowDynamic: true
       })
     }
   }

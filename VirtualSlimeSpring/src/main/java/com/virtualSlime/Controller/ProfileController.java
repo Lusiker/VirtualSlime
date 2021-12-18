@@ -493,7 +493,7 @@ public class ProfileController {
             return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
         }
 
-        return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_SUCCESSFUL,userSex.getValue()));
+        return objectMapper.writeValueAsString(new Result(ProfilePageState.UPDATE_SUCCESSFUL,userSex));
     }
 
     /**
