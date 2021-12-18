@@ -39,6 +39,10 @@ public class DateProcessor {
     }
 
     public static String getDateStringFromTimestamp(Date date){
+        if(date == null){
+            return "null";
+        }
+
         return dateFormat.format(date);
     }
 }
