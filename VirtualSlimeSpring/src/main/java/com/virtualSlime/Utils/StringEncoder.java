@@ -17,5 +17,4 @@ public class StringEncoder {
     public static boolean matchPassword(String newPassword, String SavedPassword){
         return bCryptPasswordEncoder.matches(newPassword,SavedPassword);
     }
-
 }
