@@ -36,7 +36,10 @@ import {
     Radio,
     ActionBar,
     ActionBarIcon,
-    ActionBarButton
+    ActionBarButton,
+    ShareSheet,
+    Rate,
+    SwipeCell
 } from 'vant'
 
 createApp(App).use(store).use(router)
@@ -71,4 +74,7 @@ createApp(App).use(store).use(router)
     .use(ActionBar)
     .use(ActionBarIcon)
     .use(ActionBarButton)
+    .use(ShareSheet)
+    .use(Rate)
+    .use(SwipeCell)
     .mount('#app')

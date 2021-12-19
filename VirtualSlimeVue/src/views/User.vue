@@ -32,7 +32,7 @@
     </van-grid>
     <van-cell value="购买相关"/>
     <van-grid>
-      <van-grid-item icon="shop-o" icon-color="#ff8917" text="我的发布" to="/"/>
+      <van-grid-item icon="shop-o" icon-color="#ff8917" text="我的发布" to="/user/item"/>
       <van-grid-item icon="paid" icon-color="#ff8917" text="我的钱包" to="/pay"/>
       <van-grid-item icon="balance-o" icon-color="#ff8917" text="积分兑换" to="/"/>
       <van-grid-item icon="balance-list-o" icon-color="#ff8917" text="我的订单" to="/"/>
