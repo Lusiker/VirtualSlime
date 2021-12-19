@@ -346,6 +346,10 @@ public class ProfileController {
             return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
         }
 
+        if(!user.getUserHasActivated()){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Not Activated"));
+        }
+
         if(user.getUserIsMerchant()){
             return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Already Merchant"));
         }
