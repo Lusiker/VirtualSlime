@@ -30,7 +30,8 @@ import {
     Calendar,
     Uploader,
     List,
-    Icon
+    Icon,
+    Checkbox
 } from 'vant'
 
 createApp(App).use(store).use(router)
@@ -59,4 +60,5 @@ createApp(App).use(store).use(router)
     .use(Uploader)
     .use(List)
     .use(Icon)
+    .use(Checkbox)
     .mount('#app')

@@ -121,7 +121,7 @@ export default {
     },
     onLoad: function () {
       this.loading = true
-      console.log('加载呢！')
+      // console.log('加载呢！')
       axios({
         url: '/api/home',
         method: 'post',
