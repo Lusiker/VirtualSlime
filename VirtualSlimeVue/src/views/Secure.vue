@@ -71,6 +71,7 @@ export default {
       }).then(res =>{
         if(res.data.stateEnum.state === 2) {
           sessionStorage.setItem("useremail", res.data.returnObject)
+          sessionStorage.setItem("state", "RESTRICTED")
           this.info.email = sessionStorage.getItem("useremail")
           Notify({type: 'primary', message: '修改成功'})
         }
