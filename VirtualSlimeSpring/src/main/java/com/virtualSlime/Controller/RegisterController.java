@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virtualSlime.Entity.User;
 import com.virtualSlime.Enum.PageState.RegisterPageState;
+import com.virtualSlime.Utils.InfoWrapper.GlobalDefaultAvatarCache;
 import com.virtualSlime.Utils.PasswordSimplicityChecker;
 import com.virtualSlime.Service.UserRepository;
 import com.virtualSlime.Utils.InfoWrapper.Result;
@@ -11,6 +12,8 @@ import com.virtualSlime.Utils.StringEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 
 @RestController
@@ -31,6 +34,10 @@ public class RegisterController {
         return user != null;
     }
 
+    private void createDefaultAvatar(User user) throws IOException {
+        GlobalDefaultAvatarCache.createAvatar(user);
+    }
+
     /**
      *
      * @param newUserEmail - default value ""
@@ -40,7 +47,7 @@ public class RegisterController {
      */
     @RequestMapping(value = "/register")
     public String userRegister(@RequestParam(value = "useremail",defaultValue = "")String newUserEmail,
-                               @RequestParam(value = "password",defaultValue = "")String newUserPassword) throws JsonProcessingException {
+                               @RequestParam(value = "password",defaultValue = "")String newUserPassword) throws IOException {
         if(newUserEmail.length() != 0 && newUserPassword.length() != 0) {
             if(PasswordSimplicityChecker.checkPasswordSimplicity(newUserPassword)){
                 //password too simple
@@ -72,6 +79,8 @@ public class RegisterController {
             User registeringUser = new User(newUserName, newUserEmail, encodedUserPassword);
             //return value success or failure
             if(userRepository.insertUser(registeringUser)){
+                createDefaultAvatar(registeringUser);
+
                 return objectMapper.writeValueAsString(new Result(RegisterPageState.SUCCESSFUL,null));
             } else {
                 return objectMapper.writeValueAsString(new Result(RegisterPageState.INTERNAL_ERROR,null));
