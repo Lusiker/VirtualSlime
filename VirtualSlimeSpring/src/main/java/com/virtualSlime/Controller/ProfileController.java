@@ -175,7 +175,19 @@ public class ProfileController {
         }
 
         List<Item> list = itemRepository.selectItemsByUid(user);
-        return objectMapper.writeValueAsString(new Result(ProfilePageState.SHOW_ITEMS,list));
+        List<ItemInfoWrapper> result = new ArrayList<>();
+        for(Item i : list){
+            ItemInfoWrapper wrapper = new ItemInfoWrapper.ItemInfoWrapperBuilder()
+                    .setItem(i,categoryCache)
+                    .setSeller(user)
+                    .setRating()
+                    .setRatingString()
+                    .build();
+
+            result.add(wrapper);
+        }
+
+        return objectMapper.writeValueAsString(new Result(ProfilePageState.SHOW_ITEMS,result));
     }
 
     @RequestMapping("/user/{uid}/cart")
