@@ -55,7 +55,17 @@ const routes = [
     path: '/secure',
     name: 'Secure',
     component: () => import('../views/Secure.vue')
-  }
+  },
+  {
+    path: '/pay',
+    name: 'Pay',
+    component: () => import('../views/Pay.vue')
+  },
+  {
+    path: '/item/:iid',
+    name: 'Item',
+    component: () => import('../views/Item.vue')
+  },
 ]
 
 const router = createRouter({

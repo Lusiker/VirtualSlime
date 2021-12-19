@@ -31,7 +31,12 @@ import {
     Uploader,
     List,
     Icon,
-    Checkbox
+    Checkbox,
+    RadioGroup,
+    Radio,
+    ActionBar,
+    ActionBarIcon,
+    ActionBarButton
 } from 'vant'
 
 createApp(App).use(store).use(router)
@@ -61,4 +66,9 @@ createApp(App).use(store).use(router)
     .use(List)
     .use(Icon)
     .use(Checkbox)
+    .use(RadioGroup)
+    .use(Radio)
+    .use(ActionBar)
+    .use(ActionBarIcon)
+    .use(ActionBarButton)
     .mount('#app')
