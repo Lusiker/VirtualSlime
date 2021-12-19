@@ -55,7 +55,32 @@ const routes = [
     path: '/secure',
     name: 'Secure',
     component: () => import('../views/Secure.vue')
-  }
+  },
+  {
+    path: '/pay',
+    name: 'Pay',
+    component: () => import('../views/Pay.vue')
+  },
+  {
+    path: '/item/:iid',
+    name: 'Item',
+    component: () => import('../views/Item.vue')
+  },
+  {
+    path: '/user/item',
+    name: 'MyItem',
+    component: () => import('../views/MyItem.vue')
+  },
+  {
+    path: '/user/bought',
+    name: 'MyBought',
+    component: () => import('../views/MyBought.vue')
+  },
+  {
+    path: '/user/comments',
+    name: 'MyComments',
+    component: () => import('../views/MyComments.vue')
+  },
 ]
 
 const router = createRouter({

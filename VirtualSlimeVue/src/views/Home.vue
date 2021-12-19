@@ -20,21 +20,23 @@
             @load="onLoad"
         >
           <div class="van-clearfix">
-            <div style="margin: 1%; width: 48%; float: left; background-color: white; border-radius: 8px; overflow: hidden;" v-for="item in items" >
-            <van-image
-                :src="require('@/assets/item/' + item.iid + '/pic.jpg')"
-                :show-loading=false
-            />
-            <div class="van-ellipsis" style="font-size: var(--van-font-size-md);">
-              <van-tag plain type="primary" style="margin-left: 2%;">{{ item.type }}</van-tag>
-              {{ item.name }}
-            </div>
-            <div style="float: left; color: #FB7299; font-size: var(--van-line-height-sm); margin-top: 2%; margin-left: 4%;">
-              ¥{{ item.price }}
-            </div>
-            <div style="float: right; color: var(--van-gray-5); font-size: var(--van-line-height-xs); margin-right: 4%">
-              {{ item.rate }}
-            </div>
+          <div style="margin: 1%; width: 48%; float: left; background-color: white; border-radius: 8px; overflow: hidden;" v-for="item in items" >
+            <router-link :to="'/item/' + item.iid">
+              <van-image
+                  :src="require('@/assets/item/' + item.iid + '/pic.jpg')"
+                  :show-loading=false
+              />
+              <div class="van-ellipsis" style="font-size: var(--van-font-size-md);">
+                <van-tag plain type="primary" style="margin-left: 2%;">{{ item.type }}</van-tag>
+                {{ item.name }}
+              </div>
+              <div style="float: left; color: #FB7299; font-size: var(--van-line-height-sm); margin-top: 2%; margin-left: 4%;">
+                ¥{{ item.price }}
+              </div>
+              <div style="float: right; color: var(--van-gray-5); font-size: var(--van-line-height-xs); margin-right: 4%">
+                {{ item.rate }}
+              </div>
+            </router-link>
           </div>
           </div>
         </van-list>
@@ -154,3 +156,11 @@ export default {
   }
 }
 </script>
+
+<style>
+  a:link,
+  a:visited{
+    color: #000;
+    text-decoration: none;
+  }
+</style>

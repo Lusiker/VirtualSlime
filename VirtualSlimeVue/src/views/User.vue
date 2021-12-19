@@ -25,15 +25,15 @@
       <van-grid-item icon="coupon-o" :text="'优惠券：' + userInfo.coupon + '张'" />
     </van-grid>
     <van-grid>
-      <van-grid-item icon="orders-o" icon-color="#1989fa" text="我的评价" to="/"/>
+      <van-grid-item icon="orders-o" icon-color="#1989fa" text="我的评价" to="/user/comments"/>
       <van-grid-item icon="clock-o" icon-color="#1989fa" text="历史记录" to="/"/>
       <van-grid-item icon="star-o" icon-color="#1989fa" text="我的收藏" to="/"/>
-      <van-grid-item icon="balance-list-o" icon-color="#1989fa" text="已购商品" to="/"/>
+      <van-grid-item icon="balance-list-o" icon-color="#1989fa" text="已购商品" to="/user/bought"/>
     </van-grid>
     <van-cell value="购买相关"/>
     <van-grid>
-      <van-grid-item icon="shop-o" icon-color="#ff8917" text="我的发布" to="/"/>
-      <van-grid-item icon="paid" icon-color="#ff8917" text="我的钱包" to="/"/>
+      <van-grid-item icon="shop-o" icon-color="#ff8917" text="我的发布" to="/user/item"/>
+      <van-grid-item icon="paid" icon-color="#ff8917" text="我的钱包" to="/pay"/>
       <van-grid-item icon="balance-o" icon-color="#ff8917" text="积分兑换" to="/"/>
       <van-grid-item icon="balance-list-o" icon-color="#ff8917" text="我的订单" to="/"/>
     </van-grid>
@@ -49,8 +49,6 @@
 
 <script>
 import BottomNav from '@/components/BottomNav.vue'
-import axios from 'axios'
-import Qs from 'qs'
 export default {
   components: { 
     BottomNav

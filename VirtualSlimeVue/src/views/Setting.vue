@@ -84,10 +84,7 @@
           v-if="info.isMerchant === '未认证' && info.state === '正常'" />
       <van-popup v-model:show="toMerchantShow" position="bottom" :style="{ height: '80%' }" round>
         <van-cell-group inset style="margin-top: 10%">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium asperiores consequuntur corporis cum dignissimos dolorem, dolores ducimus, eos est fuga laborum nesciunt nostrum placeat porro rem repellendus saepe sequi unde!
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic impedit nihil reprehenderit sequi similique. Accusantium delectus, dignissimos illo inventore molestiae nihil, quidem, reiciendis similique suscipit vel voluptas voluptatem. Recusandae, voluptates!
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab beatae commodi, doloremque fuga quasi quidem tempora voluptatibus! Atque beatae dolorem minima molestiae neque quia vitae voluptas! Debitis iusto praesentium quos?
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea in pariatur perspiciatis quasi repellendus? Asperiores aspernatur consequuntur cupiditate, dolor ea esse laudantium magni maxime neque, nesciunt, quos vel veniam voluptates.
+          Lorem
           <div style="margin-top: 10%; margin-left: 18px; margin-right: 18px">
             <van-button type="primary" block @click="toMerchant">开始你的Virtual Slime商家之路</van-button>
           </div>
@@ -175,7 +172,7 @@ export default {
       return sexMap[sex]
     },
     afterLoad: function (file) {
-      console.log(file.content)
+      // console.log(file.content)
       this.update.avatarBase64 = file.content
     },
     onOversize: function () {
@@ -198,7 +195,6 @@ export default {
       })
     },
     updateNameConfirm: function () {
-      this.updateNameShow = false
       axios({
         url: '/api/user/' + this.info.uid + '/update/name=' + this.update.name,
         method: 'post',
@@ -207,6 +203,9 @@ export default {
           sessionStorage.setItem("username", res.data.returnObject)
           this.info.name = sessionStorage.getItem("username")
           Notify({type: 'primary', message: '修改成功'})
+          this.updateNameShow = false
+        } else if(res.data.stateEnum.state === -4) {
+          Notify({type: 'primary', message: '昵称重复'})
         }
       })
     },

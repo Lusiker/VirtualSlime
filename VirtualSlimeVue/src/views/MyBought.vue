@@ -1,7 +1,9 @@
 <template>
   <div>
     <van-nav-bar
-        title="购物车"
+        left-arrow
+        title="已购商品"
+        @click-left="onClickLeft"
     />
     <van-swipe-cell v-for="item in items">
       <van-card
@@ -12,23 +14,19 @@
           :thumb="require('@/assets/item/' + item.iid + '/pic.jpg')"
       />
       <template #right>
-        <van-button square text="删除" type="danger" class="delete-button" @click="deleteItem(item.iid)"/>
+        <van-button square text="下载" type="success" class="delete-button" @click="deleteItem(item.iid)"/>
       </template>
     </van-swipe-cell>
-    <BottomNav/>
   </div>
 </template>
 
 <script>
-import BottomNav from '@/components/BottomNav.vue'
+import { Notify } from 'vant';
 import axios from 'axios'
-import Qs from "qs";
 export default {
-  components: { 
-    BottomNav 
-  },
   data() {
     return {
+      onClickLeft: () => history.back(),
       uid: sessionStorage.getItem("uid"),
       items: []
     }
@@ -56,19 +54,8 @@ export default {
         }
       })
     },
-    deleteItem: function (iid) {
-      axios({
-        url: '/api/user/' + this.uid + '/cart/remove',
-        method: 'post',
-        transformRequest: [function (data) {
-          return Qs.stringify(data)
-        }],
-        data: {
-          iid: iid
-        }
-      }).then(res => {
-        this.$router.go(0)
-      })
+    deleteItem: function () {
+      Notify({type: 'primary', message: '下载成功'})
     }
   }
 }
