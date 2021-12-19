@@ -14,15 +14,16 @@
           </van-swipe-item>
         </van-swipe>
         <van-list
-            v-model:loading="loading"
+            :loading="loading"
             :finished="finished"
             finished-text="没有更多了"
             @load="onLoad"
-            offset="100"
         >
-          <div style="margin: 1%; width: 48%; float: left; background-color: white; border-radius: 8px; overflow: hidden;" v-for="item in items" >
+          <div class="van-clearfix">
+            <div style="margin: 1%; width: 48%; float: left; background-color: white; border-radius: 8px; overflow: hidden;" v-for="item in items" >
             <van-image
                 :src="require('@/assets/item/' + item.iid + '/pic.jpg')"
+                :show-loading=false
             />
             <div class="van-ellipsis" style="font-size: var(--van-font-size-md);">
               <van-tag plain type="primary" style="margin-left: 2%;">{{ item.type }}</van-tag>
@@ -35,8 +36,8 @@
               {{ item.rate }}
             </div>
           </div>
+          </div>
         </van-list>
-
       </van-tab>
       <van-tab title="书籍">
         内容
@@ -76,7 +77,10 @@ export default {
       loading: false,
       finished: false,
       page: 1,
-      items: [ ]
+      items: [ ],
+      types: [
+          '热卖', '新品', '推荐', '排名', '评分较高', '今日特卖'
+      ]
     }
   },
   mounted() {
@@ -84,7 +88,6 @@ export default {
     if(isLogin != null){
       this.loadProfile()
     }
-    window.addEventListener('scroll', this.handleScroll,true)
   },
   beforeCreate () {
     document.querySelector('body').setAttribute('style', 'background-color: var(--van-gray-2);')
@@ -93,15 +96,6 @@ export default {
     document.querySelector('body').removeAttribute('style')
   },
   methods: {
-    handleScroll: function () {
-      let scrollTop = document.documentElement.scrollTop||document.body.scrollTop;
-      let windowHeight = document.documentElement.clientHeight || document.body.clientHeight;
-      let scrollHeight = document.documentElement.scrollHeight||document.body.scrollHeight;
-      if(scrollTop + windowHeight === scrollHeight){
-        console.log('bottom')
-        this.onLoad()
-      }
-    },
     loadProfile: function () {
       let uid = sessionStorage.getItem("uid")
       axios({
@@ -126,6 +120,8 @@ export default {
       })
     },
     onLoad: function () {
+      this.loading = true
+      console.log('加载呢！')
       axios({
         url: '/api/home',
         method: 'post',
@@ -136,17 +132,23 @@ export default {
           page: this.page
         }
       }).then(res =>{
-        console.log(res.data.returnObject)
-        for(var item of res.data.returnObject) {
-          this.items.push({
-            type: 0,
-            iid: item.iid,
-            name: item.itemName,
-            price: item.itemPrice,
-            rate: item.rating
-          })
+        if(res.data.stateEnum.state === 1) {
+          // console.log(res.data.returnObject)
+          for (var item of res.data.returnObject) {
+            this.items.push({
+              type: this.types[Math.round(Math.random() * 5)],
+              iid: item.iid,
+              name: item.itemName,
+              price: item.itemPrice,
+              rate: item.rating
+            })
+          }
+          this.page += 1
+          this.loading = false
+        } else {
+          this.loading = false
+          this.finished = true
         }
-        this.page += 1
       })
     }
   }
