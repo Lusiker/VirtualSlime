@@ -117,7 +117,7 @@ public class ActivateController {
                 return objectMapper.writeValueAsString(new Result(ActivatePageState.FAILED,null));
             }
             //return SUCCESSFUL with updated loginUser
-            return objectMapper.writeValueAsString(new Result(ActivatePageState.SUCCESSFUL,user));
+            return objectMapper.writeValueAsString(new Result(ActivatePageState.SUCCESSFUL,null));
         }
     }
 }
