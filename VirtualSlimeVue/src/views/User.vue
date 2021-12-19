@@ -25,10 +25,10 @@
       <van-grid-item icon="coupon-o" :text="'优惠券：' + userInfo.coupon + '张'" />
     </van-grid>
     <van-grid>
-      <van-grid-item icon="orders-o" icon-color="#1989fa" text="我的评价" to="/"/>
+      <van-grid-item icon="orders-o" icon-color="#1989fa" text="我的评价" to="/user/comments"/>
       <van-grid-item icon="clock-o" icon-color="#1989fa" text="历史记录" to="/"/>
       <van-grid-item icon="star-o" icon-color="#1989fa" text="我的收藏" to="/"/>
-      <van-grid-item icon="balance-list-o" icon-color="#1989fa" text="已购商品" to="/"/>
+      <van-grid-item icon="balance-list-o" icon-color="#1989fa" text="已购商品" to="/user/bought"/>
     </van-grid>
     <van-cell value="购买相关"/>
     <van-grid>

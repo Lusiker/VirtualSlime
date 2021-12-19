@@ -2,12 +2,10 @@
   <div>
     <van-nav-bar
         left-arrow
-        title="我发布的商品"
+        title="已购商品"
         @click-left="onClickLeft"
     />
-
     <van-swipe-cell v-for="item in items">
-      <router-link :to="'/item/' + item.iid">
       <van-card
           :price="item.price"
           :desc="item.brief"
@@ -15,13 +13,15 @@
           class="goods-card"
           :thumb="require('@/assets/item/' + item.iid + '/pic.jpg')"
       />
-      </router-link>
+      <template #right>
+        <van-button square text="下载" type="success" class="delete-button" @click="deleteItem(item.iid)"/>
+      </template>
     </van-swipe-cell>
-
   </div>
 </template>
 
 <script>
+import { Notify } from 'vant';
 import axios from 'axios'
 export default {
   data() {
@@ -32,27 +32,30 @@ export default {
     }
   },
   mounted() {
-    this.loadMyItem()
+    this.loadCart()
   },
   methods: {
-    loadMyItem: function () {
+    loadCart: function () {
       axios({
-        url: '/api/user/' + this.uid + '/items',
+        url: '/api/user/' + this.uid + '/cart',
         method: 'post',
       }).then(res => {
-        if (res.data.stateEnum.state === 8) {
+        if (res.data.stateEnum.state === 3) {
           // console.log(res.data.returnObject)
           for (var item of res.data.returnObject) {
             this.items.push({
-                iid: item.iid,
-                name: item.itemName,
-                brief: item.itemBrief,
-                price: item.itemPrice
-              }
+                  iid: item.iid,
+                  name: item.itemName,
+                  brief: item.itemBrief,
+                  price: item.itemPrice
+                }
             )
           }
         }
       })
+    },
+    deleteItem: function () {
+      Notify({type: 'primary', message: '下载成功'})
     }
   }
 }
@@ -62,5 +65,9 @@ export default {
 .goods-card {
   margin: 0;
   background-color: white;
+}
+
+.delete-button {
+  height: 100%;
 }
 </style>
