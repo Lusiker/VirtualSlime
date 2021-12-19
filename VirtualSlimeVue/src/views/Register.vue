@@ -26,11 +26,18 @@
 						type="password"
 						placeholder="请输入密码"
 					/>
-				</van-cell-group>	
-				<van-row gutter="20" style="margin: 16px;">		
-						<van-button round type="primary" size="large" @click="register">
-							注册
-						</van-button>	
+				</van-cell-group>
+        <van-checkbox v-model="agree" style="margin: 18px" icon-size="20px" label-disabled>同意<a style="color: #FB7299" @click="show = true">用户条款</a></van-checkbox>
+        <van-popup v-model:show="show" style="width: 90%; height: 80%" round teleport="body" closeable>
+          <div style="margin: 10%;">
+            <h4 style="color: #FB7299">Virtual Slime平台服务协议</h4>
+              Lorem
+          </div>
+        </van-popup>
+        <van-row gutter="20" style="margin: 16px;">
+          <van-button round type="primary" size="large" @click="register" :disabled="!agree">
+            注册
+          </van-button>
 				</van-row>
 			</van-tab>
 		</van-tabs>
@@ -47,7 +54,9 @@ export default {
 			onClickLeft: () => history.back(),
 			useremail: '',
 			password1: '',
-			password2: ''	
+			password2: '',
+      agree: false,
+      show: false
 		}
 	},
 	methods: {

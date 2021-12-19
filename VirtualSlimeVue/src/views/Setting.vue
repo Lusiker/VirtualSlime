@@ -73,15 +73,15 @@
     </van-cell-group>
     <van-cell-group style="margin-top: 10%">
       <van-cell title="UID" :value="info.uid" />
-      <van-cell title="商家认证" :value="info.isMerchant" label="想要卖你的商品吗？点这里就对了"/>
-      <van-cell title="账号状态" :value="info.state" label="邮箱验证后才可正常使用账号哦"/>
+      <van-cell title="商家认证" :value="info.isMerchant" />
+      <van-cell title="账号状态" :value="info.state" />
     </van-cell-group>
     <van-cell-group style="margin-top: 10%">
       <van-cell
           icon="question-o"
           title="想要卖你的商品吗？点这里就对了"
           is-link @click="toMerchantShow = true"
-          v-if="info.isMerchant === '未认证'" />
+          v-if="info.isMerchant === '未认证' && info.state === '正常'" />
       <van-popup v-model:show="toMerchantShow" position="bottom" :style="{ height: '80%' }" round>
         <van-cell-group inset style="margin-top: 10%">
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium asperiores consequuntur corporis cum dignissimos dolorem, dolores ducimus, eos est fuga laborum nesciunt nostrum placeat porro rem repellendus saepe sequi unde!
