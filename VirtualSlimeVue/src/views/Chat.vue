@@ -1,8 +1,5 @@
 <template>
   <div>
-    <h2>
-        faxian
-    </h2>
     <BottomNav/>
   </div>
 </template>

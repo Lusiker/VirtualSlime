@@ -5,8 +5,24 @@
         left-arrow
         @click-left="onClickLeft"
     />
-    <van-cell-group style="margin-top: 10%">
-      <van-cell title="头像" value="内容" />
+    <van-image width="100" height="100" :src="require('@/assets/images/settingBanner.jpg')" style="display: inline-block; width: 100%; max-width: 100%; height: auto;"/>
+    <van-cell-group>
+      <van-cell title="头像" is-link @click="updateAvatarShow = true"/>
+      <van-popup v-model:show="updateAvatarShow" position="bottom" :style="{ height: '30%' }" round>
+        <div style="margin: 5%; text-align: center;">
+          <van-uploader
+              multiple
+              :max-count="1"
+              v-model="update.uploadAvatar"
+              :after-read="afterLoad"
+              :max-size="1024 * 1024"
+              @oversize="onOversize"
+          />
+          <div style="margin-top: 10%; margin-left: 18px; margin-right: 18px">
+            <van-button type="primary" block @click="updateAvatarConfirm">保存</van-button>
+          </div>
+        </div>
+      </van-popup>
 
       <van-cell title="昵称" :value="info.name" is-link @click="updateNameShow = true"/>
       <van-popup v-model:show="updateNameShow" position="bottom" :style="{ height: '30%' }" round>
@@ -64,12 +80,15 @@
 </template>
 
 <script>
+import { ref } from 'vue';
 import axios from 'axios'
 import { Notify } from 'vant';
+import Qs from "qs";
 export default {
   data() {
     return {
       onClickLeft: () => history.back(),
+      updateAvatarShow: false,
       updateNameShow: false,
       updateBirthdayShow: false,
       updateIntroShow: false,
@@ -85,6 +104,8 @@ export default {
         state: this.returnState()
       },
       update: {
+        uploadAvatar: ref([ ]),
+        avatarBase64: '',
         name: sessionStorage.getItem("username"),
         sex: '',
         birthday: '',
@@ -114,6 +135,29 @@ export default {
       } else {
         return '保密'
       }
+    },
+    afterLoad: function (file) {
+      console.log(file.content)
+      this.update.avatarBase64 = file.content
+    },
+    onOversize: function () {
+      Notify({type: 'primary', message: '图片大小不能超过1MB'})
+    },
+    updateAvatarConfirm: function () {
+      this.update.uploadAvatar[0].status = 'uploading'
+      axios({
+        url: '/api/user/' + this.info.uid + '/saveAvatar',
+        method: 'post',
+        transformRequest: [function (data) {
+          return Qs.stringify(data)
+        }],
+        data: {
+          data: this.update.avatarBase64
+        }
+      }).then(() =>{
+        this.updateAvatarShow = false
+        Notify({type: 'primary', message: '修改成功'})
+      })
     },
     updateNameConfirm: function () {
       this.updateNameShow = false

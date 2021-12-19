@@ -13,16 +13,29 @@
             <img :src="swipe" style="display: inline-block; width: 100%; max-width: 100%; height: auto;"/>
           </van-swipe-item>
         </van-swipe>
-
-        <van-grid :column-num="2" border="false">
-          <van-grid-item border="false">
-            <van-image :src="require('@/assets/item/1/item.jpg')" />
-            <div class="van-multi-ellipsis--l2" style="font-size: smaller;">
-              <van-tag type="primary">偶像</van-tag>
-              过气偶像，一斤两块过气偶像，一斤两块过气偶像，一斤两块过气偶像，一斤两块过气偶像，一斤两块过气偶像，一斤两块过气偶像，一斤两块
+        <van-list
+            v-model:loading="loading"
+            :finished="finished"
+            finished-text="没有更多了"
+            @load="onLoad"
+            offset="100"
+        >
+          <div style="margin: 1%; width: 48%; float: left; background-color: white; border-radius: 8px; overflow: hidden;" v-for="item in items" >
+            <van-image
+                :src="require('@/assets/item/' + item.iid + '/pic.jpg')"
+            />
+            <div class="van-ellipsis" style="font-size: var(--van-font-size-md);">
+              <van-tag plain type="primary" style="margin-left: 2%;">{{ item.type }}</van-tag>
+              {{ item.name }}
             </div>
-          </van-grid-item>
-        </van-grid>
+            <div style="float: left; color: #FB7299; font-size: var(--van-line-height-sm); margin-top: 2%; margin-left: 4%;">
+              ¥{{ item.price }}
+            </div>
+            <div style="float: right; color: var(--van-gray-5); font-size: var(--van-line-height-xs); margin-right: 4%">
+              {{ item.rate }}
+            </div>
+          </div>
+        </van-list>
 
       </van-tab>
       <van-tab title="书籍">
@@ -51,15 +64,19 @@ export default {
   components: {
     BottomNav
   },
-  data() {  
+  data() {
     return {
       search_text: '',
       swipes: [
         swipe1,
         swipe2,
         swipe3,
-        swipe4,     
-      ]
+        swipe4,
+      ],
+      loading: false,
+      finished: false,
+      page: 1,
+      items: [ ]
     }
   },
   mounted() {
@@ -67,8 +84,24 @@ export default {
     if(isLogin != null){
       this.loadProfile()
     }
+    window.addEventListener('scroll', this.handleScroll,true)
+  },
+  beforeCreate () {
+    document.querySelector('body').setAttribute('style', 'background-color: var(--van-gray-2);')
+  },
+  beforeRouteLeave() {
+    document.querySelector('body').removeAttribute('style')
   },
   methods: {
+    handleScroll: function () {
+      let scrollTop = document.documentElement.scrollTop||document.body.scrollTop;
+      let windowHeight = document.documentElement.clientHeight || document.body.clientHeight;
+      let scrollHeight = document.documentElement.scrollHeight||document.body.scrollHeight;
+      if(scrollTop + windowHeight === scrollHeight){
+        console.log('bottom')
+        this.onLoad()
+      }
+    },
     loadProfile: function () {
       let uid = sessionStorage.getItem("uid")
       axios({
@@ -89,6 +122,31 @@ export default {
         sessionStorage.setItem("introduction", info.userIntroduction)
         sessionStorage.setItem("sex", info.userSex)
         sessionStorage.setItem("state", info.userState)
+        sessionStorage.setItem("lastLogin", info.lastLoginString)
+      })
+    },
+    onLoad: function () {
+      axios({
+        url: '/api/home',
+        method: 'post',
+        transformRequest: [function (data) {
+          return Qs.stringify(data)
+        }],
+        data: {
+          page: this.page
+        }
+      }).then(res =>{
+        console.log(res.data.returnObject)
+        for(var item of res.data.returnObject) {
+          this.items.push({
+            type: 0,
+            iid: item.iid,
+            name: item.itemName,
+            price: item.itemPrice,
+            rate: item.rating
+          })
+        }
+        this.page += 1
       })
     }
   }

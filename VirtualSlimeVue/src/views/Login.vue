@@ -5,7 +5,7 @@
 			left-arrow
 			@click-left="onClickLeft"
 		/>
-		<van-image width="100" height="100" :src="loginRegisterPic" style="display: inline-block; width: 100%; max-width: 100%; height: auto;"/>
+		<van-image width="100" height="100" :src="require('@/assets/images/loginBanner.jpg')" style="display: inline-block; width: 100%; max-width: 100%; height: auto;"/>
 		<van-tabs animated>
 			<van-tab title="用户名登录">
 				<van-cell-group v-model="loginNameData">
@@ -69,12 +69,10 @@
 import axios from 'axios'
 import Qs from 'qs'
 import { Notify } from 'vant';
-import loginRegisterPic from '@/assets/images/swipe3.jpeg'
 export default {
 	data() {
 		return {
 			onClickLeft: () => this.$router.push("/"),
-			loginRegisterPic: loginRegisterPic,
 			loginNameData: {
 				username: '',
 				password: ''
@@ -105,6 +103,10 @@ export default {
 						Notify({ type: 'primary', message: '密码错误' })
 					} else if(resState === 0) {
 						Notify({ type: 'primary', message: '登录成功' })
+            sessionStorage.setItem("isLogin", true)
+            sessionStorage.setItem("uid", res.data.returnObject)
+            this.$store.state.userState.isLogin = true
+            this.$store.state.userState.myUid = res.data.returnObject
 						this.$router.push("/")
 					}
       	})
