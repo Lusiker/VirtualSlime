@@ -4,7 +4,12 @@
       <van-search
         v-model="search_text"
         @search="onSearch"
-      />
+        show-action
+      >
+        <template #action>
+          <div @click="search">搜索</div>
+        </template>
+      </van-search>
     </form>
     <van-tabs swipeable sticky>
       <van-tab title="首页">
@@ -17,10 +22,10 @@
             :loading="home.loading"
             :finished="home.finished"
             finished-text="没有更多了"
-            @load="onLoad"
+            @load="onLoad1"
         >
           <div class="van-clearfix">
-          <div style="margin: 1%; width: 48%; float: left; background-color: white; border-radius: 8px; overflow: hidden;" v-for="item in items" >
+          <div style="margin: 1%; width: 48%; float: left; background-color: white; border-radius: 8px; overflow: hidden;" v-for="item in home.items" >
             <router-link :to="'/item/' + item.iid">
               <van-image
                   :src="require('@/assets/item/' + item.iid + '/pic.jpg')"
@@ -42,7 +47,33 @@
         </van-list>
       </van-tab>
       <van-tab title="图书">
-        内容
+        <van-list
+            :loading="book.loading"
+            :finished="book.finished"
+            finished-text="没有更多了"
+            @load="onLoad2"
+        >
+          <div class="van-clearfix">
+            <div style="margin: 1%; width: 48%; float: left; background-color: white; border-radius: 8px; overflow: hidden;" v-for="item in book.items" >
+              <router-link :to="'/item/' + item.iid">
+                <van-image
+                    :src="require('@/assets/item/' + item.iid + '/pic.jpg')"
+                    :show-loading=false
+                />
+                <div class="van-ellipsis" style="font-size: var(--van-font-size-md);">
+                  <van-tag plain type="primary" style="margin-left: 2%;">{{ item.type }}</van-tag>
+                  {{ item.name }}
+                </div>
+                <div style="float: left; color: #FB7299; font-size: var(--van-line-height-sm); margin-top: 2%; margin-left: 4%;">
+                  ¥{{ item.price }}
+                </div>
+                <div style="float: right; color: var(--van-gray-5); font-size: var(--van-line-height-xs); margin-right: 4%">
+                  {{ item.rate }}
+                </div>
+              </router-link>
+            </div>
+          </div>
+        </van-list>
       </van-tab>
       <van-tab title="音乐">
         内容 3
@@ -129,7 +160,10 @@ export default {
         sessionStorage.setItem("lastLogin", info.lastLoginString)
       })
     },
-    onLoad: function () {
+    search: function () {
+      this.$router.push('/search/' + this.search_text)
+    },
+    onLoad1: function () {
       this.home.loading = true
       // console.log('加载呢！')
       axios({
@@ -158,6 +192,38 @@ export default {
         } else {
           this.home.loading = false
           this.home.finished = true
+        }
+      })
+    },
+    onLoad2: function () {
+      this.book.loading = true
+      // console.log('加载呢！')
+      axios({
+        url: '/api/home/cid=6',
+        method: 'post',
+        transformRequest: [function (data) {
+          return Qs.stringify(data)
+        }],
+        data: {
+          page: this.book.page
+        }
+      }).then(res =>{
+        if(res.data.stateEnum.state === 1) {
+          // console.log(res.data.returnObject)
+          for (var item of res.data.returnObject) {
+            this.book.items.push({
+              type: this.types[Math.round(Math.random() * 5)],
+              iid: item.iid,
+              name: item.itemName,
+              price: item.itemPrice,
+              rate: item.rating
+            })
+          }
+          this.book.page += 1
+          this.book.loading = false
+        } else {
+          this.book.loading = false
+          this.book.finished = true
         }
       })
     }

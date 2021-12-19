@@ -81,6 +81,11 @@ const routes = [
     name: 'MyComments',
     component: () => import('../views/MyComments.vue')
   },
+  {
+    path: '/search/:context',
+    name: 'Search',
+    component: () => import('../views/Search.vue')
+  },
 ]
 
 const router = createRouter({
