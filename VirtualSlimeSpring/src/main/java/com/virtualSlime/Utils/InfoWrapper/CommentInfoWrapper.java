@@ -1,6 +1,7 @@
 package com.virtualSlime.Utils.InfoWrapper;
 
 import com.virtualSlime.Entity.Comment;
+import com.virtualSlime.Entity.Item;
 import com.virtualSlime.Entity.User;
 import com.virtualSlime.Utils.DateProcessor;
 import lombok.Getter;
@@ -15,7 +16,9 @@ import java.util.Date;
 public class CommentInfoWrapper {
     private Integer cid;
     private Integer uid;
+    private Integer iid;
     private String userName;
+    private String itemName;
     private Date createdAt;
     private String createdAtString;
     private String content;
@@ -24,7 +27,9 @@ public class CommentInfoWrapper {
     public CommentInfoWrapper(CommentInfoWrapperBuilder builder){
         this.cid = builder.getBCid();
         this.uid = builder.getBUid();
+        this.iid = builder.getBIid();
         this.userName = builder.getBUserName();
+        this.itemName = builder.getBItemName();
         this.createdAt = builder.getBCreatedAt();
         this.createdAtString = builder.getBCreatedAtString();
         this.content = builder.getBContent();
@@ -36,7 +41,9 @@ public class CommentInfoWrapper {
     public static class CommentInfoWrapperBuilder {
         private Integer bCid;
         private Integer bUid;
+        private Integer bIid;
         private String bUserName;
+        private String bItemName;
         private Date bCreatedAt;
         private String bCreatedAtString;
         private String bContent;
@@ -60,6 +67,13 @@ public class CommentInfoWrapper {
                 this.bUid = user.getUid();
                 this.bUserName = user.getUserName();
             }
+
+            return this;
+        }
+
+        public CommentInfoWrapperBuilder setItem(Item item){
+            this.bIid = item.getIid();
+            this.bItemName = item.getItemName();
 
             return this;
         }

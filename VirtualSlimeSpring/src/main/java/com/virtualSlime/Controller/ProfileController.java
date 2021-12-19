@@ -152,8 +152,10 @@ public class ProfileController {
         List<Comment> comments = commentRepository.selectCommentsByUid(user);
         List<CommentInfoWrapper> result = new ArrayList<>();
         for(Comment c : comments){
+            Item item = itemRepository.selectItemByIid(c.getIid());
             CommentInfoWrapper wrapper = new CommentInfoWrapper.CommentInfoWrapperBuilder()
                     .setComment(c)
+                    .setItem(item)
                     .build();
 
             result.add(wrapper);
