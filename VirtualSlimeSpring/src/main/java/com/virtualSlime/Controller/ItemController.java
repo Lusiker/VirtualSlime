@@ -7,6 +7,7 @@ import com.virtualSlime.Entity.Item;
 import com.virtualSlime.Entity.User;
 import com.virtualSlime.Enum.ItemState;
 import com.virtualSlime.Enum.PageState.ItemPageState;
+import com.virtualSlime.Enum.PageState.ProfilePageState;
 import com.virtualSlime.Service.CommentRepository;
 import com.virtualSlime.Service.ItemRepository;
 import com.virtualSlime.Service.UserRepository;
@@ -107,6 +108,10 @@ public class ItemController {
             return objectMapper.writeValueAsString(new Result(ItemPageState.INTERNAL_ERROR,null));
         }
 
+        if(!user.getUserHasActivated()){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Not Activated"));
+        }
+
         Item item = itemRepository.selectItemByIid(iid);
         if(item == null || item.getItemState() == ItemState.HIDDEN){
             //item not exist or hidden
@@ -165,6 +170,15 @@ public class ItemController {
             return objectMapper.writeValueAsString(new Result(ItemPageState.FAILED,"Wrong Info:" + newUid));
         }
 
+        User user = userRepository.selectUserByUid(uid);
+        if(user == null){
+            return objectMapper.writeValueAsString(new Result(ItemPageState.INTERNAL_ERROR,null));
+        }
+
+        if(!user.getUserHasActivated()){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Not Activated"));
+        }
+
         short cid;
         try{
             cid = Short.parseShort(newCid);
@@ -190,11 +204,6 @@ public class ItemController {
             itemPrice = new BigDecimal(newItemPrice);
         }catch (Exception e){
             return objectMapper.writeValueAsString(new Result(ItemPageState.FAILED,"Wrong Info:" + newItemPrice));
-        }
-
-        User user = userRepository.selectUserByUid(uid);
-        if(user == null){
-            return objectMapper.writeValueAsString(new Result(ItemPageState.INTERNAL_ERROR,null));
         }
 
         Item newItem = new Item(user.getUid(),newItemName,newItemBrief,itemPrice,cid);

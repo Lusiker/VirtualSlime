@@ -225,6 +225,10 @@ public class ProfileController {
             return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
         }
 
+        if(!user.getUserHasActivated()){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Not Activated"));
+        }
+
         List<UserCart> cart = itemRepository.selectUserCart(user);
         boolean found = false;
         for(UserCart i : cart){
@@ -698,6 +702,10 @@ public class ProfileController {
         User user = userRepository.selectUserByUid(uid);
         if(user == null){
             return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
+        }
+
+        if(!user.getUserHasActivated()){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED,"Not Activated"));
         }
 
         BigDecimal addCount;
