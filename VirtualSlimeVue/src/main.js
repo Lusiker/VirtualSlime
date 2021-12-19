@@ -28,7 +28,9 @@ import {
     Popup,
     Picker,
     Calendar,
-    Uploader
+    Uploader,
+    List,
+    Icon
 } from 'vant'
 
 createApp(App).use(store).use(router)
@@ -55,4 +57,6 @@ createApp(App).use(store).use(router)
     .use(Picker)
     .use(Calendar)
     .use(Uploader)
+    .use(List)
+    .use(Icon)
     .mount('#app')
