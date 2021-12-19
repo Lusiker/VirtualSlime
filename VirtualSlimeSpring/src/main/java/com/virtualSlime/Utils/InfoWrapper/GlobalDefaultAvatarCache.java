@@ -31,5 +31,7 @@ public class GlobalDefaultAvatarCache {
         while ((bytesRead = defaultAvatar.read(buf)) != -1) {
             out.write(buf, 0, bytesRead);
         }
+
+        out.close();
     }
 }
