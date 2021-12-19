@@ -9,6 +9,15 @@ import java.io.*;
 public class GlobalDefaultAvatarCache {
     private static final String targetPath = "../VirtualSlimeVue/src/assets/user/";
     private static final String resPath = "./src/main/resources/static/default_avatar.jpg";
+    private static FileInputStream defaultAvatar = null;
+
+    static {
+        try {
+            defaultAvatar = new FileInputStream(resPath);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void createAvatar(User user) throws IOException {
         String finalPath = targetPath + user.getUid();
@@ -16,11 +25,10 @@ public class GlobalDefaultAvatarCache {
         File dir = new File(finalPath);
         dir.mkdirs();
 
-        FileInputStream in = new FileInputStream(resPath);
         FileOutputStream out = new FileOutputStream(finalPath + "/avatar.jpg");
         byte[] buf = new byte[1024];
         int bytesRead;
-        while ((bytesRead = in.read(buf)) != -1) {
+        while ((bytesRead = defaultAvatar.read(buf)) != -1) {
             out.write(buf, 0, bytesRead);
         }
     }
