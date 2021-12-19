@@ -14,8 +14,8 @@
           </van-swipe-item>
         </van-swipe>
         <van-list
-            :loading="loading"
-            :finished="finished"
+            :loading="home.loading"
+            :finished="home.finished"
             finished-text="没有更多了"
             @load="onLoad"
         >
@@ -41,7 +41,7 @@
           </div>
         </van-list>
       </van-tab>
-      <van-tab title="书籍">
+      <van-tab title="图书">
         内容
       </van-tab>
       <van-tab title="音乐">
@@ -76,10 +76,18 @@ export default {
         swipe3,
         swipe4,
       ],
-      loading: false,
-      finished: false,
-      page: 1,
-      items: [ ],
+      home: {
+        loading: false,
+        finished: false,
+        page: 1,
+        items: [ ]
+      },
+      book: {
+        loading: false,
+        finished: false,
+        page: 1,
+        items: [ ]
+      },
       types: [
           '热卖', '新品', '推荐', '排名', '评分较高', '今日特卖'
       ]
@@ -122,7 +130,7 @@ export default {
       })
     },
     onLoad: function () {
-      this.loading = true
+      this.home.loading = true
       // console.log('加载呢！')
       axios({
         url: '/api/home',
@@ -131,13 +139,13 @@ export default {
           return Qs.stringify(data)
         }],
         data: {
-          page: this.page
+          page: this.home.page
         }
       }).then(res =>{
         if(res.data.stateEnum.state === 1) {
           // console.log(res.data.returnObject)
           for (var item of res.data.returnObject) {
-            this.items.push({
+            this.home.items.push({
               type: this.types[Math.round(Math.random() * 5)],
               iid: item.iid,
               name: item.itemName,
@@ -145,11 +153,11 @@ export default {
               rate: item.rating
             })
           }
-          this.page += 1
-          this.loading = false
+          this.home.page += 1
+          this.home.loading = false
         } else {
-          this.loading = false
-          this.finished = true
+          this.home.loading = false
+          this.home.finished = true
         }
       })
     }
