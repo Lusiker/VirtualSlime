@@ -9,7 +9,7 @@
     <van-tabbar-item replace to="/chat" icon="chat-o">
       消息
     </van-tabbar-item>
-    <van-tabbar-item replace to="/cart" icon="cart-o">
+    <van-tabbar-item replace :to="isLogin === true ? '/cart' : '/login'" icon="cart-o">
       购物车
     </van-tabbar-item>
     <van-tabbar-item replace :to="isLogin === true ? '/user' : '/login'" icon="manager-o">
