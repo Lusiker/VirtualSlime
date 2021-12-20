@@ -221,6 +221,7 @@ export default {
         sessionStorage.setItem("sex", info.userSex)
         sessionStorage.setItem("state", info.userState)
         sessionStorage.setItem("lastLogin", info.lastLoginString)
+        sessionStorage.setItem("isAvatarChanged", info.userHasChangedAvatar)
       })
     },
     search: function () {

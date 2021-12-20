@@ -7,6 +7,14 @@
           width="5rem"
           height="5rem"
           :src="require('@/assets/user/' + userInfo.uid + '/avatar.jpg')"
+          v-if="userInfo.isChangedAvatar === 'true'"
+        />
+        <van-image
+            round
+            width="5rem"
+            height="5rem"
+            :src="require('@/assets/user/0/avatar.jpg')"
+            v-if="userInfo.isChangedAvatar === 'false'"
         />
       </van-col>
       <van-col span="18" style="padding-top: 3%;">
@@ -62,7 +70,8 @@ export default {
         following: sessionStorage.getItem("following"),
         money: sessionStorage.getItem("money"),
         point: sessionStorage.getItem("point"),
-        coupon: sessionStorage.getItem("coupon")
+        coupon: sessionStorage.getItem("coupon"),
+        isChangedAvatar: sessionStorage.getItem('isAvatarChanged')
       } 
     }
   },

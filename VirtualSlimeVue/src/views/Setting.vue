@@ -190,6 +190,7 @@ export default {
           data: this.update.avatarBase64
         }
       }).then(() =>{
+        sessionStorage.setItem("isAvatarChanged", 'true')
         this.updateAvatarShow = false
         Notify({type: 'primary', message: '修改成功'})
       })
