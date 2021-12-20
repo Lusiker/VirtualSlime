@@ -63,13 +63,18 @@ export default {
         // console.log(reItem.itemPrice)
         // console.log(this.item.price)
         // console.log(this.item.price.toString().replace('.','') + '0')
-        let p = this.item.price.toString().split('.')
-        let p1 = p[0]
-        let p2 = p[1]
-        if(p2.length < 2) {
-          p2 = p2 + '0'
+        let pr = this.item.price.toString()
+        if(pr.includes('.')) {
+          let p = this.item.price.toString().split('.')
+          let p1 = p[0]
+          let p2 = p[1]
+          if (p2.length < 2) {
+            p2 = p2 + '0'
+          }
+          this.item.priceString = p1 + p2
+        } else {
+          this.item.priceString = pr + '00'
         }
-        this.item.priceString = p1 + p2
         // console.log(this.item.priceString)
         this.item.brief = reItem.itemBrief
       })
