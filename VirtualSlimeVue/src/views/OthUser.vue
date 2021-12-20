@@ -17,7 +17,9 @@
       <van-col span="18" style="padding-top: 3%;">
         <div class="van-ellipsis" style="font-size: 120%;color: #FB7299">
           {{ userInfo.name }}
-          <van-button type="primary" size="small" style="float: right" @click="follow" :plain="isFollowBoolean === true">{{ isFollow }}</van-button>
+          <van-button type="primary" size="small" style="float: right" @click="follow" :plain="isFollowBoolean === true" v-if="curUid !== userInfo.uid">
+            {{ isFollow }}
+          </van-button>
         </div>
         <div class="van-ellipsis" style="color: var(--van-grid-item-text-color)">
           <b>{{ userInfo.followers }}</b>&nbsp;粉丝&nbsp;&nbsp;
@@ -25,6 +27,7 @@
         </div>
       </van-col>
     </van-row>
+    <van-cell value="发布的商品"/>
     <van-swipe-cell v-for="item in items">
       <router-link :to="'/item/' + item.iid">
         <van-card
@@ -78,7 +81,7 @@ export default {
     },
     loadItem: function () {
       axios({
-        url: '/api/user/' + this.uid + '/items',
+        url: '/api/user/' + this.curUid + '/items',
         method: 'post',
       }).then(res => {
         if (res.data.stateEnum.state === 8) {

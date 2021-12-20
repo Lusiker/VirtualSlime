@@ -2,9 +2,7 @@
 VirtualSlimeSpring/src/main/resources/application.yml
 *.yml
 VirtualSlimeVue/node_modules/
-VirtualSlimeVue/vue.config.js
 .idea/dataSources.xml
 *.xml
 VirtualSlimeVue/.idea
 *.meta
-*.jpg
