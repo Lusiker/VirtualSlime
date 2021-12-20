@@ -86,6 +86,11 @@ const routes = [
     name: 'Search',
     component: () => import('../views/Search.vue')
   },
+  {
+    path: '/item/:iid/buy',
+    name: 'ItemBuy',
+    component: () => import('../views/ItemBuy.vue')
+  },
 ]
 
 const router = createRouter({
