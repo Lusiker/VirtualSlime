@@ -1,9 +1,8 @@
 <template>
-  <div>  
+  <div class="grayBG">
     <form action="/">
       <van-search
         v-model="search_text"
-        @search="onSearch"
         show-action
       >
         <template #action>
@@ -75,11 +74,63 @@
           </div>
         </van-list>
       </van-tab>
-      <van-tab title="音乐">
-        内容 3
+      <van-tab title="游戏">
+        <van-list
+            :loading="game.loading"
+            :finished="game.finished"
+            finished-text="没有更多了"
+            @load="onLoad3"
+        >
+          <div class="van-clearfix">
+            <div style="margin: 1%; width: 48%; float: left; background-color: white; border-radius: 8px; overflow: hidden;" v-for="item in game.items" >
+              <router-link :to="'/item/' + item.iid">
+                <van-image
+                    :src="require('@/assets/item/' + item.iid + '/pic.jpg')"
+                    :show-loading=false
+                />
+                <div class="van-ellipsis" style="font-size: var(--van-font-size-md);">
+                  <van-tag plain type="primary" style="margin-left: 2%;">{{ item.type }}</van-tag>
+                  {{ item.name }}
+                </div>
+                <div style="float: left; color: #FB7299; font-size: var(--van-line-height-sm); margin-top: 2%; margin-left: 4%;">
+                  ¥{{ item.price }}
+                </div>
+                <div style="float: right; color: var(--van-gray-5); font-size: var(--van-line-height-xs); margin-right: 4%">
+                  {{ item.rate }}
+                </div>
+              </router-link>
+            </div>
+          </div>
+        </van-list>
       </van-tab>
-      <van-tab title="动画">
-        内容 4
+      <van-tab title="音乐">
+        <van-list
+            :loading="music.loading"
+            :finished="music.finished"
+            finished-text="没有更多了"
+            @load="onLoad4"
+        >
+          <div class="van-clearfix">
+            <div style="margin: 1%; width: 48%; float: left; background-color: white; border-radius: 8px; overflow: hidden;" v-for="item in music.items" >
+              <router-link :to="'/item/' + item.iid">
+                <van-image
+                    :src="require('@/assets/item/' + item.iid + '/pic.jpg')"
+                    :show-loading=false
+                />
+                <div class="van-ellipsis" style="font-size: var(--van-font-size-md);">
+                  <van-tag plain type="primary" style="margin-left: 2%;">{{ item.type }}</van-tag>
+                  {{ item.name }}
+                </div>
+                <div style="float: left; color: #FB7299; font-size: var(--van-line-height-sm); margin-top: 2%; margin-left: 4%;">
+                  ¥{{ item.price }}
+                </div>
+                <div style="float: right; color: var(--van-gray-5); font-size: var(--van-line-height-xs); margin-right: 4%">
+                  {{ item.rate }}
+                </div>
+              </router-link>
+            </div>
+          </div>
+        </van-list>
       </van-tab>
     </van-tabs>
     <BottomNav/>
@@ -119,6 +170,18 @@ export default {
         page: 1,
         items: [ ]
       },
+      game: {
+        loading: false,
+        finished: false,
+        page: 1,
+        items: [ ]
+      },
+      music: {
+        loading: false,
+        finished: false,
+        page: 1,
+        items: [ ]
+      },
       types: [
           '热卖', '新品', '推荐', '排名', '评分较高', '今日特卖'
       ]
@@ -130,12 +193,12 @@ export default {
       this.loadProfile()
     }
   },
-  beforeCreate () {
-    document.querySelector('body').setAttribute('style', 'background-color: var(--van-gray-2);')
-  },
-  beforeRouteLeave() {
-    document.querySelector('body').removeAttribute('style')
-  },
+  // beforeCreate () {
+  //   document.querySelector('body').setAttribute('style', 'background-color: var(--van-gray-2);')
+  // },
+  // beforeRouteLeave() {
+  //   document.querySelector('body').removeAttribute('style')
+  // },
   methods: {
     loadProfile: function () {
       let uid = sessionStorage.getItem("uid")
@@ -226,6 +289,70 @@ export default {
           this.book.finished = true
         }
       })
+    },
+    onLoad3: function () {
+      this.game.loading = true
+      // console.log('加载呢！')
+      axios({
+        url: '/api/home/cid=2',
+        method: 'post',
+        transformRequest: [function (data) {
+          return Qs.stringify(data)
+        }],
+        data: {
+          page: this.game.page
+        }
+      }).then(res =>{
+        if(res.data.stateEnum.state === 1) {
+          // console.log(res.data.returnObject)
+          for (var item of res.data.returnObject) {
+            this.game.items.push({
+              type: this.types[Math.round(Math.random() * 5)],
+              iid: item.iid,
+              name: item.itemName,
+              price: item.itemPrice,
+              rate: item.rating
+            })
+          }
+          this.game.page += 1
+          this.game.loading = false
+        } else {
+          this.game.loading = false
+          this.game.finished = true
+        }
+      })
+    },
+    onLoad4: function () {
+      this.music.loading = true
+      // console.log('加载呢！')
+      axios({
+        url: '/api/home/cid=4',
+        method: 'post',
+        transformRequest: [function (data) {
+          return Qs.stringify(data)
+        }],
+        data: {
+          page: this.music.page
+        }
+      }).then(res =>{
+        if(res.data.stateEnum.state === 1) {
+          // console.log(res.data.returnObject)
+          for (var item of res.data.returnObject) {
+            this.music.items.push({
+              type: this.types[Math.round(Math.random() * 5)],
+              iid: item.iid,
+              name: item.itemName,
+              price: item.itemPrice,
+              rate: item.rating
+            })
+          }
+          this.music.page += 1
+          this.music.loading = false
+        } else {
+          this.music.loading = false
+          this.music.finished = true
+        }
+      })
     }
   }
 }
@@ -236,5 +363,8 @@ export default {
   a:visited{
     color: #000;
     text-decoration: none;
+  }
+  .grayBG {
+    background-color: var(--van-gray-2);
   }
 </style>

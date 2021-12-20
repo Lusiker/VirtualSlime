@@ -48,8 +48,7 @@ export default {
                 name: item.itemName,
                 brief: item.itemBrief,
                 price: item.itemPrice
-              }
-            )
+              })
           }
         }
       })

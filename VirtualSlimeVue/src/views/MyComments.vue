@@ -8,7 +8,7 @@
 
     <van-cell-group inset v-for='com in comments'>
       <router-link :to="'/item/' + com.iid">
-      <van-cell :title="'对 ' + com.item + ' 的评价：' + com.content" :value="'评分：' + com.rating" :label="'发送于：' + com.createdAtString" />
+      <van-cell :title="'评价 ' + com.item + ' ：' + com.content" :value="'评分：' + com.rating" :label="'发送于：' + com.createdAtString" />
       </router-link>
     </van-cell-group>
   </div>

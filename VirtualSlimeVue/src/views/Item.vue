@@ -2,6 +2,7 @@
   <div>
     <van-nav-bar
         left-arrow
+        title="商品详情"
         @click-left="onClickLeft"
     />
     <van-image width="100" height="100" :src="require('@/assets/item/' + item.iid + '/pic.jpg')" style="display: inline-block; width: 100%; max-width: 100%; height: auto;"/>
@@ -12,6 +13,7 @@
         </div>
       </div>
     <div class="van-hairline--top"></div>
+    <router-link :to="'/otheruser/' + item.uid">
     <van-image
         round
         width="3rem"
@@ -19,6 +21,7 @@
         style="float: right; margin: 3%"
         :src="require('@/assets/user/' + item.uid + '/avatar.jpg')"
     />
+    </router-link>
 <!--    <div style="float: right; margin-top: 5%; color: #FB7299; font-size: 20px;">{{ item.userName }}</div>-->
     <div class="van-ellipsis" style="font-size: 20px; margin-top: 2%; margin-left: 4%;">
       {{ item.name }}
@@ -56,7 +59,7 @@
     </van-cell-group>
 
     <van-cell-group inset v-for='com in item.comments'>
-      <van-cell :title="com.content" :value="'评分：' + com.rating" :label="'发送者：' + com.userName" />
+      <van-cell icon="user-circle-o" :title="com.userName" :value="'评分：' + com.rating" :label="com.content" />
     </van-cell-group>
     <van-share-sheet
         v-model:show="showShare"
@@ -120,6 +123,7 @@ export default {
   },
   methods: {
     loadItem: function () {
+      this.item.comments = []
       this.item.iid = this.$route.params.iid
       axios({
         url: '/api/item/' + this.item.iid,
@@ -176,9 +180,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.van-cell__label {
-  color: black;
-}
-</style>

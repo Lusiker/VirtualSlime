@@ -91,6 +91,11 @@ const routes = [
     name: 'ItemBuy',
     component: () => import('../views/ItemBuy.vue')
   },
+  {
+    path: '/otheruser/:uid',
+    name: 'othUser',
+    component: () => import('../views/OthUser.vue')
+  },
 ]
 
 const router = createRouter({
