@@ -68,7 +68,7 @@
       <van-action-bar-icon icon="cart-o" text="购物车" to="/cart"/>
       <van-action-bar-icon icon="share-o" text="分享" @click="showShare = true"/>
       <van-action-bar-button type="warning" text="加入购物车" color="#faacc2" @click="putCart" />
-      <van-action-bar-button type="danger" text="立即购买" color="#FB7299"/>
+      <van-action-bar-button type="danger" text="立即购买" color="#FB7299" :to="'/item/' + item.iid + '/buy'"/>
     </van-action-bar>
   </div>
 </template>
@@ -177,6 +177,8 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style>
+.van-cell__label {
+  color: black;
+}
 </style>
