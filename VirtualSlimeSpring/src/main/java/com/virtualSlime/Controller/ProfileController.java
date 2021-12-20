@@ -747,14 +747,18 @@ public class ProfileController {
             return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED, newUidFrom));
         }
 
-        User userFrom = userRepository.selectUserByUid(uidFrom);
-        if(userFrom == null){
-            return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
-        }
-
         int uidTo = checkUidValid(newUidTo);
         if(uidTo == -1) {
             return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED, uidTo));
+        }
+
+        if(uidTo == uidFrom){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.FAILED, "No Self Follow Allowed"));
+        }
+
+        User userFrom = userRepository.selectUserByUid(uidFrom);
+        if(userFrom == null){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
         }
 
         User userTo = userRepository.selectUserByUid(uidTo);
