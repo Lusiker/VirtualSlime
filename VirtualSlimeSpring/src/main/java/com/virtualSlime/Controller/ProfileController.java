@@ -394,6 +394,10 @@ public class ProfileController {
             return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
         }
 
+        if(!userRepository.updateUserHasChangedAvatarTrue(user)){
+            return objectMapper.writeValueAsString(new Result(ProfilePageState.INTERNAL_ERROR,null));
+        }
+
         String base64Image = newData.split(",")[1];
         String base64ImageProcessed = base64Image.replaceAll(" ", "+").trim();
 
