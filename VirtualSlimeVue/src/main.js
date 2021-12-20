@@ -39,7 +39,8 @@ import {
     ActionBarButton,
     ShareSheet,
     Rate,
-    SwipeCell
+    SwipeCell,
+    SubmitBar
 } from 'vant'
 
 createApp(App).use(store).use(router)
@@ -77,4 +78,5 @@ createApp(App).use(store).use(router)
     .use(ShareSheet)
     .use(Rate)
     .use(SwipeCell)
+    .use(SubmitBar )
     .mount('#app')

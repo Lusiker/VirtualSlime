@@ -2,6 +2,7 @@
   <div>
     <van-nav-bar
         left-arrow
+        title="商品详情"
         @click-left="onClickLeft"
     />
     <van-image width="100" height="100" :src="require('@/assets/item/' + item.iid + '/pic.jpg')" style="display: inline-block; width: 100%; max-width: 100%; height: auto;"/>
@@ -56,7 +57,7 @@
     </van-cell-group>
 
     <van-cell-group inset v-for='com in item.comments'>
-      <van-cell :title="com.content" :value="'评分：' + com.rating" :label="'发送者：' + com.userName" />
+      <van-cell icon="user-circle-o" :title="com.userName" :value="'评分：' + com.rating" :label="com.content" />
     </van-cell-group>
     <van-share-sheet
         v-model:show="showShare"
@@ -120,6 +121,7 @@ export default {
   },
   methods: {
     loadItem: function () {
+      this.item.comments = []
       this.item.iid = this.$route.params.iid
       axios({
         url: '/api/item/' + this.item.iid,
@@ -176,9 +178,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.van-cell__label {
-  color: black;
-}
-</style>

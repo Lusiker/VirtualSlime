@@ -67,7 +67,9 @@ export default {
           iid: iid
         }
       }).then(res => {
-        this.$router.go(0)
+        this.items = []
+        this.loadCart()
+        // this.$router.go(0)
       })
     }
   }
