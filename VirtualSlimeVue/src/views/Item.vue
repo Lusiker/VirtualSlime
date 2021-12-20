@@ -13,6 +13,7 @@
         </div>
       </div>
     <div class="van-hairline--top"></div>
+    <router-link :to="'/otheruser/' + item.uid">
     <van-image
         round
         width="3rem"
@@ -20,6 +21,7 @@
         style="float: right; margin: 3%"
         :src="require('@/assets/user/' + item.uid + '/avatar.jpg')"
     />
+    </router-link>
 <!--    <div style="float: right; margin-top: 5%; color: #FB7299; font-size: 20px;">{{ item.userName }}</div>-->
     <div class="van-ellipsis" style="font-size: 20px; margin-top: 2%; margin-left: 4%;">
       {{ item.name }}
