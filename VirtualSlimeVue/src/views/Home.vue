@@ -188,7 +188,7 @@ export default {
     }
   },
   mounted() {
-    if(sessionStorage.getItem("isLogin") === true){
+    if(sessionStorage.getItem("isLogin") === 'true'){
       this.loadProfile()
     }
   },
