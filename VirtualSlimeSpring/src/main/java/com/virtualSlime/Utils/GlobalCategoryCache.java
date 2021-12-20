@@ -35,7 +35,7 @@ public class GlobalCategoryCache {
     }
 
     public List<Category> getAllCategoryInfo(){
-        List<Category> result = new ArrayList<Category>();
+        List<Category> result = new ArrayList<>();
         for(Map.Entry<Short, Category> e : map.entrySet()){
             result.add(e.getValue());
         }

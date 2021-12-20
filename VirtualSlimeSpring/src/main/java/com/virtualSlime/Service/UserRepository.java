@@ -292,6 +292,17 @@ public class UserRepository {
         return updateUser(user);
     }
 
+    public boolean updateUserHasChangedAvatarTrue(User user){
+        //set user's hasChangedAvatar to true
+        if(user.getUserHasChangedAvatar()){
+            return true;
+        }
+
+        user.setUserHasChangedAvatar(true);
+
+        return updateUser(user);
+    }
+
     public int updateUserResetEmail(User user, String newEmail){
         //set user's email to new email, state to restricted and hasActivated to false
         //if email has not changed, return -1

@@ -29,6 +29,7 @@ public class UserInfoWrapper {
     private Boolean userShowDynamic;
     private Boolean userIsMerchant;
     private Boolean userHasActivated;
+    private Boolean userHasChangedAvatar;
     private UserState userState;
     private Integer userPoint;
     private BigDecimal userCurrency;
@@ -51,6 +52,7 @@ public class UserInfoWrapper {
         this.userShowDynamic = builder.getBUserShowDynamic();
         this.userIsMerchant = builder.getBUserIsMerchant();
         this.userHasActivated = builder.getBUserHasActivated();
+        this.userHasChangedAvatar = builder.getBUserHasChangedAvatar();
         this.userState = builder.getBUserState();
         this.userPoint = builder.getBUserPoint();
         this.userCurrency = builder.getBUserCurrency();
@@ -76,6 +78,7 @@ public class UserInfoWrapper {
         private Boolean bUserShowDynamic;
         private Boolean bUserIsMerchant;
         private Boolean bUserHasActivated;
+        private Boolean bUserHasChangedAvatar;
         private UserState bUserState;
         private Integer bUserPoint;
         private BigDecimal bUserCurrency;
@@ -95,6 +98,7 @@ public class UserInfoWrapper {
             this.bUserIsMerchant = user.getUserIsMerchant();
             this.bUserShowDynamic = user.getUserShowDynamic();
             this.bUserShowBirthday = user.getUserShowBirthday();
+            this.bUserHasChangedAvatar = user.getUserHasChangedAvatar();
 
             return this;
         }
@@ -105,6 +109,7 @@ public class UserInfoWrapper {
             this.bUserIntroduction = user.getUserIntroduction();
             this.bLastLogin = user.getLastLogin();
             this.bLastLoginString = DateProcessor.getDateStringFromTimestamp(this.bLastLogin);
+            this.bUserHasChangedAvatar = user.getUserHasChangedAvatar();
 
             return this;
         }
