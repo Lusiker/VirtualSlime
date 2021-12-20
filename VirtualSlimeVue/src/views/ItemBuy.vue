@@ -88,6 +88,9 @@ export default {
         } else if(res.data.stateEnum.state === -2){
           Notify({type: 'primary', message: '你已经购买过了'})
           this.submitShow = false
+        } else if(res.data.stateEnum.state === -4) {
+          Notify({type: 'primary', message: '你钱不够'})
+          this.submitShow = false
         }
       })
     }

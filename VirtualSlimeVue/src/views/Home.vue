@@ -188,8 +188,7 @@ export default {
     }
   },
   mounted() {
-    let isLogin = sessionStorage.getItem("isLogin")
-    if(isLogin != null){
+    if(sessionStorage.getItem("isLogin") === true){
       this.loadProfile()
     }
   },
