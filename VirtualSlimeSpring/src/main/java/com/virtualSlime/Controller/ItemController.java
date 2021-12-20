@@ -120,7 +120,7 @@ public class ItemController {
 
         if(!itemRepository.checkHasBoughtItem(user,item)){
             //only user who has bought the item is allowed to comment
-            return objectMapper.writeValueAsString(new Result(ItemPageState.FAILED,"No Buy Record"));
+            return objectMapper.writeValueAsString(new Result(ItemPageState.NO_BUY_RECORD,"No Buy Record"));
         }
 
         if(commentRepository.checkCommentHasExist(user,item)){
