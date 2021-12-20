@@ -32,6 +32,7 @@ public class User {
     private Boolean userShowDynamic;
     private Boolean userIsMerchant;
     private Boolean userHasActivated;
+    private Boolean userHasChangedAvatar;
     private UserState userState;
     private Integer userPoint;
     private BigDecimal userCurrency;
