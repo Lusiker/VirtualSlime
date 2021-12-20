@@ -81,7 +81,7 @@ export default {
     },
     loadItem: function () {
       axios({
-        url: '/api/user/' + this.curUid + '/items',
+        url: '/api/user/' + this.userInfo.uid + '/items',
         method: 'post',
       }).then(res => {
         if (res.data.stateEnum.state === 8) {
