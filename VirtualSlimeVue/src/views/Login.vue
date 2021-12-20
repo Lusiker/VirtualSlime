@@ -103,7 +103,7 @@ export default {
 						Notify({ type: 'primary', message: '密码错误' })
 					} else if(resState === 0) {
 						Notify({ type: 'primary', message: '登录成功' })
-            sessionStorage.setItem("isLogin", true)
+            sessionStorage.setItem("isLogin", 'true')
             sessionStorage.setItem("uid", res.data.returnObject)
             this.$store.state.userState.isLogin = true
             this.$store.state.userState.myUid = res.data.returnObject
@@ -131,7 +131,7 @@ export default {
 						Notify({ type: 'primary', message: '密码错误' })
 					} else if(resState === 0) {
 						Notify({ type: 'primary', message: '登录成功' })
-						sessionStorage.setItem("isLogin", true)
+						sessionStorage.setItem("isLogin", 'true')
 						sessionStorage.setItem("uid", res.data.returnObject)
 						this.$store.state.userState.isLogin = true
 						this.$store.state.userState.myUid = res.data.returnObject

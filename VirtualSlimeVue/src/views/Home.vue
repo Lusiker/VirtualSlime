@@ -152,7 +152,7 @@ export default {
   data() {
     return {
       search_text: '',
-      isLogin: sessionStorage.getItem('isLogin'),
+      isLogin: this.$store.state.userState.isLogin,
       swipes: [
         swipe1,
         swipe2,
@@ -186,6 +186,11 @@ export default {
       types: [
           '热卖', '新品', '推荐', '排名', '评分较高', '今日特卖'
       ]
+    }
+  },
+  watch:{
+    '$store.state.userState.isLogin': function(){
+      this.isLogin = this.$store.state.userState.isLogin
     }
   },
   mounted() {
