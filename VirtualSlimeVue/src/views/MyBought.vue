@@ -37,7 +37,7 @@ export default {
   methods: {
     loadCart: function () {
       axios({
-        url: '/api/user/' + this.uid + '/cart',
+        url: '/api/user/' + this.uid + '/bought',
         method: 'post',
       }).then(res => {
         if (res.data.stateEnum.state === 3) {
